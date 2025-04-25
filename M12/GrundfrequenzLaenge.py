@@ -9,7 +9,7 @@ import uncertainties as u
 import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
-RF = pd.read_csv('GrundfrequenzLaenge.csv', header=2, sep=';')
+RF = pd.read_csv('M12/GrundfrequenzLaenge.csv', header=2, sep=';')
 
 uL = unp.uarray(RF['Laenge'], RF['dL'])
 uf =unp.uarray(RF['Grundfrequenz'], RF['df'])

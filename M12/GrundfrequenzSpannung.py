@@ -11,7 +11,7 @@ from uncertainties import unumpy as unp
 
 #WICHTIGE ÄNDERUNGEN ZU MACHEN: Unsicherheiten fixen
 
-RF = pd.read_csv('GrundfrequenzSpannung.csv', header=3, sep=';')
+RF = pd.read_csv('M12/GrundfrequenzSpannung.csv', header=3, sep=';')
 
 uL = u.ufloat(0.6, 0.006)  #UNSICHERHEIT FIXEN
 uM = unp.uarray(RF['Masse'], RF['dM'])

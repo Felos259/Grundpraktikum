@@ -14,7 +14,7 @@ from uncertainties import unumpy as unp
 #################################################
 
 # Rohdaten (Anregefrequenzen), aus denen die Resonanzfrequenzen berechnet werden 
-RF = pd.read_csv('Resonanzfrequenzen.csv', header=2, sep=';')
+RF = pd.read_csv('M12/Resonanzfrequenzen.csv', header=2, sep=';')
 
 # Frequenz der Saite = 2*Anregefrequenz
 
