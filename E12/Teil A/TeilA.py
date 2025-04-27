@@ -34,9 +34,7 @@ label = {'E12/Teil A/3kV.csv' : ['$U_A=3$kV', 'Fit zu $U_A=3$kV', 'red', 'orange
          'E12/Teil A/5kV.csv' : ['$U_A=5$kV', 'Fit zu $U_A=5$kV', 'grey', 'green']}
 
 # Abspeichern der Fit-Wert für Berechnungen von e/m
-uA = {'E12/Teil A/3kV.csv' : u.ufloat(0.0, 0.0),
-      'E12/Teil A/4kV.csv' : u.ufloat(0.0, 0.0),
-      'E12/Teil A/5kV.csv' : u.ufloat(0.0, 0.0)}
+uA = []
 
 for column_name, column in label.items():
     
@@ -88,7 +86,7 @@ for column_name, column in label.items():
     y_ax = fit_function(x_ax, A_value)
 
     column[2] = column[2] + f"$y = A \\cdot x$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$"
-    uA[column_name] = u.ufloat(A_value, A_error)
+    uA.append(u.ufloat(A_value, A_error))
     
     # Plot zeichnen
     plt.plot(x_ax, y_ax, label=column[1], linewidth=2, color=column[3])
@@ -98,10 +96,15 @@ plt.ylabel('Radius $r$ in cm')
 plt.legend() #Legende printen
 plt.title("Radius $r$ in Abhängigkeit der Stromstärke $I$")
 
-plt.savefig("E12/B-I-Diagramm.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
-plt.savefig("E12/B-I-Diagramm.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
+plt.savefig("E12/Teil A/r-1durchI-Diagramm.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
+plt.savefig("E12/Teil A/r-1durchI-Diagramm.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
 
-plt.show() 
+#plt.show() 
+
+# uA zu schönerem Datentyp machen
+uA = unp.uarray([value.nominal_value for value in uA],
+                [value.s for value in uA]) 
 
 # e/m berechnen
 ue_m = 2 * uU_A / ((uA * k)**2)
+print(ue_m)

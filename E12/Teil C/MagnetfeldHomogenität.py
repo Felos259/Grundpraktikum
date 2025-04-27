@@ -16,7 +16,7 @@ R = 0.068
 
 k = u.ufloat(mu_0 *N/(2*R)*(4/5)**(3/2),0)
 
-RF = pd.read_csv('E12/BFeldHomogen.csv', header=0, sep=';')
+RF = pd.read_csv('E12/Teil C/BFeldHomogen.csv', header=0, sep=';')
 
 uB = unp.uarray(RF['B'], RF['dB'])
 uI = unp.uarray(RF['I'], RF['dI'])
@@ -70,7 +70,7 @@ plt.ylabel('Magnetfeldstärke $B$ in mT)')
 plt.legend() #Legende printen
 plt.title("Magnetfeldstärke $B$ in Abhängigkeit der Stromstärke $I$")
 
-plt.savefig("E12/B-I-Diagramm.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
-plt.savefig("E12/B-I-Diagramm.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
+plt.savefig("E12/Teil C/B-I-Diagramm.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
+plt.savefig("E12/Teil C/B-I-Diagramm.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
 
 plt.show() 
