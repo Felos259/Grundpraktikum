@@ -9,7 +9,8 @@ import uncertainties as u
 import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
-#WICHTIGE ÄNDERUNGEN ZU MACHEN: Unsicherheit L und M fixen
+# WICHTIGE ÄNDERUNGEN ZU MACHEN: Unsicherheit L und M fixen
+# QUADRIERTE y-ACHSE - F_0-f^2-Diagramme 
 
 #################################################
 

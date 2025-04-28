@@ -1,11 +1,11 @@
-Frequenzen des Generators bei denen Saite resonant schwingt feste Länge, Spannung;;;
-60cm, 1000g, 3. Kerbe ; 60cm, 500g, 3. Kerbe ; 60cm, 500g, 1. Kerbe;
-Reihe1;Reihe2;Reihe3;deltaF
-100;200;50;5
-200;300;150;5
-300;400;250;5
-400;500;350;5
-500;600;450;5
-600;700;550;5
-700;800;650;5
-800;900;750;5
+Frequenzen des Generators bei denen Saite resonant schwingt feste Länge, Spannung;;;;;
+60cm, 1000g, 3. Kerbe ; 60cm, 500g, 3. Kerbe ; 60cm, 500g, 1. Kerbe;;;
+Reihe1;Reihe2;Reihe3;deltaF1;deltaF2;deltaF3
+78.48;55.5;33.13;0;0;0
+157.8;111.8;67.2;0;0;0
+237.1;168.6;102.08;0;0;0
+316.2;224.9;136.7;0;0;0
+395.4;285.4;171.6;0;0;0
+475.3;342.3;208.5;0;0;0
+555.1;399.7;243.1;0;0;0
+634.8;457.9;750;0;0;0
