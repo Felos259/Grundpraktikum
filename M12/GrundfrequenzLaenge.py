@@ -79,8 +79,8 @@ plt.ylabel("$\\frac{1}{f}$ in s")
 plt.legend()
 plt.title("$L$-$\\frac{1}{f}$-Diagramm")
 
-plt.savefig("FrequenzLaenge.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
-plt.savefig("FrequenzLaenge.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
+plt.savefig("M12/FrequenzLaenge.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
+plt.savefig("M12/FrequenzLaenge.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
 
 plt.show() 
 

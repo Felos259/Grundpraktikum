@@ -41,6 +41,8 @@ uL = u.ufloat(0.6,0.0005)
 dM = 5 * 10**(-6)
 uM = unp.uarray([1, 0.5, 0.5], [dM, dM, dM])
 
+
+
 ##################################################################
 
 # Farben und Legenden definieren
@@ -77,6 +79,9 @@ def fit_function(x, A):
 # x-Achse erstellen, an der der Plot angezeichnet werden kann
 x_ax=np.linspace(0, 10, 1000) 
 
+# Abspeichern der Fit-Wert für Berechnungen von e/m
+A = []
+
 for i in range(0,3,1): 
     
     #Daten
@@ -100,6 +105,9 @@ for i in range(0,3,1):
 
     y_ax = fit_function(x_ax, A_value)
     legends[i+3] = legends[i+3] + f"$y = A \\cdot x$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$"
+    A.append(A_value)
+    A.append(A_error)
+
 
     # Eigentlichen Plot zeichnen
     lines += ax.plot(x_ax, y_ax, 
@@ -127,12 +135,12 @@ plt.ylabel("Frequenz $f_n$ in Hz")
 plt.title("Resonanzfrequenzen in Abhängigkeit von n")
 
 
-plt.savefig("Resonanzfrequenzen.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
-plt.savefig("Resonanzfrequenzen.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
+plt.savefig("M12/Resonanzfrequenzen.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
+plt.savefig("M12/Resonanzfrequenzen.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
 # funktioniert mit allen Datentypen - vorher Datei erstellen
 # 1. Zeile, um Bild zu checken, 2. für LaTex
 
-plt.show() 
+#plt.show() 
 
 ########################################
 
@@ -151,6 +159,14 @@ for i in range(1, len(RF.index), 1):
 
 ########################################
 
-# Lineare Massendichte mü = m / L
+# Lineare Massendichte aus Messwerten
 
-mu = uM / uL
+F_LH = 0.52 # in Anleitung gegeben
+g = 9.812669 #https://www.ptb.de/cms/ptb/fachabteilungen/abt1/fb-11/fb-11-sis/g-extractor.html
+
+Kerbe = [3,3,1]
+F_0 = Kerbe * uM * g + F_LH
+uA = unp.uarray([A[0], A[2], A[4]], [A[1], A[3], A[5]])
+
+mu = F_0/(4*(uL*uA)**2)
+print(mu)
