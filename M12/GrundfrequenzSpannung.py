@@ -14,7 +14,7 @@ from uncertainties import unumpy as unp
 RF = pd.read_csv('M12/GrundfrequenzSpannung.csv', header=3, sep=';')
 
 uL = u.ufloat(0.6, 0.006)  #UNSICHERHEIT FIXEN
-uM = unp.uarray(RF['Masse'], RF['dM'])
+uM = unp.uarray(RF.loc('Masse'), RF.loc('dM'))
 
 # Massendichte mü berechnen
 umu = uM / uL 
@@ -24,5 +24,5 @@ umu = uM / uL
 F_LH = 0.52 # in Anleitung gegeben
 g = u.ufloat(9.812669,0) #https://www.ptb.de/cms/ptb/fachabteilungen/abt1/fb-11/fb-11-sis/g-extractor.html
 
-F_0 = RF['Kerbe'] * uM *g + F_LH
+F_0 = RF.loc('Kerbe') * uM *g + F_LH
 

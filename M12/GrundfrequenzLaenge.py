@@ -11,8 +11,8 @@ from uncertainties import unumpy as unp
 
 RF = pd.read_csv('M12/GrundfrequenzLaenge.csv', header=2, sep=';')
 
-uL = unp.uarray(RF['Laenge'], RF['dL'])
-uf =unp.uarray(RF['Grundfrequenz'], RF['df'])
+uL = unp.uarray(RF.loc('Laenge'), RF.loc('dL'))
+uf =unp.uarray(RF.loc('Grundfrequenz'), RF.loc('df'))
 
 uM = u.ufloat(1,0.007)
 
@@ -20,8 +20,8 @@ uM = u.ufloat(1,0.007)
 durchf = 1 / uf
 
 # Wert und Unsichheit in Dataset einlesen
-RF['durchf']=np.array([value.nominal_value for value in durchf])
-RF['deldurchf']=np.array([value.s for value in durchf])
+RF.loc('durchf')=np.array([value.nominal_value for value in durchf])
+RF.loc('deldurchf')=np.array([value.s for value in durchf])
 
 # Figure und Subplots erstellen - bei denen alle Subplots die gleichen Achsen haben
 fig, ax = plt.subplots()
@@ -41,9 +41,9 @@ def fit_function(x, A):
     return A * x
 
 #Daten
-x_data = RF['Laenge']
-y_data = RF['durchf']
-y_err = RF['deldurchf'] 
+x_data = RF.loc('Laenge')
+y_data = RF.loc('durchf')
+y_err = RF.loc('deldurchf') 
 
 # Curve-Fit mit Unsicherheiten in y
 params, covariance = curve_fit(fit_function, x_data, y_data, sigma=y_err, absolute_sigma=True)
