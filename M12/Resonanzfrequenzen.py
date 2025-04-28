@@ -21,11 +21,10 @@ RF = pd.read_csv('M12/Resonanzfrequenzen.csv', header=2, sep=';')
 cols = ['Reihe1', 'Reihe2', 'Reihe3']
 unsicherCols = ['delta1', 'delta2', 'delta3']
 
-
 for i in range(0,3,1): 
     for j in range(0, len(RF[cols[i]]) , 1):
         RF.loc[j, cols[i]] = RF[cols[i]][j]*2
-        if(RF[unsicherCols[i]][j]<=100):
+        if(RF[cols[i]][j]<=100):
             RF.loc[j,unsicherCols[i]] = (0.0001 * RF[cols[i]][j] + 0.02)
         else:
             RF.loc[j,unsicherCols[i]] = (0.0001 * RF[cols[i]][j] + 0.2)
@@ -38,7 +37,7 @@ uFrq = {'Reihe1' : unp.uarray(RF.Reihe1, RF.delta1),
        'Reihe2' : unp.uarray(RF.Reihe2, RF.delta2),
        'Reihe3' : unp.uarray(RF.Reihe3, RF.delta3)}
 
-uL = u.ufloat(0.6,0.005)
+uL = u.ufloat(0.6,0.0005)
 dM = 5 * 10**(-6)
 uM = unp.uarray([1, 0.5, 0.5], [dM, dM, dM])
 

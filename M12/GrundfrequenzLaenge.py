@@ -11,28 +11,37 @@ from uncertainties import unumpy as unp
 
 RF = pd.read_csv('M12/GrundfrequenzLaenge.csv', header=2, sep=';')
 
-uL = unp.uarray(RF.loc('Laenge'), RF.loc('dL'))
-uf =unp.uarray(RF.loc('Grundfrequenz'), RF.loc('df'))
+# Frequenz der Saite = 2 * Anregefrequenz, Unsicherheiten berechnen
+for j in range(0, len(RF['df']) , 1):
+    RF.loc[j, 'Grundfrequenz'] = RF['Grundfrequenz'][j]*2
+    if(RF['Grundfrequenz'][j]<=100):
+        RF.loc[j,'df'] = (0.0001 * RF['Grundfrequenz'][j] + 0.02)
+    else:
+        RF.loc[j,'df'] = (0.0001 * RF['Grundfrequenz'][j] + 0.2)
 
-uM = u.ufloat(1,0.007)
+
+uL = unp.uarray(RF['Laenge'], RF['dL'])
+uf = unp.uarray(RF['Grundfrequenz'], RF['df'])
+
+uM = u.ufloat(1, 5 * 10**(-6))
 
 # 1 durch f bestimmen
 durchf = 1 / uf
 
 # Wert und Unsichheit in Dataset einlesen
-RF.loc('durchf')=np.array([value.nominal_value for value in durchf])
-RF.loc('deldurchf')=np.array([value.s for value in durchf])
+RF['durchf']=np.array([value.nominal_value for value in durchf])
+RF['deltadurchf']=np.array([value.s for value in durchf])
 
 # Figure und Subplots erstellen - bei denen alle Subplots die gleichen Achsen haben
 fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0,0.69999)
-ax.set_ylim(0, 105)
+ax.set_xlim(0,0.7)
+ax.set_ylim(0, 0.008)
 
 # Plot der Messwerte L und 1/f mit Errorbars 
-ax.errorbar(RF.Laenge, RF.durchf, xerr=RF.dL , yerr=RF.deldurchf, label='$\\frac{1}{f}$ in Abhängigkeit der Saitenlänge', color = 'lightblue', linestyle='None', marker='o', capsize=6)
+ax.errorbar(RF.Laenge, RF.durchf, xerr=RF.dL , yerr=RF.deltadurchf, label='$\\frac{1}{f}$ in Abhängigkeit der Saitenlänge', color = 'lightblue', linestyle='None', marker='o', capsize=6)
 
 # linearer Fit
 
@@ -41,9 +50,9 @@ def fit_function(x, A):
     return A * x
 
 #Daten
-x_data = RF.loc('Laenge')
-y_data = RF.loc('durchf')
-y_err = RF.loc('deldurchf') 
+x_data = RF['Laenge']
+y_data = RF['durchf']
+y_err = RF['deltadurchf'] 
 
 # Curve-Fit mit Unsicherheiten in y
 params, covariance = curve_fit(fit_function, x_data, y_data, sigma=y_err, absolute_sigma=True)
@@ -73,7 +82,7 @@ plt.title("$L$-$\\frac{1}{f}$-Diagramm")
 plt.savefig("FrequenzLaenge.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
 plt.savefig("FrequenzLaenge.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
 
-#plt.show() 
+plt.show() 
 
 ########################################
 
