@@ -16,18 +16,21 @@ RF = pd.read_csv('M12/GrundfrequenzSpannung.csv', header=3, sep=';')
 uL = u.ufloat(0.6, 0.0005)
 
 dM = 0.000005
-Massen = unp.uarray([0.5, 0.2, 0.5], [dM, dM, dM])
-
+Massen = unp.uarray([0.5, 0.2, 0.050], [dM, dM, dM])
+uM = []
 
 for j in range(0, len(RF['Masse']), 1):
     if RF['Masse'][j] == 1:
-        RF.loc[j,'dM'] = (Massen[0] + 2*Massen[1] + Massen[2])
+        uM.append(Massen[0] + 2*Massen[1] + 2*Massen[2])
     elif RF['Masse'][j] == 0.5:
-        RF.loc[j,'dM'] = (2*Massen[1] + Massen[2])
+        uM.append(2*Massen[1] + 2*Massen[2])
     elif RF['Masse'][j] == 0.25:
-        RF.loc[j,'dM'] = Massen[1]
+        uM.append(Massen[1]+Massen[2])
 
-uM = unp.uarray(RF['Masse'], RF['dM'])
+dM = np.array([value.s for value in uM])
+
+
+uM = unp.uarray(RF['Masse'], dM)
 
 # Massendichte mü berechnen
 umu = uM / uL 
@@ -46,9 +49,8 @@ for j in range(0, len(RF['df']) , 1):
         RF.loc[j,'df'] = (0.0001 * RF['Grundfrequenz'][j] + 0.02)
     else:
         RF.loc[j,'df'] = (0.0001 * RF['Grundfrequenz'][j] + 0.2)
-
+    
 uf = unp.uarray(RF['Grundfrequenz'], RF['df'])
-
 ufsqrd = uf**2
 
 # Wert und Unsichheit in Dataset einlesen
@@ -121,7 +123,8 @@ plt.savefig("M12/FrequenzSpannung.svg", format='svg', bbox_inches='tight', pad_i
 # mu berechnen
 mu = F_0/(ufsqrd*4*uL**2)
 
-# mu-Werte von anderem Versuch einfügen 
-mu2 = pd.Series([u.ufloat(0.000829056191283212, 1.3987964661547162*10**(-6)), u.ufloat(0.0008159870512974148, 1.386793206468753*10**(-6)), u.ufloat(0.0008058688958087634, 1.3852511348188486*10**(-6))])
-mu = pd.concat([mu2, mu], ignore_index=True)
-#print(mu)
+# mu-Werte von anderem Versuch einfügen
+mu2 = pd.read_csv('M12/mu.csv', header=0, sep=';')
+mu2 = unp.uarray(mu2['mu'], mu2['deltaMu'])
+
+mu = np.concatenate([mu2, mu], axis=0)

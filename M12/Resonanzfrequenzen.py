@@ -7,6 +7,7 @@ from scipy.optimize import curve_fit
 import uncertainties as u
 import uncertainties.umath as um
 from uncertainties import unumpy as unp
+import csv
 
 # WICHTIGE ÄNDERUNGEN ZU MACHEN: Unsicherheit L und M fixen
 # QUADRIERTE y-ACHSE - F_0-f^2-Diagramme 
@@ -15,6 +16,16 @@ from uncertainties import unumpy as unp
 
 # Rohdaten (Anregefrequenzen), aus denen die Resonanzfrequenzen berechnet werden 
 RF = pd.read_csv('M12/Resonanzfrequenzen.csv', header=2, sep=';')
+
+dM = 0.000005
+Massen = unp.uarray([0.5, 0.2, 0.050], [dM, dM, dM])
+uM = []
+uM.append(Massen[0] + 2*Massen[1] + 2*Massen[2])
+uM.append(2*Massen[1] + 2*Massen[2])
+uM.append(2*Massen[1] + 2*Massen[2])
+
+dM = np.array([value.s for value in uM])
+uM = unp.uarray([1, 0.5, 0.5], dM)
 
 # Frequenz der Saite = 2 * Anregefrequenz, Unsicherheiten berechnen
 cols = ['Reihe1', 'Reihe2', 'Reihe3']
@@ -37,9 +48,6 @@ uFrq = {'Reihe1' : unp.uarray(RF.Reihe1, RF.delta1),
        'Reihe3' : unp.uarray(RF.Reihe3, RF.delta3)}
 
 uL = u.ufloat(0.6,0.0005)
-dM = 5 * 10**(-6)
-uM = unp.uarray([1, 0.5, 0.5], [dM, dM, dM])
-
 
 
 ##################################################################
@@ -168,4 +176,12 @@ F_0 = Kerbe * uM * g + F_LH
 uA = unp.uarray([A[0], A[2], A[4]], [A[1], A[3], A[5]])
 
 mu = F_0/(4*(uL*uA)**2)
-print(mu)
+
+df = [['mu','deltaMu']]
+
+for value in mu:
+    df.append([value.nominal_value, value.s])
+
+with open('M12/mu.csv', 'w', newline='') as csvfile:
+    writer = csv.writer(csvfile, delimiter=';')
+    writer.writerows(df)

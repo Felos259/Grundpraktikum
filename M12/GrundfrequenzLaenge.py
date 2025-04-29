@@ -11,6 +11,10 @@ from uncertainties import unumpy as unp
 
 RF = pd.read_csv('M12/GrundfrequenzLaenge.csv', header=2, sep=';')
 
+dM = 0.000005
+Massen = unp.uarray([0.5, 0.2, 0.05], [dM, dM, dM])
+uM = Massen[0] + 2*Massen[1] + Massen[2] + 0.05
+
 # Frequenz der Saite = 2 * Anregefrequenz, Unsicherheiten berechnen
 for j in range(0, len(RF['df']) , 1):
     RF.loc[j, 'Grundfrequenz'] = RF['Grundfrequenz'][j]*2
@@ -22,8 +26,6 @@ for j in range(0, len(RF['df']) , 1):
 
 uL = unp.uarray(RF['Laenge'], RF['dL'])
 uf = unp.uarray(RF['Grundfrequenz'], RF['df'])
-
-uM = u.ufloat(1, 5 * 10**(-6))
 
 # 1 durch f bestimmen
 durchf = 1 / uf
