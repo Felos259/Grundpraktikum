@@ -27,8 +27,10 @@ for j in range(0, len(RF['Masse']), 1):
     elif RF['Masse'][j] == 0.25:
         uM.append(Massen[1]+Massen[2])
 
-dM = np.array([value.s for value in uM])
 
+
+dM = np.array([value.s for value in uM])
+RF['dM'] = dM
 
 uM = unp.uarray(RF['Masse'], dM)
 
@@ -46,9 +48,9 @@ F_0 = RF['Kerbe'] * uM * g + F_LH
 for j in range(0, len(RF['df']) , 1):
     RF.loc[j, 'Grundfrequenz'] = RF['Grundfrequenz'][j]*2
     if(RF['Grundfrequenz'][j]<=100):
-        RF.loc[j,'df'] = (0.0001 * RF['Grundfrequenz'][j] + 0.02)
+        RF.loc[j,'df'] =  (0.0001 * RF['Grundfrequenz'][j] + 0.02)#np.sqrt((0.0001 * RF['Grundfrequenz'][j] + 0.02)**2 + 1**2)
     else:
-        RF.loc[j,'df'] = (0.0001 * RF['Grundfrequenz'][j] + 0.2)
+        RF.loc[j,'df'] = (0.0001 * RF['Grundfrequenz'][j] + 0.2) # np.sqrt((0.0001 * RF['Grundfrequenz'][j] + 0.02)**2 + 1**2) 
     
 uf = unp.uarray(RF['Grundfrequenz'], RF['df'])
 ufsqrd = uf**2
@@ -121,10 +123,18 @@ plt.savefig("M12/FrequenzSpannung.pdf", format='pdf', bbox_inches='tight', pad_i
 ########################################
 
 # mu berechnen
-mu = F_0/(ufsqrd*4*uL**2)
+uA = u.ufloat(A_value, A_error)
+
+mu = 1/(4*uA*uL**2)
 
 # mu-Werte von anderem Versuch einfügen
 mu2 = pd.read_csv('M12/mu.csv', header=0, sep=';')
 mu2 = unp.uarray(mu2['mu'], mu2['deltaMu'])
 
-mu = np.concatenate([mu2, mu], axis=0)
+#mu = np.concatenate([mu2, mu])
+print(mu)
+print(mu2)
+
+# header = ["Masse", 'dM' , 'Kerbe', 'F_0', "deltaF_0", 'Grundfrequenz', 'df', 'fQuad', 'deltafQuad']
+
+# RF.to_csv('M12/copyReson.csv', sep='&', columns = header, index = False)

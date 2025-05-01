@@ -35,9 +35,9 @@ for i in range(0,3,1):
     for j in range(0, len(RF[cols[i]]) , 1):
         RF.loc[j, cols[i]] = RF[cols[i]][j]*2
         if(RF[cols[i]][j]<=100):
-            RF.loc[j,unsicherCols[i]] = (0.0001 * RF[cols[i]][j] + 0.02) 
+            RF.loc[j,unsicherCols[i]] = 0.0001 * RF[cols[i]][j] + 0.02 # np.sqrt((0.0001 * RF[cols[i]][j] + 0.02)**2 + 1**2)
         else:
-            RF.loc[j,unsicherCols[i]] = (0.0001 * RF[cols[i]][j] + 0.2)
+            RF.loc[j,unsicherCols[i]] = (0.0001 * RF[cols[i]][j] + 0.2) # np.sqrt((0.0001 * RF[cols[i]][j] + 0.2)**2 + 1**2)
 # Index renamen damit er bei 1 anfängt
 RF.index = np.arange(1, len(RF) + 1)
 

@@ -34,6 +34,7 @@ durchf = 1 / uf
 RF['durchf']=np.array([value.nominal_value for value in durchf])
 RF['deltadurchf']=np.array([value.s for value in durchf])
 
+# Messwerte in CSV schreiben für Einbindung in Latex
 header = ["Laenge",'Grundfrequenz', 'df', "durchf", "deltadurchf"]
 
 RF.to_csv('M12/copyReson.csv', sep='&', columns = header, index = False)
@@ -98,4 +99,7 @@ plt.show()
 ########################################
 
 # Phasengeschwindigkeiten berechnen
-uC =  uf*2.0*uL
+uA = u.ufloat(A_value, A_error)
+
+uC =  2.0/uA
+print(uC)
