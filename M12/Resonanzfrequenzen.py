@@ -35,10 +35,9 @@ for i in range(0,3,1):
     for j in range(0, len(RF[cols[i]]) , 1):
         RF.loc[j, cols[i]] = RF[cols[i]][j]*2
         if(RF[cols[i]][j]<=100):
-            RF.loc[j,unsicherCols[i]] = (0.0001 * RF[cols[i]][j] + 0.02)
+            RF.loc[j,unsicherCols[i]] = (0.0001 * RF[cols[i]][j] + 0.02) 
         else:
             RF.loc[j,unsicherCols[i]] = (0.0001 * RF[cols[i]][j] + 0.2)
-
 # Index renamen damit er bei 1 anfängt
 RF.index = np.arange(1, len(RF) + 1)
 
@@ -105,7 +104,7 @@ for i in range(0,3,1):
     # Fit-Ergebnisse ausgeben
     #print(f"A = {A_value:.6f} ± {A_error:.6f}")
     #print(f"x0 = {x0:.6f} ± {x0_error:.6f}")
-    #print(f"Chi-Quadrat/dof: {chi2/dof}")
+    print(f"Chi-Quadrat/dof: {chi2/dof}")
 
     y_ax = fit_function(x_ax, A_value)
     legends[i+3] = legends[i+3] + f"$y = A \\cdot x$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$"
@@ -169,6 +168,8 @@ F_0 = Kerbe * uM * g + F_LH
 uA = unp.uarray([A[0], A[2], A[4]], [A[1], A[3], A[5]])
 
 mu = F_0/(4*(uL*uA)**2)
+c = 2 * uA * uL
+#print(c)
 
 df = [['mu','deltaMu']]
 
