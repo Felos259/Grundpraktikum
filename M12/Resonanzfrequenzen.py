@@ -158,7 +158,7 @@ plt.title("Residuendarstellung zu den Resonanzfrequenzen in Abhängigkeit von n"
 
 plt.savefig("M12/ResiduumResonanzfrequenz.pdf", format='pdf', bbox_inches='tight', pad_inches=0.1) 
 
-plt.show() 
+#plt.show() 
 
 ########################################
 
