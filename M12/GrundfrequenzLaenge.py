@@ -19,9 +19,9 @@ uM = Massen[0] + 2*Massen[1] + Massen[2] + 0.05
 for j in range(0, len(RF['df']) , 1):
     RF.loc[j, 'Grundfrequenz'] = RF['Grundfrequenz'][j]*2
     if(RF['Grundfrequenz'][j]<=100):
-        RF.loc[j,'df'] = (0.0001 * RF['Grundfrequenz'][j] + 0.02)
+        RF.loc[j,'df'] = np.sqrt((0.0001 * RF['Grundfrequenz'][j] + 0.02)**2 + 1**2)
     else:
-        RF.loc[j,'df'] = (0.0001 * RF['Grundfrequenz'][j] + 0.2)
+        RF.loc[j,'df'] = np.sqrt((0.0001 * RF['Grundfrequenz'][j] + 0.02)**2 + 1**2) 
 
 
 uL = unp.uarray(RF['Laenge'], RF['dL'])

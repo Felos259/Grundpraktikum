@@ -48,9 +48,9 @@ F_0 = RF['Kerbe'] * uM * g + F_LH
 for j in range(0, len(RF['df']) , 1):
     RF.loc[j, 'Grundfrequenz'] = RF['Grundfrequenz'][j]*2
     if(RF['Grundfrequenz'][j]<=100):
-        RF.loc[j,'df'] =  (0.0001 * RF['Grundfrequenz'][j] + 0.02)#np.sqrt((0.0001 * RF['Grundfrequenz'][j] + 0.02)**2 + 1**2)
+        RF.loc[j,'df'] =  np.sqrt((0.0001 * RF['Grundfrequenz'][j] + 0.02)**2 + 1**2)
     else:
-        RF.loc[j,'df'] = (0.0001 * RF['Grundfrequenz'][j] + 0.2) # np.sqrt((0.0001 * RF['Grundfrequenz'][j] + 0.02)**2 + 1**2) 
+        RF.loc[j,'df'] = np.sqrt((0.0001 * RF['Grundfrequenz'][j] + 0.02)**2 + 1**2) 
     
 uf = unp.uarray(RF['Grundfrequenz'], RF['df'])
 ufsqrd = uf**2
@@ -118,7 +118,7 @@ residuen_1 = y_data - A_value*x_data
 
 fig, ax = plt.subplots()
 ax.set_xlim(-1,31)
-ax.set_ylim(-200,4000)
+ax.set_ylim(-1500,1500)
 
 plt.errorbar(x_data, residuen_1, fmt='o', label='Residuen', capsize=5, color='red')
 plt.tick_params(axis="both",direction="in",top=True,left=True,right=True,bottom=True)

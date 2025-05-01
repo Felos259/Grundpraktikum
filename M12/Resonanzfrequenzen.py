@@ -35,9 +35,9 @@ for i in range(0,3,1):
     for j in range(0, len(RF[cols[i]]) , 1):
         RF.loc[j, cols[i]] = RF[cols[i]][j]*2
         if(RF[cols[i]][j]<=100):
-            RF.loc[j,unsicherCols[i]] = 0.0001 * RF[cols[i]][j] + 0.02 # np.sqrt((0.0001 * RF[cols[i]][j] + 0.02)**2 + 1**2)
+            RF.loc[j,unsicherCols[i]] = np.sqrt((0.0001 * RF[cols[i]][j] + 0.02)**2 + 1**2)
         else:
-            RF.loc[j,unsicherCols[i]] = (0.0001 * RF[cols[i]][j] + 0.2) # np.sqrt((0.0001 * RF[cols[i]][j] + 0.2)**2 + 1**2)
+            RF.loc[j,unsicherCols[i]] = np.sqrt((0.0001 * RF[cols[i]][j] + 0.2)**2 + 1**2)
 # Index renamen damit er bei 1 anfängt
 RF.index = np.arange(1, len(RF) + 1)
 
@@ -135,7 +135,7 @@ plt.title("Resonanzfrequenzen in Abhängigkeit von n")
 plt.legend(prop={'size': 9})
 
 plt.savefig("M12/Resonanzfrequenzen.pdf", format='pdf', pad_inches=0.1) 
-plt.savefig("M12/Resonanzfrequenzen.svg", format='svg', pad_inches=0.1) 
+#plt.savefig("M12/Resonanzfrequenzen.svg", format='svg', pad_inches=0.1) 
 # funktioniert mit allen Datentypen - vorher Datei erstellen
 # 1. Zeile, um Bild zu checken, 2. für LaTex
 
@@ -144,8 +144,8 @@ residuen = [0,0,0]
 for i in range(0,3,1):
     residuen[i] = RF[cols[i]] - A[2*i]*RF.index
 fig, ax = plt.subplots()
-ax.set_xlim(0,8.5)
-ax.set_ylim(-6,13)
+ax.set_xlim(0.2,8.6)
+ax.set_ylim(-8,6)
 
 for i in range(0,3,1):
     plt.errorbar(x_data, residuen[i], fmt='o', label='Residuen', capsize=5, color=colors[i])
@@ -156,7 +156,7 @@ plt.ylabel('Residuen $(y_i - \hat{y}_i)$ in $Hz$')
 plt.legend()
 plt.title("Residuendarstellung zu den Resonanzfrequenzen in Abhängigkeit von n")
 
-plt.savefig("ResiduumResonanzfrequenz.pdf", format='pdf', bbox_inches='tight', pad_inches=0.1) 
+plt.savefig("M12/ResiduumResonanzfrequenz.pdf", format='pdf', bbox_inches='tight', pad_inches=0.1) 
 
 plt.show() 
 
