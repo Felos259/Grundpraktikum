@@ -108,9 +108,24 @@ plt.ylabel("$f^2$ in Hz$^2$")
 plt.legend()
 plt.title("$F_0$-$f^2$-Diagramm")
 
-plt.savefig("M12/FrequenzSpannungGroberFehler.pdf", format='pdf', bbox_inches='tight', pad_inches=0.1) 
+plt.savefig("M12/FrequenzSpannungOhneGroberFehler.pdf", format='pdf', bbox_inches='tight', pad_inches=0.1) 
 #plt.savefig("M12/FrequenzSpannung.svg", format='svg', bbox_inches='tight', pad_inches=0.1) 
 
+residuen_1 = y_data - A_value*x_data
+
+fig, ax = plt.subplots()
+ax.set_xlim(-1,31)
+ax.set_ylim(-500,700)
+
+plt.errorbar(x_data, residuen_1, fmt='o', label='Residuen', capsize=5, color='red')
+plt.tick_params(axis="both",direction="in",top=True,left=True,right=True,bottom=True)
+plt.axhline(0, color='black', linewidth=0.8, linestyle='--')  # Horizontale Linie bei y=0
+plt.xlabel('Zugspannung $F_0$ in N')
+plt.ylabel('Residuen $(y_i - \hat{y}_i)$ in $Hz^2$')
+plt.legend()
+plt.title("Residuendarstellung zum $F_0$-$f^2$-Diagramm")
+
+plt.savefig("M12/ResiduumFrequenzSpannungOhneGroberFehler.pdf", format='pdf', bbox_inches='tight', pad_inches=0.1)
 plt.show() 
 
 ########################################
