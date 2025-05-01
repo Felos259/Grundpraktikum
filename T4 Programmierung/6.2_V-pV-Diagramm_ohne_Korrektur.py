@@ -58,7 +58,7 @@ x0_value = params [1]
 x0_error = fit_errors[1]
 
 dof = len(RF.index)-len(params)
-chi2 = sum([(fit_function(x,A_value,x0_value)-y)*2/u*2 for x,y,u in zip(x_data,y_data,y_err)])
+chi2 = sum([((fit_function(x,A_value,x0_value)-y)**2)/(u**2) for x,y,u in zip(x_data,y_data,y_err)])
 
 # Fit-Ergebnisse ausgeben
 print(f"A = {A_value:.6f} ± {A_error:.6f}")
