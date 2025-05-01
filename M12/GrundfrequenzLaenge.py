@@ -95,7 +95,7 @@ residuen_1 = (y_data - A_value*x_data)*(10**3)
 
 fig, ax = plt.subplots()
 ax.set_xlim(0,0.7)
-ax.set_ylim(-0.02,0.04)
+ax.set_ylim(-0.02,0.05)
 
 plt.errorbar(x_data, residuen_1, fmt='o', label='Residuen', capsize=5, color='red')
 plt.tick_params(axis="both",direction="in",top=True,left=True,right=True,bottom=True)
@@ -105,7 +105,7 @@ plt.ylabel('Residuen $(y_i - \hat{y}_i)$ in ms')
 plt.legend()
 plt.title("Residuendarstellung zum $L$-$\\frac{{1}}{{f}}$-Diagramm")
 
-plt.savefig("ResiduumFrequenzLaenge.pdf", format='pdf', bbox_inches='tight', pad_inches=0.1) 
+plt.savefig("M12/ResiduumFrequenzLaenge.pdf", format='pdf', bbox_inches='tight', pad_inches=0.1) 
 
 plt.show() 
 
