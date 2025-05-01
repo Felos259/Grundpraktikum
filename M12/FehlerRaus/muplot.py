@@ -15,12 +15,15 @@ fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0,4.1)
+ax.set_xlim(0.5,4.5)
 ax.set_ylim(0.0008,0.00089)
+
 
 x_data = [1,2,3,4]
 y_data = RF['mu']
 y_err = RF['dMu'] 
+
+ax.set_xticks(x_data)
 
 # Plot der Messwerte L und 1/f mit Errorbars 
 ax.errorbar(x_data, y_data, yerr=y_err, label='Messwerte für $\\mu$', 
