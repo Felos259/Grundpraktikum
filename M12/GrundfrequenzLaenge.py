@@ -34,6 +34,11 @@ durchf = 1 / uf
 RF['durchf']=np.array([value.nominal_value for value in durchf])
 RF['deltadurchf']=np.array([value.s for value in durchf])
 
+header = ["Laenge",'Grundfrequenz', 'df', "durchf", "deltadurchf"]
+
+RF.to_csv('M12/copyReson.csv', sep='&', columns = header, index = False)
+
+
 # Figure und Subplots erstellen - bei denen alle Subplots die gleichen Achsen haben
 fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
@@ -81,8 +86,8 @@ plt.ylabel("$\\frac{1}{f}$ in s")
 plt.legend()
 plt.title("$L$-$\\frac{1}{f}$-Diagramm")
 
-plt.savefig("M12/FrequenzLaenge.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
-plt.savefig("M12/FrequenzLaenge.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
+plt.savefig("M12/FrequenzLaenge.pdf", format='pdf', bbox_inches='tight', pad_inches=0.1) 
+#plt.savefig("M12/FrequenzLaenge.svg", format='svg', bbox_inches='tight', pad_inches=0.1) 
 
 plt.show() 
 
