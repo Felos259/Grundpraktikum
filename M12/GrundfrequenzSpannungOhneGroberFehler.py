@@ -9,9 +9,8 @@ import uncertainties as u
 import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
-#WICHTIGE ÄNDERUNGEN ZU MACHEN: Unsicherheiten fixen
 
-RF = pd.read_csv('GrundfrequenzSpannungOhneGroberFehler.csv', header=3)
+RF = pd.read_csv('M12/GrundfrequenzSpannungOhneGroberFehler.csv', header=3)
 
 uL = u.ufloat(0.6, 0.0005)
 
@@ -46,9 +45,9 @@ F_0 = RF['Kerbe'] * uM * g + F_LH
 for j in range(0, len(RF['df']) , 1):
     RF.loc[j, 'Grundfrequenz'] = RF['Grundfrequenz'][j]*2
     if(RF['Grundfrequenz'][j]<=100):
-        RF.loc[j,'df'] = (0.0001 * RF['Grundfrequenz'][j] + 0.02)
+        RF.loc[j,'df'] = np.sqrt((0.0001 * RF['Grundfrequenz'][j] + 0.02)**2 + 1**2)
     else:
-        RF.loc[j,'df'] = (0.0001 * RF['Grundfrequenz'][j] + 0.2)
+        RF.loc[j,'df'] = np.sqrt((0.0001 * RF['Grundfrequenz'][j] + 0.02)**2 + 1**2) 
     
 uf = unp.uarray(RF['Grundfrequenz'], RF['df'])
 ufsqrd = uf**2
@@ -121,10 +120,25 @@ plt.show()
 ########################################
 
 # mu berechnen
-mu = F_0/(ufsqrd*4*uL**2)
+uA = u.ufloat(A_value, A_error)
+
+mu = 1/(4*uA*uL**2)
+
+arrmu = [mu] # mu in Array schreiben 
 
 # mu-Werte von anderem Versuch einfügen
-mu2 = pd.read_csv('mu.csv', header=0, sep=';')
+mu2 = pd.read_csv('M12/Resonmu.csv', header=0, sep=';')
 mu2 = unp.uarray(mu2['mu'], mu2['deltaMu'])
 
-mu = np.concatenate([mu2, mu], axis=0)
+mu = np.concatenate([mu2, arrmu])
+
+df = [['mu', 'dMu']]
+
+for value in mu:
+    df.append([value.nominal_value, value.s])
+
+import csv
+
+with open('M12/mu.csv', 'w', newline='') as csvfile:
+    writer = csv.writer(csvfile, delimiter=';')
+    writer.writerows(df)

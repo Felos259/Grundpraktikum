@@ -127,13 +127,25 @@ uA = u.ufloat(A_value, A_error)
 
 mu = 1/(4*uA*uL**2)
 
+arrmu = [mu] # mu in Array schreiben 
+
 # mu-Werte von anderem Versuch einfügen
-mu2 = pd.read_csv('M12/mu.csv', header=0, sep=';')
+mu2 = pd.read_csv('M12/Resonmu.csv', header=0, sep=';')
 mu2 = unp.uarray(mu2['mu'], mu2['deltaMu'])
 
-#mu = np.concatenate([mu2, mu])
-print(mu)
-print(mu2)
+mu = np.concatenate([mu2, arrmu])
+
+df = [['mu', 'dMu']]
+
+for value in mu:
+    df.append([value.nominal_value, value.s])
+
+import csv
+
+with open('M12/mu.csv', 'w', newline='') as csvfile:
+    writer = csv.writer(csvfile, delimiter=';')
+    writer.writerows(df)
+
 
 # header = ["Masse", 'dM' , 'Kerbe', 'F_0', "deltaF_0", 'Grundfrequenz', 'df', 'fQuad', 'deltafQuad']
 

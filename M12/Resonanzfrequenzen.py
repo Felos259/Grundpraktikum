@@ -176,6 +176,6 @@ df = [['mu','deltaMu']]
 for value in mu:
     df.append([value.nominal_value, value.s])
 
-with open('M12/mu.csv', 'w', newline='') as csvfile:
+with open('M12/Resonmu.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile, delimiter=';')
     writer.writerows(df)
