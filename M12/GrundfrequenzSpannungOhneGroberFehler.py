@@ -11,7 +11,7 @@ from uncertainties import unumpy as unp
 
 #WICHTIGE ÄNDERUNGEN ZU MACHEN: Unsicherheiten fixen
 
-RF = pd.read_csv('GrundfrequenzSpannung.csv', header=3)
+RF = pd.read_csv('GrundfrequenzSpannungOhneGroberFehler.csv', header=3)
 
 uL = u.ufloat(0.6, 0.0005)
 
