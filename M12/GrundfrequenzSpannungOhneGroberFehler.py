@@ -108,7 +108,7 @@ plt.ylabel("$f^2$ in Hz$^2$")
 plt.legend()
 plt.title("$F_0$-$f^2$-Diagramm")
 
-plt.savefig("FrequenzSpannung.pdf", format='pdf', bbox_inches='tight', pad_inches=0.1) 
+plt.savefig("M12/FrequenzSpannungGroberFehler.pdf", format='pdf', bbox_inches='tight', pad_inches=0.1) 
 #plt.savefig("M12/FrequenzSpannung.svg", format='svg', bbox_inches='tight', pad_inches=0.1) 
 
 plt.show() 
