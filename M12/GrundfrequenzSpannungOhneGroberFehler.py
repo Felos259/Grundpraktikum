@@ -70,8 +70,8 @@ fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0,20.999)
-ax.set_ylim(0,25000)
+ax.set_xlim(0,32)
+ax.set_ylim(0,27000)
 
 # Plot der Messwerte L und 1/f mit Errorbars 
 ax.errorbar(x_data, y_data, xerr=x_err , yerr=y_err, label='$f^2$ in Abhängigkeit der Zugspannung $F_0$', 
@@ -97,7 +97,7 @@ chi2 = sum([(fit_function(x,A_value)-y)*2/u*2 for x,y,u in zip(x_data,y_data,y_e
 #print(f"x0 = {x0_value:.6f} ± {x0_error:.6f}")
 #print(f"Chi-Quadrat/dof: {chi2/dof}")
 
-x_ax=np.linspace(0, 25, 1000) 
+x_ax=np.linspace(0, 32, 1000) 
 y_ax = fit_function(x_ax, A_value)
 
 # Plot zeichnen
