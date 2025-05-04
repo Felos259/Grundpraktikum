@@ -47,7 +47,7 @@ uFrq = {'Reihe1' : unp.uarray(RF.Reihe1, RF.delta1),
 
 uL = u.ufloat(0.6,0.0005)
 
-# RF.to_csv('M12/copyReson.csv', sep='&')
+RF.to_csv('M12/copyReson.csv', sep='&')
 
 ##################################################################
 
@@ -104,7 +104,7 @@ for i in range(0,3,1):
     # Fit-Ergebnisse ausgeben
     #print(f"A = {A_value:.6f} ± {A_error:.6f}")
     #print(f"x0 = {x0:.6f} ± {x0_error:.6f}")
-    print(f"Chi-Quadrat/dof: {chi2/dof}")
+    # print(f"Chi-Quadrat/dof: {chi2/dof}")
 
     y_ax = fit_function(x_ax, A_value)
     legends[i+3] = legends[i+3] + f"$y = A \\cdot x$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$"
@@ -188,7 +188,7 @@ uA = unp.uarray([A[0], A[2], A[4]], [A[1], A[3], A[5]])
 
 mu = F_0/(4*(uL*uA)**2)
 c = 2 * uA * uL
-#print(c)
+print(mu)
 
 df = [['mu','deltaMu']]
 

@@ -161,7 +161,6 @@ with open('M12/mu.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile, delimiter=';')
     writer.writerows(df)
 
+header = ["Masse", 'dM' , 'Kerbe', 'F_0', "deltaF_0", 'Grundfrequenz', 'df', 'fQuad', 'deltafQuad']
 
-# header = ["Masse", 'dM' , 'Kerbe', 'F_0', "deltaF_0", 'Grundfrequenz', 'df', 'fQuad', 'deltafQuad']
-
-# RF.to_csv('M12/copyReson.csv', sep='&', columns = header, index = False)
+RF.to_csv('M12/copyReson.csv', sep='&', columns = header, index = False)
