@@ -32,8 +32,8 @@ fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0,250)
-ax.set_ylim(0, 5)
+ax.set_xlim(0,325)
+ax.set_ylim(0, 1.5)
 
 # Plot der Messwerte V und p mit Errorbars 
 ax.errorbar(RF.volumen, RF.durchp, xerr=RF.delvolumen , yerr=RF.deldurchp, label='$1/p$ in Abhängigkeit des Volumens', color = 'lightblue', linestyle='None', marker='o', capsize=6)
@@ -64,7 +64,7 @@ print(f"A = {A_value:.6f} ± {A_error:.6f}")
 #print(f"x0 = {x0:.6f} ± {x0_error:.6f}")
 print(f"Chi-Quadrat/dof: {chi2/dof}")
 
-x_ax=np.linspace(0, 250, 1000) 
+x_ax=np.linspace(0, 330, 1000) 
 y_ax = fit_function(x_ax, A_value)
 
 # Plot zeichnen
@@ -75,12 +75,9 @@ plt.ylabel("$1/p$ in $\\text{bar}^{-1}$")
 plt.legend()
 plt.title("$V$-$\\frac{1}{p}$-Diagramm")
 
-
-# # INSET PROGRAMMIEREN :/ # #
-
 plt.savefig("1durchpVDiagramm_alt.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
-plt.savefig("1durchpVDiagramm_alt.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
+#plt.savefig("1durchpVDiagramm_alt.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
 
-# plt.show()
+plt.show()
 
 

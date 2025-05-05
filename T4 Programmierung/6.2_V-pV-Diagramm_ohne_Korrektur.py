@@ -24,15 +24,15 @@ upV = up*uv
 RF['pV']=np.array([value.nominal_value for value in upV])
 RF['delpV']=np.array([value.s for value in upV])
 
-print(upV)
+#print(upV)
 
 # Figure und Subplots erstellen - bei denen alle Subplots die gleichen Achsen haben
 fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0,250)
-ax.set_ylim(0, 150)
+ax.set_xlim(0,325)
+ax.set_ylim(0, 400)
 
 # Plot der Messwerte V und p*V mit Errorbars 
 ax.errorbar(RF.volumen, RF.pV, xerr=RF.delvolumen , yerr=RF.delpV, label='Druck in Abhängigkeit des Volumens', color = 'lightblue', linestyle='None', marker='o', capsize=6)
@@ -65,7 +65,7 @@ print(f"A = {A_value:.6f} ± {A_error:.6f}")
 print(f"x0 = {x0_value:.6f} ± {x0_error:.6f}")
 print(f"Chi-Quadrat/dof: {chi2/dof}")
 
-x_ax=np.linspace(0, 250, 1000) 
+x_ax=np.linspace(0, 1000, 1000) 
 y_ax = fit_function(x_ax, A_value,x0_value)
 
 # Plot zeichnen
@@ -79,6 +79,6 @@ plt.title("$V$-$p*V$-Diagramm")
 plt.savefig("pVDiagramm_alt.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
 plt.savefig("pVDiagramm_alt.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
 
-# plt.show()
+plt.show()
 
 

@@ -64,7 +64,7 @@ fit_errors = np.sqrt(np.diag(covariance))  # Fehler der Fit-Parameter
 A_error = fit_errors[0]
 x0_error = fit_errors[1]
 
-#print("Die Ausgleichsgerade bestimmt das Totvolumen zu ", x0_value, "plus/minus", x0_error, "$cm^3$")
+print("Die Ausgleichsgerade bestimmt das Totvolumen zu ", x0_value, "plus/minus", x0_error, "$cm^3$")
 
 dof = len(RF.index)-len(params)
 chi2 = sum([((fit_function(x,A_value,x0_value)-y)**2)/(u**2) for x,y,u in zip(x_data,y_data,y_err)])

@@ -65,7 +65,7 @@ plt.legend()
 plt.title("$T$-$p$-Diagramm")
 
 plt.savefig("T-p-Diagramm.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
-plt.savefig("T-p-Diagramm.svg", format='svg', bbox_inches='tight', pad_inches=0.5)
+#plt.savefig("T-p-Diagramm.svg", format='svg', bbox_inches='tight', pad_inches=0.5)
 
-#plt.show()
+plt.show()
 

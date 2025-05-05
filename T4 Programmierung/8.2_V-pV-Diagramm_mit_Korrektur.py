@@ -31,8 +31,8 @@ fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0,250)
-ax.set_ylim(0, 150)
+ax.set_xlim(0,400)
+ax.set_ylim(0, 400)
 
 # Plot der Messwerte V und p*V mit Errorbars 
 ax.errorbar(RF.volumen, RF.pV, xerr=RF.delvolumen , yerr=RF.delpV, label='Druck in Abhängigkeit des Volumens', color = 'lightblue', linestyle='None', marker='o', capsize=6)
@@ -65,7 +65,7 @@ print(f"A = {A_value:.6f} ± {A_error:.6f}")
 print(f"x0 = {x0_value:.6f} ± {x0_error:.6f}")
 print(f"Chi-Quadrat/dof: {chi2/dof}")
 
-x_ax=np.linspace(0, 250, 1000) 
+x_ax=np.linspace(0, 500, 1000) 
 y_ax = fit_function(x_ax, A_value,x0_value)
 
 # Plot zeichnen
@@ -83,7 +83,7 @@ print("Mittelwert von p*V:", sum(upV)/len(upV))
 
 # Es fehlt noch das Teilen durch Temperatur*R, um das korrekte Ergebnis zu bestimmen.
 
-# plt.show()
+plt.show()
 
 
 
