@@ -15,6 +15,7 @@ RG = pd.read_csv('Totvolumen.csv', header=0)
 uL = unp.uarray(RF['Laenge'], RF['dL'])
 up =unp.uarray(RF['Druck'], RF['dp'])
 uTot=unp.uarray(RG['Totvolumen'],RG['dTotvolumen'])
+print(uTot)
 
 # Volumen bestimmen
 uv = uL*(np.pi*unp.uarray([2.5],[0.005])**2)-uTot #Volumen (inkl. Unsicherheit) - berechnetes Totvolumen
@@ -72,7 +73,7 @@ y_ax = fit_function(x_ax, A_value)
 # Plot zeichnen
 plt.plot(x_ax, y_ax, label=f"Fit: $y = A \\cdot x$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$", linewidth=2, color='blue')
 
-plt.xlabel('Volumen $V$ in $cm^3$')
+plt.xlabel('Volumen $V$ (inklusive theoretischen Totvolumen) in $cm^3$')
 plt.ylabel("$1/p$ in $\\text{bar}^{-1}$")
 plt.legend()
 plt.title("$V$-$\\frac{1}{p}$-Diagramm")

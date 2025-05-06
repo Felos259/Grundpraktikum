@@ -19,7 +19,7 @@ fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0,100)
+ax.set_xlim(0,50)
 ax.set_ylim(800, 1200)
 
 # Plot der Messwerte V und p mit Errorbars 
