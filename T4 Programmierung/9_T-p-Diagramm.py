@@ -60,7 +60,7 @@ y_ax = fit_function(x_ax, A_value,x0_value)
 plt.plot(x_ax, y_ax, label=f"Fit: $y = A \\cdot (x-x_0)$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$ \n $x_0 = {x0_value:.6f} \\pm {x0_error:.6f}$", linewidth=2, color='blue')
 
 plt.xlabel('Temperatur $T$ in °C')
-plt.ylabel("Druck in mPa")
+plt.ylabel("Druck in hPa")
 plt.legend()
 plt.title("$T$-$p$-Diagramm")
 

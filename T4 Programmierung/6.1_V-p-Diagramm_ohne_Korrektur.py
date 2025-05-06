@@ -9,10 +9,11 @@ import uncertainties as u
 import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
-RF = pd.read_csv('BoyleMariotte.csv', header=4)
+RF = pd.read_csv('BoyleMariotte.csv', header=3)
 
 uL = unp.uarray(RF['Laenge'], RF['dL'])
 up =unp.uarray(RF['Druck'], RF['dp'])
+print(RF['dp'])
 
 # Volumen bestimmen
 uv = uL*(np.pi*unp.uarray([2.5],[0.005])**2)-20 #Volumen (inkl. Unsicherheit) - Totvolumen aus Anleitung
@@ -25,6 +26,8 @@ durchp = 1 / up
 # Wert und Unsichheit in Dataset einlesen
 RF['durchp']=np.array([value.nominal_value for value in durchp])
 RF['deldurchp']=np.array([value.s for value in durchp])
+
+print(RF['durchp'],RF['deldurchp'])
 
 
 # Figure und Subplots erstellen - bei denen alle Subplots die gleichen Achsen haben

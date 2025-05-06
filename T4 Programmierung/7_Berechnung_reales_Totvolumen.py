@@ -11,7 +11,7 @@ from uncertainties import unumpy as unp
 import csv #Output meine Berechnungen in eine CSV-Datei
 
 
-RF = pd.read_csv('BoyleMariotte.csv', header=4) 
+RF = pd.read_csv('BoyleMariotte.csv', header=3) 
 
 uL = unp.uarray(RF['Laenge'], RF['dL'])
 up =unp.uarray(RF['Druck'], RF['dp'])
@@ -48,7 +48,7 @@ ax.errorbar(RF.volumen, RF.durchp, xerr=RF.delvolumen , yerr=RF.deldurchp, label
 
 # Fitfunktion definieren
 def fit_function(x, A, x0):
-    return A * (x-x0)
+    return A * (x+x0)
 
 #Daten
 x_data = RF['volumen']
@@ -78,7 +78,7 @@ x_ax=np.linspace(-50, 500, 1000)
 y_ax = fit_function(x_ax, A_value,x0_value)
 
 # Plot zeichnen
-plt.plot(x_ax, y_ax, label=f"Fit: $y = A \\cdot (x-x_0)$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$ \n $x_0 = {x0_value: .6f} \\pm {x0_error: .6f}$ ", linewidth=2, color='blue')
+plt.plot(x_ax, y_ax, label=f"Fit: $y = A \\cdot (x+x_0)$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$ \n $x_0 = {x0_value: .6f} \\pm {x0_error: .6f}$ ", linewidth=2, color='blue')
 
 plt.xlabel('Volumen $V$ (ohne Annahme zum Totvolumen) in $cm^3$')
 plt.ylabel("$1/p$ in $bar^{{-1}}$")

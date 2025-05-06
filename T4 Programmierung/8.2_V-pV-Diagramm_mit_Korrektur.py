@@ -9,7 +9,7 @@ import uncertainties as u
 import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
-RF = pd.read_csv('BoyleMariotte.csv', header=4)
+RF = pd.read_csv('BoyleMariotte.csv', header=3)
 RG = pd.read_csv('Totvolumen.csv', header=0)
 
 uL = unp.uarray(RF['Laenge'], RF['dL'])
