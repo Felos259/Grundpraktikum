@@ -9,7 +9,7 @@ import uncertainties as u
 import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
-fnt = 15 # fontsize for zooming, default 10
+fnt = 25 # fontsize for zooming, default 10
 plt.rcParams['figure.figsize'] = [19.2,10.8]
 
 RF = pd.read_csv('T4 Programmierung/Jolly.csv', header=2)
@@ -26,7 +26,7 @@ ax.set_xlim(0,50)
 ax.set_ylim(0, 1200)
 
 # Plot der Messwerte V und p mit Errorbars 
-ax.errorbar(RF.Temperatur, RF.Druck, xerr=RF.dT , yerr=RF.dp, label='$p(T)$', color = '#b2dcb6', linestyle='None', marker='o', capsize=6, elinewidth =2)
+ax.errorbar(RF.Temperatur, RF.Druck, xerr=RF.dT , yerr=RF.dp, label='$p(T)$', color = '#339999', linestyle='None',  marker='o', markersize=9, capsize=6, elinewidth =2)
 
 # linearer Fit
 
@@ -67,6 +67,7 @@ plt.ylabel("Druck $p$ in hPa", fontsize=fnt)
 plt.legend(loc = 'lower right', fontsize=fnt)
 plt.title("$T$-$p$-Diagramm", fontsize=fnt)
 plt.grid()
+ax.set_facecolor("#f9f9f9")
 plt.xticks(fontsize=fnt)
 plt.yticks(fontsize=fnt)  
 

@@ -9,7 +9,7 @@ import uncertainties as u
 import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
-fnt = 15 # fontsize for zooming, default 10
+fnt = 25 # fontsize for zooming, default 10
 plt.rcParams['figure.figsize'] = [19.2,10.8]
 
 RF = pd.read_csv('T4 Programmierung/BoyleMariotte.csv', header=3)
@@ -42,7 +42,7 @@ ax.set_xlim(0,375)
 ax.set_ylim(0.000001, 1.5)
 
 # Plot der Messwerte V und p mit Errorbars 
-ax.errorbar(RF.volumen, RF.durchp, xerr=RF.delvolumen , yerr=RF.deldurchp, label='$\\frac{1}{p(V)}$', color = '#b2dcb6', linestyle='None', elinewidth =1.5, marker='o', capsize=6)
+ax.errorbar(RF.volumen, RF.durchp, xerr=RF.delvolumen , yerr=RF.deldurchp, label='$\\frac{1}{p(V)}$', color = '#339999', linestyle='None', elinewidth =1.5,  marker='o', markersize=9, capsize=6)
 
 # linearer Fit
 
@@ -80,6 +80,8 @@ plt.xlabel('Volumen $V$ (inklusive $20$ $cm^3$ Totvolumen) in cm$^3$', fontsize=
 plt.ylabel("$\\frac{1}{p}$ in $\\text{bar}^{-1}$", fontsize=fnt)
 plt.legend(loc = 'lower right', fontsize=fnt)
 plt.grid()
+ax.set_facecolor("#f9f9f9")
+
 plt.xticks(fontsize=fnt)
 plt.yticks(fontsize=fnt)  
 
@@ -90,6 +92,3 @@ plt.savefig("T4 Programmierung/1durchpVDiagramm_alt.pdf", format='pdf', bbox_inc
 #plt.savefig("T4 Programmierung/1durchpVDiagramm_alt.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
 
 # plt.show()
-
-
-

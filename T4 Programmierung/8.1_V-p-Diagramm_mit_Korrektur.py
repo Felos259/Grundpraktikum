@@ -9,7 +9,7 @@ import uncertainties as u
 import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
-fnt = 15 # fontsize for zooming, default 10
+fnt = 25 # fontsize for zooming, default 10
 plt.rcParams['figure.figsize'] = [19.2,10.8]
 
 RF = pd.read_csv('T4 Programmierung/BoyleMariotte.csv', header=3)
@@ -42,7 +42,7 @@ ax.set_xlim(-50,375)
 ax.set_ylim(-0.1,1.5)
 
 # Plot der Messwerte V und p mit Errorbars 
-ax.errorbar(RF.volumen, RF.durchp, xerr=RF.delvolumen , yerr=RF.deldurchp, label='$\\frac{1}{p(V)}$', color = '#b2dcb6', linestyle='None', marker='o', capsize=6, elinewidth = 1.5)
+ax.errorbar(RF.volumen, RF.durchp, xerr=RF.delvolumen , yerr=RF.deldurchp, label='$\\frac{1}{p(V)}$', color = '#339999', linestyle='None',  marker='o', markersize=9, capsize=6, elinewidth = 1.5)
 
 # linearer Fit
 
@@ -81,6 +81,7 @@ plt.ylabel("$\\frac{1}{p}$ in $\\text{bar}^{-1}$", fontsize=fnt)
 plt.legend(loc = 'lower right', fontsize=fnt)
 plt.axhline(0, color='black', linewidth=0.8, linestyle='--')  # Horizontale Linie bei y=0
 plt.grid()
+ax.set_facecolor("#f9f9f9")
 plt.xticks(fontsize=fnt)
 plt.yticks(fontsize=fnt)  
 

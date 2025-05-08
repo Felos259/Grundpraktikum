@@ -9,7 +9,7 @@ import uncertainties as u
 import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
-fnt = 15 # fontsize for zooming, default 10
+fnt = 25 # fontsize for zooming, default 10
 plt.rcParams['figure.figsize'] = [19.2,10.8]
 
 RF = pd.read_csv('T4 Programmierung/BoyleMariotte.csv', header=3) 
@@ -38,7 +38,7 @@ ax.set_xlim(0, 375)
 ax.set_ylim(0, 40)
 
 # Plot der Messwerte V und p*V mit Errorbars 
-ax.errorbar(RF.volumen, RF.pV, xerr=RF.delvolumen , yerr=RF.delpV, label='$V \\cdot p(V)$', color = '#b2dcb6', linestyle='None', marker='o', capsize=6, elinewidth =1.5)
+ax.errorbar(RF.volumen, RF.pV, xerr=RF.delvolumen , yerr=RF.delpV, label='$V \\cdot p(V)$', color = '#339999', linestyle='None',  marker='o', markersize=9, capsize=6, elinewidth =1.5)
 
 # linearer Fit
 
@@ -79,6 +79,7 @@ plt.ylabel("$V \\cdot p(V)$ in Joule", fontsize=fnt)
 plt.legend(loc = 'lower right', fontsize=fnt)
 plt.title("$V$-$V \\cdot p$-Diagramm", fontsize=fnt)
 plt.grid()
+ax.set_facecolor("#f9f9f9")
 plt.xticks(fontsize=fnt)
 plt.yticks(fontsize=fnt)  
 
