@@ -73,4 +73,7 @@ plt.title("Magnetfeldstärke $B$ in Abhängigkeit der Stromstärke $I$")
 plt.savefig("E12/Teil C/B-I-Diagramm.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
 plt.savefig("E12/Teil C/B-I-Diagramm.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
 
-plt.show() 
+wm = plt.get_current_fig_manager()
+wm.window.state('zoomed')
+plt.show()
+ 

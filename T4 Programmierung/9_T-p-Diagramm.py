@@ -9,7 +9,9 @@ import uncertainties as u
 import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
-RF = pd.read_csv('Jolly.csv', header=2)
+fnt = 12 # fontsize for zooming, default 10
+
+RF = pd.read_csv('T4 Programmierung/Jolly.csv', header=2)
 
 uT = unp.uarray(RF['Temperatur'], RF['dT'])
 up =unp.uarray(RF['Druck'], RF['dp'])
@@ -20,10 +22,10 @@ fig, ax = plt.subplots()
 
 # Achsen richten
 ax.set_xlim(0,50)
-ax.set_ylim(800, 1200)
+ax.set_ylim(0, 1200)
 
 # Plot der Messwerte V und p mit Errorbars 
-ax.errorbar(RF.Temperatur, RF.Druck, xerr=RF.dT , yerr=RF.dp, label='Druck in Abhängigkeit der Temperatur', color = 'lightblue', linestyle='None', marker='o', capsize=6)
+ax.errorbar(RF.Temperatur, RF.Druck, xerr=RF.dT , yerr=RF.dp, label='$p(T)$', color = '#b2dcb6', linestyle='None', marker='o', capsize=6, elinewidth =2)
 
 # linearer Fit
 
@@ -57,15 +59,19 @@ x_ax=np.linspace(0, 100, 1000)
 y_ax = fit_function(x_ax, A_value,x0_value)
 
 # Plot zeichnen
-plt.plot(x_ax, y_ax, label=f"Fit: $y = A \\cdot (x-x_0)$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$ \n $x_0 = {x0_value:.6f} \\pm {x0_error:.6f}$", linewidth=2, color='blue')
+plt.plot(x_ax, y_ax, label=f"Fit: $y = A \\cdot (x-x_0)$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$ \n $x_0 = {x0_value:.6f} \\pm {x0_error:.6f}$", linewidth=2, color='#a83e9e')
 
 plt.xlabel('Temperatur $T$ in °C')
-plt.ylabel("Druck in hPa")
-plt.legend()
+plt.ylabel("Druck $p$ in hPa")
+plt.legend(loc = 'lower right')
 plt.title("$T$-$p$-Diagramm")
+plt.grid()
+plt.savefig("T4 Programmierung/T-p-Diagramm.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
+#plt.savefig("T4 Programmierung/T-p-Diagramm.svg", format='svg', bbox_inches='tight', pad_inches=0.5)
 
-plt.savefig("T-p-Diagramm.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
-#plt.savefig("T-p-Diagramm.svg", format='svg', bbox_inches='tight', pad_inches=0.5)
+wm = plt.get_current_fig_manager()
+wm.window.state('zoomed')
 
 plt.show()
+
 

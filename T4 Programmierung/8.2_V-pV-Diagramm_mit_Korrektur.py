@@ -9,8 +9,11 @@ import uncertainties as u
 import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
-RF = pd.read_csv('BoyleMariotte.csv', header=3)
-RG = pd.read_csv('Totvolumen.csv', header=0)
+fnt = 12 # fontsize for zooming, default 10
+
+
+RF = pd.read_csv('T4 Programmierung/BoyleMariotte.csv', header=3)
+RG = pd.read_csv('T4 Programmierung/Totvolumen.csv', header=0)
 
 uL = unp.uarray(RF['Laenge'], RF['dL'])
 up =unp.uarray(RF['Druck'], RF['dp'])
@@ -32,10 +35,10 @@ fig, ax = plt.subplots()
 
 # Achsen richten
 ax.set_xlim(0,400)
-ax.set_ylim(0, 40)
+ax.set_ylim(0.001, 40)
 
 # Plot der Messwerte V und p*V mit Errorbars 
-ax.errorbar(RF.volumen, RF.pV, xerr=RF.delvolumen , yerr=RF.delpV, label='Druck in Abhängigkeit des Volumens', color = 'lightblue', linestyle='None', marker='o', capsize=6)
+ax.errorbar(RF.volumen, RF.pV, xerr=RF.delvolumen , yerr=RF.delpV, label='$p(V)$', color = '#b2dcb6', linestyle='None', marker='o', capsize=6,elinewidth =1.5)
 
 # linearer Fit
 
@@ -69,15 +72,16 @@ x_ax=np.linspace(0, 500, 1000)
 y_ax = fit_function(x_ax, A_value,x0_value)
 
 # Plot zeichnen
-plt.plot(x_ax, y_ax, label=f"Fit: $y = A \\cdot x+x_0$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$ \n $x_0 = {x0_value: .6f} \\pm {x0_error: .6f}$ ", linewidth=2, color='blue')
+plt.plot(x_ax, y_ax, label=f"Fit: $y = A \\cdot x+x_0$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$ \n $x_0 = {x0_value: .6f} \\pm {x0_error: .6f}$ ", linewidth=2, color='#a83e9e')
 
-plt.xlabel('Volumen $V$ (inklusive theoretischen Totvolumen) in $cm^3$')
-plt.ylabel("Volumen mal Druck in Joule")
-plt.legend()
-plt.title("$V$-$p*V$-Diagramm")
+plt.xlabel('Volumen $V$ (inklusive theoretischem Totvolumen) in $cm^3$')
+plt.ylabel("$V \cdot p(V)$ in Joule")
+plt.legend(loc = 'lower right')
+plt.grid()
+plt.title("$V$-$V\cdot p()V$-Diagramm")
 
-plt.savefig("pVDiagramm_korr.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
-plt.savefig("pVDiagramm_korr.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
+plt.savefig("T4 Programmierung/pVDiagramm_korr.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
+# plt.savefig("T4 Programmierung/pVDiagramm_korr.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
 
 print("Mittelwert von p*V:", sum(upV)/len(upV))
 
@@ -89,7 +93,10 @@ print("Stoffmenge: ",unp.uarray([A_value],[A_error])/(temperature*R*(100**3)))
 
 # Es fehlt noch das Teilen durch Temperatur*R, um das korrekte Ergebnis zu bestimmen.
 
+wm = plt.get_current_fig_manager()
+wm.window.state('zoomed')
 plt.show()
+
 
 
 

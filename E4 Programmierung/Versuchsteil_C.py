@@ -100,7 +100,10 @@ plt.title("$f$-$|Z_{LRC}|$-Diagramm")
 #plt.savefig("VersuchsteilC1.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
 #plt.savefig("VersuchsteilC1.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
 
-#plt.show()
+#wm = plt.get_current_fig_manager()
+wm.window.state('zoomed')
+plt.show()
+
 
 
 # 2D list of variables (tabular data with rows and columns)
@@ -171,5 +174,8 @@ plt.title("$f$-$\\varphi$-Diagramm")
 #plt.savefig("VersuchsteilC2.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
 #plt.savefig("VersuchsteilC2.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
 
+wm = plt.get_current_fig_manager()
+wm.window.state('zoomed')
 plt.show()
+
 

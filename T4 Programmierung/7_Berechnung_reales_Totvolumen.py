@@ -10,8 +10,10 @@ import uncertainties.umath as um
 from uncertainties import unumpy as unp
 import csv #Output meine Berechnungen in eine CSV-Datei
 
+fnt = 12 # fontsize for zooming, default 10
 
-RF = pd.read_csv('BoyleMariotte.csv', header=3) 
+
+RF = pd.read_csv('T4 Programmierung/BoyleMariotte.csv', header=3) 
 
 uL = unp.uarray(RF['Laenge'], RF['dL'])
 up =unp.uarray(RF['Druck'], RF['dp'])
@@ -38,11 +40,11 @@ fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(-50,350)
-ax.set_ylim(-0.1, 2.1)
+ax.set_xlim(-50,375)
+ax.set_ylim(-0.1, 1.5)
 
 # Plot der Messwerte V und p mit Errorbars 
-ax.errorbar(RF.volumen, RF.durchp, xerr=RF.delvolumen , yerr=RF.deldurchp, label='$1/p$ in Abhängigkeit des Volumens', color = 'lightblue', linestyle='None', marker='o', capsize=6)
+ax.errorbar(RF.volumen, RF.durchp, xerr=RF.delvolumen , yerr=RF.deldurchp, label='$\\frac{1}{p}$', color = '#b2dcb6', linestyle='None', marker='o', capsize=6, elinewidth =1.7)
 
 # linearer Fit
 
@@ -74,22 +76,29 @@ print(f"A = {A_value:.6f} ± {A_error:.6f}")
 print(f"x0 = {x0_value:.6f} ± {x0_error:.6f}")
 print(f"Chi-Quadrat/dof: {chi2/dof}")
 
-x_ax=np.linspace(-50, 500, 1000) 
+x_ax=np.linspace(-75, 500, 1000) 
 y_ax = fit_function(x_ax, A_value,x0_value)
 
 # Plot zeichnen
-plt.plot(x_ax, y_ax, label=f"Fit: $y = A \\cdot (x+x_0)$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$ \n $x_0 = {x0_value: .6f} \\pm {x0_error: .6f}$ ", linewidth=2, color='blue')
+plt.plot(x_ax, y_ax, label=f"Fit: $y = A \\cdot (x+x_0)$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$ \n $x_0 = {x0_value: .6f} \\pm {x0_error: .6f}$ ", linewidth=2, color='#a83e9e')
 
-plt.xlabel('Volumen $V$ (ohne Annahme zum Totvolumen) in $cm^3$')
-plt.ylabel("$1/p$ in $bar^{{-1}}$")
-plt.legend()
-plt.title("$V$-$1/p$-Diagramm")
+plt.xlabel('Volumen $V$ (ohne Annahme zum Totvolumen) in $cm^3$', fontsize = fnt)
+plt.ylabel("$\\frac{1}{p}$ in $bar^{{-1}}$", fontsize = fnt)
+plt.legend(loc = 'upper left', fontsize = fnt)
+plt.grid()
+plt.title("$V$-$\\frac{1}{p}$-Diagramm", fontsize = fnt)
+plt.xticks(fontsize=fnt)
+plt.yticks(fontsize=fnt)  
+
 
 plt.axhline(0, color='black', linewidth=0.8, linestyle='--')  # Horizontale Linie bei y=0
 
-plt.savefig("Berechnung_Totvolumen.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
-#plt.savefig("Berechnung_Totvolumen.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
+plt.savefig("T4 Programmierung/Berechnung_Totvolumen.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
+#plt.savefig("T4 Programmierung/Berechnung_Totvolumen.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
+wm = plt.get_current_fig_manager()
+wm.window.state('zoomed')
 plt.show()
+
  
 # 2D list of variables (tabular data with rows and columns)
 input_variable = [["Totvolumen","dTotvolumen"],[x0_value,x0_error]]
@@ -98,11 +107,3 @@ input_variable = [["Totvolumen","dTotvolumen"],[x0_value,x0_error]]
 with open ('Totvolumen.csv','w',newline = '') as csvfile:
     my_writer = csv.writer(csvfile, delimiter = ',')
     my_writer.writerows(input_variable)
-
-
-
-
-
-
-
-

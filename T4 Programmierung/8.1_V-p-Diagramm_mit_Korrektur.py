@@ -9,8 +9,10 @@ import uncertainties as u
 import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
-RF = pd.read_csv('BoyleMariotte.csv', header=3)
-RG = pd.read_csv('Totvolumen.csv', header=0)
+fnt = 12 # fontsize for zooming, default 10
+
+RF = pd.read_csv('T4 Programmierung/BoyleMariotte.csv', header=3)
+RG = pd.read_csv('T4 Programmierung/Totvolumen.csv', header=0)
 
 uL = unp.uarray(RF['Laenge'], RF['dL'])
 up =unp.uarray(RF['Druck'], RF['dp'])
@@ -35,11 +37,11 @@ fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0,375)
-ax.set_ylim(0,1.5)
+ax.set_xlim(-50,375)
+ax.set_ylim(-0.1,1.5)
 
 # Plot der Messwerte V und p mit Errorbars 
-ax.errorbar(RF.volumen, RF.durchp, xerr=RF.delvolumen , yerr=RF.deldurchp, label='$1/p$ in Abhängigkeit des Volumens', color = 'lightblue', linestyle='None', marker='o', capsize=6)
+ax.errorbar(RF.volumen, RF.durchp, xerr=RF.delvolumen , yerr=RF.deldurchp, label='$\\frac{1}{p(V)}$', color = '#b2dcb6', linestyle='None', marker='o', capsize=6, elinewidth = 1.5)
 
 # linearer Fit
 
@@ -67,20 +69,25 @@ print(f"A = {A_value:.6f} ± {A_error:.6f}")
 #print(f"x0 = {x0:.6f} ± {x0_error:.6f}")
 print(f"Chi-Quadrat/dof: {chi2/dof}")
 
-x_ax=np.linspace(0, 1000, 1000) 
+x_ax=np.linspace(-100, 1000, 1000) 
 y_ax = fit_function(x_ax, A_value)
 
 # Plot zeichnen
-plt.plot(x_ax, y_ax, label=f"Fit: $y = A \\cdot x$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$", linewidth=2, color='blue')
+plt.plot(x_ax, y_ax, label=f"Fit: $y = A \\cdot x$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$", linewidth=2, color='#a83e9e')
 
-plt.xlabel('Volumen $V$ (inklusive theoretischen Totvolumen) in $cm^3$')
-plt.ylabel("$1/p$ in $\\text{bar}^{-1}$")
-plt.legend()
+plt.xlabel('Volumen $V$ (inklusive theoretischem Totvolumen) in $cm^3$')
+plt.ylabel("$\\frac{1}{p(V)}$ in $\\text{bar}^{-1}$")
+plt.legend(loc = 'upper left')
+plt.axhline(0, color='black', linewidth=0.8, linestyle='--')  # Horizontale Linie bei y=0
+plt.grid()
 plt.title("$V$-$\\frac{1}{p}$-Diagramm")
 
-plt.savefig("1durchpVDiagramm_korr.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
-#plt.savefig("1durchpVDiagramm_korr.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
+plt.savefig("T4 Programmierung/1durchpVDiagramm_korr.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
+#plt.savefig("T4 Programmierung/1durchpVDiagramm_korr.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
 
+wm = plt.get_current_fig_manager()
+wm.window.state('zoomed')
 plt.show()
+
 
 

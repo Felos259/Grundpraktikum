@@ -107,7 +107,10 @@ print("Die Induktivität der Spule beträgt",unp.sqrt(unp.uarray([np.sqrt(A_valu
 #plt.savefig("VersuchsteilB.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
 #plt.savefig("VersuchsteilB.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
 
+wm = plt.get_current_fig_manager()
+wm.window.state('zoomed')
 plt.show()
+
 
 # 2D list of variables (tabular data with rows and columns)
 input_variable = [["Frequenz","df","Z_LR2","dZ_LR2"],[x_data,x_err,y_data,y_err]]
