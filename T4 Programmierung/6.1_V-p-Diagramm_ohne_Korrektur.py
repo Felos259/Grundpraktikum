@@ -76,7 +76,7 @@ y_ax = fit_function(x_ax, A_value)
 # Plot zeichnen
 plt.plot(x_ax, y_ax, label=f"Fit: $y = A \\cdot x$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$", linewidth=2, color='#a83e9e')
 
-plt.xlabel('Volumen $V$ (inklusive $20$ $cm^3$ Totvolumen) in $cm^3$', fontsize=fnt)
+plt.xlabel('Volumen $V$ (inklusive $20$ $cm^3$ Totvolumen) in cm$^3$', fontsize=fnt)
 plt.ylabel("$\\frac{1}{p}$ in $\\text{bar}^{-1}$", fontsize=fnt)
 plt.legend(loc = 'lower right', fontsize=fnt)
 plt.grid()
@@ -84,15 +84,12 @@ plt.xticks(fontsize=fnt)
 plt.yticks(fontsize=fnt)  
 
 plt.title("$V$-$\\frac{1}{p}$-Diagramm", fontsize=fnt)
-plt.xticks(fontsize=fnt)
-plt.yticks(fontsize=fnt)  
 
 
 plt.savefig("T4 Programmierung/1durchpVDiagramm_alt.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
 #plt.savefig("T4 Programmierung/1durchpVDiagramm_alt.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
 
-
-plt.show()
+# plt.show()
 
 
 

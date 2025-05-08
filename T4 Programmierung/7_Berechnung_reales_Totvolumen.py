@@ -82,9 +82,9 @@ y_ax = fit_function(x_ax, A_value,x0_value)
 # Plot zeichnen
 plt.plot(x_ax, y_ax, label=f"Fit: $y = A \\cdot (x+x_0)$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$ \n $x_0 = {x0_value: .6f} \\pm {x0_error: .6f}$ ", linewidth=2, color='#a83e9e')
 
-plt.xlabel('Volumen $V$ (ohne Annahme zum Totvolumen) in $cm^3$', fontsize = fnt)
-plt.ylabel("$\\frac{1}{p}$ in $bar^{{-1}}$", fontsize = fnt)
-plt.legend(loc = 'upper left', fontsize = fnt)
+plt.xlabel('Volumen $V$ (ohne Annahme zum Totvolumen) in cm$^3$', fontsize = fnt)
+plt.ylabel("$\\frac{1}{p}$ in bar$^{{-1}}$", fontsize = fnt)
+plt.legend(loc = 'lower right', fontsize = fnt)
 
 plt.title("$V$-$\\frac{1}{p}$-Diagramm", fontsize = fnt)
 plt.grid()
@@ -96,13 +96,13 @@ plt.axhline(0, color='black', linewidth=0.8, linestyle='--')  # Horizontale Lini
 #plt.savefig("T4 Programmierung/Berechnung_Totvolumen.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
 
 plt.savefig("T4 Programmierung/Berechnung_Totvolumen.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5, dpi=2000) 
-plt.show()
+# plt.show()
 
 
 # 2D list of variables (tabular data with rows and columns)
 input_variable = [["Totvolumen","dTotvolumen"],[x0_value,x0_error]]
  
 # Example.csv gets created in the current working directory
-with open ('Totvolumen.csv','w',newline = '') as csvfile:
+with open ('T4 Programmierung/Totvolumen.csv','w',newline = '') as csvfile:
     my_writer = csv.writer(csvfile, delimiter = ',')
     my_writer.writerows(input_variable)

@@ -73,8 +73,4 @@ plt.yticks(fontsize=fnt)
 plt.savefig("T4 Programmierung/T-p-Diagramm.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
 #plt.savefig("T4 Programmierung/T-p-Diagramm.svg", format='svg', bbox_inches='tight', pad_inches=0.5)
 
-
-
-plt.show()
-
-
+# plt.show()

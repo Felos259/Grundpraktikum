@@ -75,14 +75,14 @@ y_ax = fit_function(x_ax, A_value,x0_value)
 # Plot zeichnen
 plt.plot(x_ax, y_ax, label=f"Fit: $y = A \\cdot x+x_0$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$ \n $x_0 = {x0_value: .6f} \\pm {x0_error: .6f}$ ", linewidth=2, color='#a83e9e')
 
-plt.xlabel('Volumen $V$ (inklusive theoretischem Totvolumen) in $cm^3$', fontsize=fnt)
+plt.xlabel('Volumen $V$ (inklusive theoretischem Totvolumen) in cm$^3$', fontsize=fnt)
 plt.ylabel("$V \cdot p(V)$ in Joule", fontsize=fnt)
 plt.legend(loc = 'lower right', fontsize=fnt)
 plt.grid()
 plt.xticks(fontsize=fnt)
 plt.yticks(fontsize=fnt)  
 
-plt.title("$V$-$V\cdot p()V$-Diagramm", fontsize=fnt)
+plt.title("$V$-$V\cdot p$-Diagramm", fontsize=fnt)
 
 plt.savefig("T4 Programmierung/pVDiagramm_korr.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
 # plt.savefig("T4 Programmierung/pVDiagramm_korr.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
@@ -98,7 +98,7 @@ print("Stoffmenge: ",unp.uarray([A_value],[A_error])/(temperature*R*(100**3)))
 # Es fehlt noch das Teilen durch Temperatur*R, um das korrekte Ergebnis zu bestimmen.
 
 
-plt.show()
+# plt.show()
 
 
 
