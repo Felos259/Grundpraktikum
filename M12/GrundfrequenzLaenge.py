@@ -107,8 +107,7 @@ plt.title("Residuendarstellung zum $L$-$\\frac{{1}}{{f}}$-Diagramm")
 
 plt.savefig("M12/ResiduumFrequenzLaenge.pdf", format='pdf', bbox_inches='tight', pad_inches=0.1) 
 
-wm = plt.get_current_fig_manager()
-wm.window.state('zoomed')
+
 plt.show()
  
 

@@ -10,6 +10,7 @@ import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
 fnt = 15 # fontsize for zooming, default 10
+plt.rcParams['figure.figsize'] = [19.2,10.8]
 
 RF = pd.read_csv('T4 Programmierung/BoyleMariotte.csv', header=3)
 RG = pd.read_csv('T4 Programmierung/Totvolumen.csv', header=0)
@@ -88,8 +89,7 @@ plt.title("$V$-$\\frac{1}{p}$-Diagramm", fontsize=fnt)
 plt.savefig("T4 Programmierung/1durchpVDiagramm_korr.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
 #plt.savefig("T4 Programmierung/1durchpVDiagramm_korr.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
 
-wm = plt.get_current_fig_manager()
-wm.window.state('zoomed')
+
 plt.show()
 
 

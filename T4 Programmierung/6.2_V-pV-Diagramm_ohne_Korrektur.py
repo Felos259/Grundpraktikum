@@ -10,6 +10,7 @@ import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
 fnt = 15 # fontsize for zooming, default 10
+plt.rcParams['figure.figsize'] = [19.2,10.8]
 
 RF = pd.read_csv('T4 Programmierung/BoyleMariotte.csv', header=3) 
 
@@ -82,8 +83,7 @@ plt.xticks(fontsize=fnt)
 plt.yticks(fontsize=fnt)  
 
 plt.savefig("T4 Programmierung/pVDiagramm_alt.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
-wm = plt.get_current_fig_manager()
-wm.window.state('zoomed')
+
 plt.show()
 
 

@@ -107,8 +107,7 @@ print("Die Induktivität der Spule beträgt",unp.sqrt(unp.uarray([np.sqrt(A_valu
 #plt.savefig("VersuchsteilB.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
 #plt.savefig("VersuchsteilB.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
 
-wm = plt.get_current_fig_manager()
-wm.window.state('zoomed')
+
 plt.show()
 
 

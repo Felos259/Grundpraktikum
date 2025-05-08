@@ -126,8 +126,7 @@ plt.legend()
 plt.title("Residuendarstellung zum $F_0$-$f^2$-Diagramm")
 
 plt.savefig("M12/FehlerRaus/ResiduumFrequenzSpannungOhneGroberFehler.pdf", format='pdf', bbox_inches='tight', pad_inches=0.1)
-wm = plt.get_current_fig_manager()
-wm.window.state('zoomed')
+
 plt.show()
  
 

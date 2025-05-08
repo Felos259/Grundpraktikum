@@ -31,6 +31,5 @@ plt.ylabel('$\\mu_n$ in $\\frac{kg}{m}$')
 plt.legend()
 plt.title("$\\mu$-Diagramm")
 
-wm = plt.get_current_fig_manager()
-wm.window.state('zoomed')
+
 plt.show()

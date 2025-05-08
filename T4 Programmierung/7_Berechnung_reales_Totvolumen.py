@@ -11,7 +11,7 @@ from uncertainties import unumpy as unp
 import csv #Output meine Berechnungen in eine CSV-Datei
 
 fnt = 15 # fontsize for zooming, default 10
-
+plt.rcParams['figure.figsize'] = [19.2,10.8]
 
 RF = pd.read_csv('T4 Programmierung/BoyleMariotte.csv', header=3) 
 
@@ -91,17 +91,14 @@ plt.grid()
 plt.xticks(fontsize=fnt)
 plt.yticks(fontsize=fnt)  
 
-
-
 plt.axhline(0, color='black', linewidth=0.8, linestyle='--')  # Horizontale Linie bei y=0
 
-plt.savefig("T4 Programmierung/Berechnung_Totvolumen.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
 #plt.savefig("T4 Programmierung/Berechnung_Totvolumen.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
-wm = plt.get_current_fig_manager()
-wm.window.state('zoomed')
+
+plt.savefig("T4 Programmierung/Berechnung_Totvolumen.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5, dpi=2000) 
 plt.show()
 
- 
+
 # 2D list of variables (tabular data with rows and columns)
 input_variable = [["Totvolumen","dTotvolumen"],[x0_value,x0_error]]
  

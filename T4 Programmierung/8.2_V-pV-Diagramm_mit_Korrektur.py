@@ -10,6 +10,7 @@ import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
 fnt = 15 # fontsize for zooming, default 10
+plt.rcParams['figure.figsize'] = [19.2,10.8]
 
 
 RF = pd.read_csv('T4 Programmierung/BoyleMariotte.csv', header=3)
@@ -96,8 +97,7 @@ print("Stoffmenge: ",unp.uarray([A_value],[A_error])/(temperature*R*(100**3)))
 
 # Es fehlt noch das Teilen durch Temperatur*R, um das korrekte Ergebnis zu bestimmen.
 
-wm = plt.get_current_fig_manager()
-wm.window.state('zoomed')
+
 plt.show()
 
 
