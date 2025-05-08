@@ -9,7 +9,7 @@ import uncertainties as u
 import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
-RF = pd.read_csv('BoyleMariotte.csv', header=4)
+RF = pd.read_csv('BoyleMariotte.csv', header=3)
 RG = pd.read_csv('Totvolumen.csv', header=0)
 
 uL = unp.uarray(RF['Laenge'], RF['dL'])
@@ -21,18 +21,18 @@ uv = uL*(np.pi*unp.uarray([2.5],[0.005])**2)-uTot #Volumen (inkl. Unsicherheit) 
 RF['volumen']=np.array([value.nominal_value for value in uv])
 RF['delvolumen']=np.array([value.s for value in uv])
 
-# Berechnung von p*V
+# Berechnung von p*V in Joule
 upV = up*uv
-RF['pV']=np.array([value.nominal_value for value in upV])
-RF['delpV']=np.array([value.s for value in upV])
+RF['pV']=np.array([value.nominal_value for value in upV])/10
+RF['delpV']=np.array([value.s for value in upV])/10
 
 # Figure und Subplots erstellen - bei denen alle Subplots die gleichen Achsen haben
 fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0,250)
-ax.set_ylim(0, 150)
+ax.set_xlim(0,400)
+ax.set_ylim(0, 40)
 
 # Plot der Messwerte V und p*V mit Errorbars 
 ax.errorbar(RF.volumen, RF.pV, xerr=RF.delvolumen , yerr=RF.delpV, label='Druck in Abhängigkeit des Volumens', color = 'lightblue', linestyle='None', marker='o', capsize=6)
@@ -65,14 +65,14 @@ print(f"A = {A_value:.6f} ± {A_error:.6f}")
 print(f"x0 = {x0_value:.6f} ± {x0_error:.6f}")
 print(f"Chi-Quadrat/dof: {chi2/dof}")
 
-x_ax=np.linspace(0, 250, 1000) 
+x_ax=np.linspace(0, 500, 1000) 
 y_ax = fit_function(x_ax, A_value,x0_value)
 
 # Plot zeichnen
 plt.plot(x_ax, y_ax, label=f"Fit: $y = A \\cdot x+x_0$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$ \n $x_0 = {x0_value: .6f} \\pm {x0_error: .6f}$ ", linewidth=2, color='blue')
 
-plt.xlabel('Volumen $V$ in $cm^3$')
-plt.ylabel("Volumen mal Druck in $bar*cm^3$")
+plt.xlabel('Volumen $V$ (inklusive theoretischen Totvolumen) in $cm^3$')
+plt.ylabel("Volumen mal Druck in Joule")
 plt.legend()
 plt.title("$V$-$p*V$-Diagramm")
 
@@ -81,9 +81,15 @@ plt.savefig("pVDiagramm_korr.svg", format='svg', bbox_inches='tight', pad_inches
 
 print("Mittelwert von p*V:", sum(upV)/len(upV))
 
+# Berechnung der verwendeten Stoffmenge
+temperature = unp.uarray([23.8+273.15],[0.3])
+R = 8.31446261815324
+print("Stoffmenge: ",unp.uarray([A_value],[A_error])/(temperature*R*(100**3)))
+
+
 # Es fehlt noch das Teilen durch Temperatur*R, um das korrekte Ergebnis zu bestimmen.
 
-# plt.show()
+plt.show()
 
 
 

@@ -9,10 +9,11 @@ import uncertainties as u
 import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
-RF = pd.read_csv('BoyleMariotte.csv', header=4)
+RF = pd.read_csv('BoyleMariotte.csv', header=3)
 
 uL = unp.uarray(RF['Laenge'], RF['dL'])
 up =unp.uarray(RF['Druck'], RF['dp'])
+print(RF['dp'])
 
 # Volumen bestimmen
 uv = uL*(np.pi*unp.uarray([2.5],[0.005])**2)-20 #Volumen (inkl. Unsicherheit) - Totvolumen aus Anleitung
@@ -26,14 +27,16 @@ durchp = 1 / up
 RF['durchp']=np.array([value.nominal_value for value in durchp])
 RF['deldurchp']=np.array([value.s for value in durchp])
 
+print(RF['durchp'],RF['deldurchp'])
+
 
 # Figure und Subplots erstellen - bei denen alle Subplots die gleichen Achsen haben
 fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0,250)
-ax.set_ylim(0, 5)
+ax.set_xlim(0,325)
+ax.set_ylim(0, 1.5)
 
 # Plot der Messwerte V und p mit Errorbars 
 ax.errorbar(RF.volumen, RF.durchp, xerr=RF.delvolumen , yerr=RF.deldurchp, label='$1/p$ in Abhängigkeit des Volumens', color = 'lightblue', linestyle='None', marker='o', capsize=6)
@@ -64,23 +67,20 @@ print(f"A = {A_value:.6f} ± {A_error:.6f}")
 #print(f"x0 = {x0:.6f} ± {x0_error:.6f}")
 print(f"Chi-Quadrat/dof: {chi2/dof}")
 
-x_ax=np.linspace(0, 250, 1000) 
+x_ax=np.linspace(0, 330, 1000) 
 y_ax = fit_function(x_ax, A_value)
 
 # Plot zeichnen
 plt.plot(x_ax, y_ax, label=f"Fit: $y = A \\cdot x$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$", linewidth=2, color='blue')
 
-plt.xlabel('Volumen $V$ in $cm^3$')
+plt.xlabel('Volumen $V$ (inklusive $20$ $cm^3$ Totvolumen) in $cm^3$')
 plt.ylabel("$1/p$ in $\\text{bar}^{-1}$")
 plt.legend()
 plt.title("$V$-$\\frac{1}{p}$-Diagramm")
 
-
-# # INSET PROGRAMMIEREN :/ # #
-
 plt.savefig("1durchpVDiagramm_alt.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
-plt.savefig("1durchpVDiagramm_alt.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
+#plt.savefig("1durchpVDiagramm_alt.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
 
-# plt.show()
+plt.show()
 
 
