@@ -9,7 +9,7 @@ import uncertainties as u
 import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
-fnt = 12 # fontsize for zooming, default 10
+fnt = 15 # fontsize for zooming, default 10
 
 RF = pd.read_csv('T4 Programmierung/Jolly.csv', header=2)
 
@@ -61,11 +61,14 @@ y_ax = fit_function(x_ax, A_value,x0_value)
 # Plot zeichnen
 plt.plot(x_ax, y_ax, label=f"Fit: $y = A \\cdot (x-x_0)$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$ \n $x_0 = {x0_value:.6f} \\pm {x0_error:.6f}$", linewidth=2, color='#a83e9e')
 
-plt.xlabel('Temperatur $T$ in °C')
-plt.ylabel("Druck $p$ in hPa")
-plt.legend(loc = 'lower right')
-plt.title("$T$-$p$-Diagramm")
+plt.xlabel('Temperatur $T$ in °C', fontsize=fnt)
+plt.ylabel("Druck $p$ in hPa", fontsize=fnt)
+plt.legend(loc = 'lower right', fontsize=fnt)
+plt.title("$T$-$p$-Diagramm", fontsize=fnt)
 plt.grid()
+plt.xticks(fontsize=fnt)
+plt.yticks(fontsize=fnt)  
+
 plt.savefig("T4 Programmierung/T-p-Diagramm.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
 #plt.savefig("T4 Programmierung/T-p-Diagramm.svg", format='svg', bbox_inches='tight', pad_inches=0.5)
 

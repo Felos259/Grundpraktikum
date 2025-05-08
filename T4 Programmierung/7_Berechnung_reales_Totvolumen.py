@@ -10,7 +10,7 @@ import uncertainties.umath as um
 from uncertainties import unumpy as unp
 import csv #Output meine Berechnungen in eine CSV-Datei
 
-fnt = 12 # fontsize for zooming, default 10
+fnt = 15 # fontsize for zooming, default 10
 
 
 RF = pd.read_csv('T4 Programmierung/BoyleMariotte.csv', header=3) 
@@ -85,10 +85,12 @@ plt.plot(x_ax, y_ax, label=f"Fit: $y = A \\cdot (x+x_0)$ \n $A = {A_value:.6f} \
 plt.xlabel('Volumen $V$ (ohne Annahme zum Totvolumen) in $cm^3$', fontsize = fnt)
 plt.ylabel("$\\frac{1}{p}$ in $bar^{{-1}}$", fontsize = fnt)
 plt.legend(loc = 'upper left', fontsize = fnt)
-plt.grid()
+
 plt.title("$V$-$\\frac{1}{p}$-Diagramm", fontsize = fnt)
+plt.grid()
 plt.xticks(fontsize=fnt)
 plt.yticks(fontsize=fnt)  
+
 
 
 plt.axhline(0, color='black', linewidth=0.8, linestyle='--')  # Horizontale Linie bei y=0

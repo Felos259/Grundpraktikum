@@ -9,7 +9,7 @@ import uncertainties as u
 import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
-fnt = 12 # fontsize for zooming, default 10
+fnt = 15 # fontsize for zooming, default 10
 
 RF = pd.read_csv('T4 Programmierung/BoyleMariotte.csv', header=3)
 
@@ -79,6 +79,9 @@ plt.xlabel('Volumen $V$ (inklusive $20$ $cm^3$ Totvolumen) in $cm^3$', fontsize=
 plt.ylabel("$\\frac{1}{p}$ in $\\text{bar}^{-1}$", fontsize=fnt)
 plt.legend(loc = 'lower right', fontsize=fnt)
 plt.grid()
+plt.xticks(fontsize=fnt)
+plt.yticks(fontsize=fnt)  
+
 plt.title("$V$-$\\frac{1}{p}$-Diagramm", fontsize=fnt)
 plt.xticks(fontsize=fnt)
 plt.yticks(fontsize=fnt)  

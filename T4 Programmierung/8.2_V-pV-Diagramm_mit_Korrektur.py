@@ -9,7 +9,7 @@ import uncertainties as u
 import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
-fnt = 12 # fontsize for zooming, default 10
+fnt = 15 # fontsize for zooming, default 10
 
 
 RF = pd.read_csv('T4 Programmierung/BoyleMariotte.csv', header=3)
@@ -74,11 +74,14 @@ y_ax = fit_function(x_ax, A_value,x0_value)
 # Plot zeichnen
 plt.plot(x_ax, y_ax, label=f"Fit: $y = A \\cdot x+x_0$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$ \n $x_0 = {x0_value: .6f} \\pm {x0_error: .6f}$ ", linewidth=2, color='#a83e9e')
 
-plt.xlabel('Volumen $V$ (inklusive theoretischem Totvolumen) in $cm^3$')
-plt.ylabel("$V \cdot p(V)$ in Joule")
-plt.legend(loc = 'lower right')
+plt.xlabel('Volumen $V$ (inklusive theoretischem Totvolumen) in $cm^3$', fontsize=fnt)
+plt.ylabel("$V \cdot p(V)$ in Joule", fontsize=fnt)
+plt.legend(loc = 'lower right', fontsize=fnt)
 plt.grid()
-plt.title("$V$-$V\cdot p()V$-Diagramm")
+plt.xticks(fontsize=fnt)
+plt.yticks(fontsize=fnt)  
+
+plt.title("$V$-$V\cdot p()V$-Diagramm", fontsize=fnt)
 
 plt.savefig("T4 Programmierung/pVDiagramm_korr.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
 # plt.savefig("T4 Programmierung/pVDiagramm_korr.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
