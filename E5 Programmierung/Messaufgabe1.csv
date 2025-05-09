@@ -1,0 +1,5 @@
+﻿Alle Messreihen beschreiben die Messung der zeitlichen Mittelwerte U der Gleichspannung als Funktion des Laststromes I für Ein- und Zweiweggleichrichtung (1Weg bzw. 2Weg) mit und ohne Kondensator (mitC bzw. ohneC),,,,,,,
+in A,in V,,,,,,
+I_1Weg_ohneC,U_1Weg_ohneC,I_1Weg_mitC,U_1Weg_mitC,I_2Weg_ohneC,U_2Weg_ohneC,I_2Weg_mitC,U_2Weg_mitC
+1,2,10,2,1,20,10,10
+2,1,2,10,20,1,10,10

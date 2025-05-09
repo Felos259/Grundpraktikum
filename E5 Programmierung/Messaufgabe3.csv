@@ -1,0 +1,3 @@
+Namensstruktur: Spannungsmessung_EinwegOderZweiweggleichrichtung_MitOderOhneKondensator_Gleichspannungsdrehspulmessinstrument(GDSM)OderWechselspannungdrehspulmessinstrument(WDSM),,,,,,,,,
+,,,,,,,,,
+U_1Weg_ohneC_GDSM,U_1Weg_ohneC_WDSM,U_1Weg_mitC_GDSM,U_1Weg_mitC_WDSM,U_2Weg_ohneC_GDSM,U_2Weg_ohneC_GDSM,U_2Weg_mitC_GDSM,U_2Weg_mitC_WDSM,Quellspannung_vor_Trafo,Quellspannung_nach_Trafo
