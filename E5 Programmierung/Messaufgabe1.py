@@ -67,8 +67,8 @@ ax.errorbar(RF.I_2Weg_mitC, RF.U_2Weg_mitC, xerr=RF.uI2mC , yerr=RF.uV2mC, label
 
 #To-Do: Gemäß theoretischen Ergebnis überarbeiten!
 # Fitfunktion definieren
-def fit_function(x, A):
-    return A * x
+def fit_function(x, A, x0):
+    return A * x + x0
 
 
 # Curve-Fit mit für EINWEG ohne Kondensator
@@ -76,31 +76,41 @@ params_1, covariance_1 = curve_fit(fit_function, x_data_1, y_data_1, sigma=y_err
 fit_errors_1 = np.sqrt(np.diag(covariance_1))  # Fehler der Fit-Parameter
 A_1_value = params_1[0]
 A_1_error = fit_errors_1[0]
+x0_1_value = params_1[1]
+x0_1_error = fit_errors_1[1]
 #Chi^2/dof berechnen
 dof_1 = len(RF.index)-len(params_1)
-chi2_1 = sum([((fit_function(x,A_1_value)-y)**2)/(u**2) for x,y,u in zip(x_data_1,y_data_1,y_err_1)])
+chi2_1 = sum([((fit_function(x,A_1_value,x0_1_value)-y)**2)/(u**2) for x,y,u in zip(x_data_1,y_data_1,y_err_1)])
 # Fit-Ergebnisse ausgeben
-print(f"1-Weg ohne Kondensator: A = {A_1_value:.6f} ± {A_1_error:.6f}")
+print(f"1-Weg ohne Kondensator: A = {A_1_value:.6f} ± {A_1_error:.6f} (Innenwiderstand EWG)")
+print(f"1-Weg ohne Kondensator: x0 = {x0_1_value:.6f} ± {x0_1_error:.6f} (Leerlaufspannung EWG)")
+I0_1=-unp.uarray([x0_1_value],[x0_1_error])/(unp.uarray([A_1_value],[A_1_error]))
+print("Kurzschlussstrom EWG: ", I0_1)
 print(f"1-Weg ohne Kondensator: Chi-Quadrat/dof: {chi2_1/dof_1}")
 # Fit-Ergebnisse plotten
 x_ax_1=np.linspace(0, 100, 1000) 
-y_ax_1 = fit_function(x_ax_1, A_1_value)
-plt.plot(x_ax_1, y_ax_1, label=f"Fit: $y = A \\cdot x$ \n $A = {A_1_value:.6f} \\pm {A_1_error:.6f}$", linewidth=2, color='blue')
+y_ax_1 = fit_function(x_ax_1, A_1_value,x0_1_value)
+plt.plot(x_ax_1, y_ax_1, label=f"EWG-Fit: $y = A \\cdot x+x_0$ \n $A = {A_1_value:.6f} \\pm {A_1_error:.6f}$ \n $x_0 = {x0_1_value:.6f} \\pm {x0_1_error:.6f}$", linewidth=2, color='blue')
 
-# Curve-Fit mit für EINWEG ohne Kondensator
+# Curve-Fit mit für ZWEIWEG ohne Kondensator
 params_3, covariance_3 = curve_fit(fit_function, x_data_3, y_data_3, sigma=y_err_3, absolute_sigma=True)
 fit_errors_3 = np.sqrt(np.diag(covariance_3))  # Fehler der Fit-Parameter
 A_3_value = params_3[0]
 A_3_error = fit_errors_3[0]
+x0_3_value = params_3[1]
+x0_3_error = fit_errors_3[1]
 #Chi^2/dof berechnen
 dof_3 = len(RF.index)-len(params_3)
-chi2_3 = sum([((fit_function(x,A_3_value)-y)**2)/(u**2) for x,y,u in zip(x_data_3,y_data_3,y_err_3)])
+chi2_3 = sum([((fit_function(x,A_3_value,x0_3_error)-y)**2)/(u**2) for x,y,u in zip(x_data_3,y_data_3,y_err_3)])
 # Fit-Ergebnisse ausgeben
-print(f"2-Weg ohne Kondensator: A = {A_3_value:.6f} ± {A_3_error:.6f}")
+print(f"2-Weg ohne Kondensator: A = {A_3_value:.6f} ± {A_3_error:.6f} (Innenwiderstand ZWG)")
+print(f"2-Weg ohne Kondensator: x0 = {x0_3_value:.6f} ± {x0_3_error:.6f} (Leerlaufspannung ZWG)")
+I0_1=-unp.uarray([x0_3_value],[x0_3_error])/(unp.uarray([A_3_value],[A_3_error]))
+print("Kurzschlussstrom EWG: ", I0_1)
 print(f"2-Weg ohne Kondensator: Chi-Quadrat/dof: {chi2_3/dof_3}")
 x_ax_3=np.linspace(0, 100, 1000) 
-y_ax_3 = fit_function(x_ax_3, A_3_value)
-plt.plot(x_ax_3, y_ax_3, label=f"Fit: $y = A \\cdot x$ \n $A = {A_3_value:.6f} \\pm {A_3_error:.6f}$", linewidth=2, color='green')
+y_ax_3 = fit_function(x_ax_3, A_3_value,x0_3_value)
+plt.plot(x_ax_3, y_ax_3, label=f"ZWG-Fit: $y = A \\cdot x+x_0$ \n $A = {A_3_value:.6f} \\pm {A_3_error:.6f}$ \n $x_0 = {x0_3_value:.6f} \\pm {x0_3_error:.6f}$", linewidth=2, color='green')
 
 # Plot zeichnen
 plt.xlabel('Laststrom $I$ in A')
@@ -108,10 +118,7 @@ plt.ylabel("Zeitlicher Mittelwert der Gleichspannungen $U$ in V")
 plt.legend()
 plt.title("Zeitliche Mittelwerte der Gleichspannungen in Abhängigkeit des Laststroms")
 
-#plt.savefig("Messreihe1.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5)
+plt.savefig("Messreihe1.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5)
 
 plt.show()
-
-#To-Do: Innenwiderstand, Kurzschlussstrom, Leerlaufspannung berechnen
-
 
