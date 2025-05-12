@@ -9,16 +9,20 @@ import uncertainties as u
 import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
+
+fnt = 20 # fontsize for zooming, default 10
+plt.rcParams['figure.figsize'] = [19.2,10.8]
+
 # Unscicherheiten anpassen k, uU_A, Kondensator - Einheiten aquf SI bringen
 
 mu_0 = 4*np.pi*10**(-7)
 N = 320
 R = 0.068
 
-k = u.ufloat(mu_0 *N/(2*R)*(4/5)**(3/2),0)
+k = mu_0 *N/(2*R)*(4/5)**(3/2)
 
 # irgendein Kondensatorplattenabstand in cm, weil Ablenkung auch in cm
-ud = u.ufloat(3.7,0) 
+ud = u.ufloat(0.015,0.004) 
 
 ################################
 
@@ -27,14 +31,14 @@ fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0, 7)
+ax.set_xlim(0, 1)
 ax.set_ylim(0, 200)
 
 # Datenträger, damit man subplots ansprechen kann - für hübsche Legende
 # Labels und Farben für Achsen speichern 
-label = {'E12/Teil B/3kV.csv' : ['$U_A=3$kV', 'Fit zu $U_A=3$kV', 'red', 'orange'],
-         'E12/Teil B/4kV.csv' : ['$U_A=4$kV', 'Fit zu $U_A=4$kV', 'blue', 'purple'],
-         'E12/Teil B/5kV.csv' : ['$U_A=5$kV', 'Fit zu $U_A=5$kV', 'yellow', 'green']}
+label = {'E12/Teil B/3kV.csv' : ['$U_A=3$kV', 'Fit zu $U_A=3$kV', 'red', 'coral'],
+         'E12/Teil B/4kV.csv' : ['$U_A=4$kV', 'Fit zu $U_A=4$kV', 'blue', 'lightblue'],
+         'E12/Teil B/5kV.csv' : ['$U_A=5$kV', 'Fit zu $U_A=5$kV', 'green', 'limegreen']}
 
 # Abspeichern der Fit-Wert für Berechnungen von e/m
 uA = []
@@ -43,22 +47,26 @@ for column_name, column in label.items():
     
     RF = pd.read_csv(column_name, header=0, sep=';')
 
-    ue = unp.uarray(RF['e'], RF['de'])
+    #I in SI-Einheit bringen und Unsicherheit berechnen 
+    for j in range(0,len(RF['I']),1):
+        RF.loc[j, 'I'] = RF['I'][j] * 10**-3
+        RF.loc[j, 'dI'] =0.012 * RF['I'][j] + 0.00005 
+
+
+    uU_k = unp.uarray(RF['Uk'], RF['dUk'])
     uI = unp.uarray(RF['I'], RF['dI'])
-    uU_A = unp.uarray(3000, 10) # Anodenspannung
-    KL = u.ufloat(8, 0.05) # Kantenlänge Schirm
+
+    uU_A = unp.uarray([3000, 4000, 5000], [100, 100, 100]) # Anodenspannungen
+    KL = u.ufloat(0.08, 0.0005) # Kantenlänge Schirm
 
     #aus den Messwerten Magnetfeldstärke berechnen
     #uB = k*uI
 
-    #aus den Messwerten und der Magnetfeldstärke r(B) berechnen
-    ur = (KL**2+ue**2)/(np.sqrt(2) * (KL-ue))
-
     #Daten
     x_data = np.array([value.nominal_value for value in uI])
     x_err = np.array([value.s for value in uI])
-    y_data = np.array([value.nominal_value for value in ur])
-    y_err = np.array([value.s for value in ur])
+    y_data = np.array([value.nominal_value for value in uU_k])
+    y_err = np.array([value.s for value in uU_k])
 
     #Messwerte plotten
     ax.errorbar(x_data, y_data, xerr=x_err, yerr=y_err, label=column[0], color=column[2], linestyle='None', marker='o', capsize=6)
@@ -91,14 +99,15 @@ for column_name, column in label.items():
     # Plot zeichnen
     plt.plot(x_ax, y_ax, label=column[1], linewidth=2, color=column[3])
 
-plt.xlabel('Stromstärke $I$ in A')
-plt.ylabel('Radius $r$ in cm')
-plt.legend() #Legende printen
-plt.title("Radius $r$ in Abhängigkeit der Stromstärke $I$")
+plt.xlabel('Stromstärke $I$ in A',fontsize=fnt)
+plt.ylabel('Radius $r$ in cm', fontsize=fnt)
+plt.legend(fontsize=fnt) #Legende printen
+plt.title("Radius $r$ in Abhängigkeit der Stromstärke $I$", fontsize=fnt)
+
+plt.xticks(fontsize=fnt)
+plt.yticks(fontsize=fnt)
 
 plt.savefig("E12/Teil B/r-I-Diagramm.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
-plt.savefig("E12/Teil B/r-I-Diagramm.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
-
 
 plt.show()
  
