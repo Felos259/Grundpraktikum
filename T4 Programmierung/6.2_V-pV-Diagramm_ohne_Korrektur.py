@@ -85,7 +85,7 @@ plt.yticks(fontsize=fnt)
 
 plt.savefig("T4 Programmierung/pVDiagramm_alt.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
 
-plt.show()
+# plt.show()
 
 
 header = ["volumen", 'delvolumen' , 'pV', 'delpV']
