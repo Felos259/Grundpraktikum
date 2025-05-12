@@ -34,8 +34,8 @@ ax.set_ylim(0, 1)
 
 # Datenträger, damit man subplots ansprechen kann - für hübsche Legende
 # Labels und Farben für Achsen speichern 
-label = {'E12/Teil A/3kV.csv' : ['$U_A=3$kV', 'Fit zu $U_A=3$kV', 'coral', 'red'],
-         'E12/Teil A/4kV.csv' : ['$U_A=4$kV', 'Fit zu $U_A=4$kV', 'lightblue' ,'blue'],
+label = {'E12/Teil A/3kV.csv' : ['$U_A=3$kV', 'Fit zu $U_A=3$kV', 'lightblue' ,'blue'],
+         'E12/Teil A/4kV.csv' : ['$U_A=4$kV', 'Fit zu $U_A=4$kV', 'coral', 'red'],
          'E12/Teil A/5kV.csv' : ['$U_A=5$kV', 'Fit zu $U_A=5$kV', 'limegreen', 'green']}
 
 # Abspeichern der FIT-Wert für Berechnungen von e/m
@@ -72,7 +72,7 @@ for column_name, column in label.items():
     y_err = np.array([value.s for value in ur])
 
     #Messwerte plotten
-    ax.errorbar(x_data, y_data, xerr=x_err, yerr=y_err, label=column[0], color=column[2], linestyle='None', marker='o', capsize=6)
+    ax.errorbar(x_data, y_data, xerr=x_err, yerr=y_err, label=column[0], color=column[2], linestyle='None', marker='o', capsize=8, markersize=8, elinewidth=1.5)
 
     # linearer Fit
     # Fitfunktion definieren
