@@ -31,8 +31,8 @@ fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0, 1)
-ax.set_ylim(0, 200)
+ax.set_xlim(0, 0.01)
+ax.set_ylim(0, 700)
 
 # Datenträger, damit man subplots ansprechen kann - für hübsche Legende
 # Labels und Farben für Achsen speichern 
@@ -50,7 +50,7 @@ for column_name, column in label.items():
     #I in SI-Einheit bringen und Unsicherheit berechnen 
     for j in range(0,len(RF['I']),1):
         RF.loc[j, 'I'] = RF['I'][j] * 10**-3
-        RF.loc[j, 'dI'] =0.012 * RF['I'][j] + 0.00005 
+        RF.loc[j, 'dI'] = 0.012 * RF['I'][j] + 0.00005 
 
 
     uU_k = unp.uarray(RF['Uk'], RF['dUk'])
@@ -61,7 +61,6 @@ for column_name, column in label.items():
 
     #aus den Messwerten Magnetfeldstärke berechnen
     #uB = k*uI
-
     #Daten
     x_data = np.array([value.nominal_value for value in uI])
     x_err = np.array([value.s for value in uI])
@@ -93,14 +92,14 @@ for column_name, column in label.items():
     x_ax = np.linspace(0, 10, 1000) 
     y_ax = fit_function(x_ax, A_value)
 
-    column[2] = column[2] + f"$y = A \\cdot x$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$"
+    column[1] = column[1] + f"$y = A \\cdot x$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$"
     uA.append(u.ufloat(A_value, A_error))
     
     # Plot zeichnen
     plt.plot(x_ax, y_ax, label=column[1], linewidth=2, color=column[3])
 
 plt.xlabel('Stromstärke $I$ in A',fontsize=fnt)
-plt.ylabel('Radius $r$ in cm', fontsize=fnt)
+plt.ylabel('Kompensationsspannung $U_k$ in V', fontsize=fnt)
 plt.legend(fontsize=fnt) #Legende printen
 plt.title("Radius $r$ in Abhängigkeit der Stromstärke $I$", fontsize=fnt)
 
@@ -112,14 +111,13 @@ plt.savefig("E12/Teil B/r-I-Diagramm.pdf", format='pdf', bbox_inches='tight', pa
 plt.show()
  
 
-
 # uA zu schönerem Datentyp machen
 uA = unp.uarray([value.nominal_value for value in uA],
                 [value.s for value in uA]) 
 
 # e/m berechnen
 ue_m = ((uA/(ud*k)**2))/(2*uU_A) 
-
+print(ue_m)
 # v berechnen
 uv = unp.sqrt(2* ue_m + uU_A)
-print(uv)
+
