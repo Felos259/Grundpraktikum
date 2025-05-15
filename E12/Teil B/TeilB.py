@@ -59,7 +59,6 @@ for column_name, column in label.items():
     for j in range(0,len(RF['I']),1):
         RF.loc[j, 'I']  = RF['I'][j] * 10**-1
         RF.loc[j, 'dI'] = np.sqrt(( 0.012 * RF['I'][j] + 0.005)**2 + UnsicherheitenI[column_name]**2)
-        # RF.loc[j, 'dUk'] = 5
 
     uU_k = unp.uarray(RF['Uk'], RF['dUk'])
     uI = unp.uarray(RF['I'], RF['dI'])
