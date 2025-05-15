@@ -22,7 +22,11 @@ R = 0.068
 k = mu_0 *N/(2*R)*(4/5)**(3/2)
 
 # irgendein Kondensatorplattenabstand in cm, weil Ablenkung auch in cm
-ud = u.ufloat(0.015,0.004) 
+r = u.ufloat(0.007, 0.002)
+ud = unp.sqrt(2 * r**2)
+print(ud)
+
+# u.ufloat(0.01,0.004) 
 
 ################################
 
@@ -31,14 +35,18 @@ fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0, 0.01)
+ax.set_xlim(0, 1)
 ax.set_ylim(0, 700)
 
 # Datenträger, damit man subplots ansprechen kann - für hübsche Legende
 # Labels und Farben für Achsen speichern 
-label = {'E12/Teil B/3kV.csv' : ['$U_A=3$kV', 'Fit zu $U_A=3$kV', 'lightblue' ,'blue'],
-         'E12/Teil B/4kV.csv' : ['$U_A=4$kV', 'Fit zu $U_A=4$kV', 'coral', 'red'],
-         'E12/Teil B/5kV.csv' : ['$U_A=5$kV', 'Fit zu $U_A=5$kV', 'limegreen', 'green']}
+label = {'E12/Teil B/3kV.csv' : ['$U_A=3$kV', 'Fit zu $U_A=3$kV: ', 'lightblue' ,'blue'],
+         'E12/Teil B/4kV.csv' : ['$U_A=4$kV', 'Fit zu $U_A=4$kV: ', 'coral', 'red'],
+         'E12/Teil B/5kV.csv' : ['$U_A=5$kV', 'Fit zu $U_A=5$kV: ', 'limegreen', 'green']}
+
+UnsicherheitenI = {'E12/Teil B/3kV.csv' : 0.007, 
+                   'E12/Teil B/4kV.csv' : 0.009, 
+                   'E12/Teil B/5kV.csv' : 0.01}
 
 # Abspeichern der Fit-Wert für Berechnungen von e/m
 uA = []
@@ -50,7 +58,8 @@ for column_name, column in label.items():
     #I in SI-Einheit bringen und Unsicherheit berechnen 
     for j in range(0,len(RF['I']),1):
         RF.loc[j, 'I']  = RF['I'][j] * 10**-1
-        RF.loc[j, 'dI'] = 0.012 * RF['I'][j] + 0.00005
+        RF.loc[j, 'dI'] = np.sqrt(( 0.012 * RF['I'][j] + 0.005)**2 + UnsicherheitenI[column_name]**2)
+        # RF.loc[j, 'dUk'] = 5
 
     uU_k = unp.uarray(RF['Uk'], RF['dUk'])
     uI = unp.uarray(RF['I'], RF['dI'])
@@ -100,7 +109,7 @@ for column_name, column in label.items():
 plt.xlabel('Stromstärke $I$ in A',fontsize=fnt)
 plt.ylabel('Kompensationsspannung $U_k$ in V', fontsize=fnt)
 plt.legend(fontsize=fnt) #Legende printen
-plt.title("Radius $r$ in Abhängigkeit der Stromstärke $I$", fontsize=fnt)
+plt.title("Spannung $U_k$ in Abhängigkeit der Stromstärke $I$", fontsize=fnt)
 
 plt.xticks(fontsize=fnt)
 plt.yticks(fontsize=fnt)
@@ -109,13 +118,13 @@ plt.savefig("E12/Teil B/r-I-Diagramm.pdf", format='pdf', bbox_inches='tight', pa
 
 plt.show()
  
-
 # uA zu schönerem Datentyp machen
 uA = unp.uarray([value.nominal_value for value in uA],
                 [value.s for value in uA]) 
 
 # e/m berechnen
-ue_m = uA**2/(2*uU_A*(ud*k)**2)
+
+ue_m = ((uA/(k*ud))**2)/(2*uU_A)
 print(ue_m*10**-11)
 # v berechnen
 uv = unp.sqrt(2* ue_m + uU_A)

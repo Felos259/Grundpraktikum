@@ -34,9 +34,9 @@ ax.set_ylim(0, 1)
 
 # Datenträger, damit man subplots ansprechen kann - für hübsche Legende
 # Labels und Farben für Achsen speichern 
-label = {'E12/Teil A/3kV.csv' : ['$U_A=3$kV', 'Fit zu $U_A=3$kV', 'lightblue' ,'blue'],
-         'E12/Teil A/4kV.csv' : ['$U_A=4$kV', 'Fit zu $U_A=4$kV', 'coral', 'red'],
-         'E12/Teil A/5kV.csv' : ['$U_A=5$kV', 'Fit zu $U_A=5$kV', 'limegreen', 'green']}
+label = {'E12/Teil A/3kV.csv' : ['$U_A=3$kV', 'Fit zu $U_A=3$kV', 'lightblue' ,'blue', 'E12/Teil A/3kVCOPY.csv'],
+         'E12/Teil A/4kV.csv' : ['$U_A=4$kV', 'Fit zu $U_A=4$kV', 'coral', 'red', 'E12/Teil A/4kVCOPY.csv'],
+         'E12/Teil A/5kV.csv' : ['$U_A=5$kV', 'Fit zu $U_A=5$kV', 'limegreen', 'green', 'E12/Teil A/5kVCOPY.csv']}
 
 # Abspeichern der FIT-Wert für Berechnungen von e/m
 uA = [] 
@@ -48,22 +48,37 @@ for column_name, column in label.items():
     for j in range(0, len(RF['dI']) , 1):
         # Einheiten in SI umwandeln
         RF.loc[j, 'I']  = RF['I'][j] * 10**-1
-        RF.loc[j, 'e']  = 0.08 - (RF['e'][j] * 10**-3) # e ist Schirmlänge Minus gemessener Wert, haben eigentlich g gemessen
-        RF.loc[j, 'de'] = RF['de'][j] * 10**-3
+        RF.loc[j, 'g']  = RF['g'][j] * 10**-3
+        RF.loc[j, 'dg'] = RF['dg'][j] * 10**-3
+        
         # Unsicherheiten in I Berechnen
-        RF.loc[j, 'dI'] = 0.012 * RF['I'][j] + 0.00005
+        RF.loc[j, 'dI'] = 0.012 * RF['I'][j] + 0.005
 
+    ug = unp.uarray(RF['g'], RF['dg'])
 
-    ue = unp.uarray(RF['e'], RF['de'])
+    ue = 0.08 - ug # e ist Schirmlänge Minus gemessener Wert, haben eigentlich g gemessen
+    RF['e'] = np.array([value.nominal_value for value in ue])
+    RF['de'] = np.array([value.s for value in ue])
+
     uI = unp.uarray(RF['I'], RF['dI'])
     KL = u.ufloat(0.08, 0.0005) # Kantenlänge Schirm
     # 1/I für antiproportionalen Zusammenhang berechnen
+    
     UdurchI = 1/uI
+    RF['durchI'] = np.array([value.nominal_value for value in UdurchI])
+    RF['DelDurchI'] = np.array([value.s for value in UdurchI])
     #aus den Messwerten Magnetfeldstärke berechnen
     #uB = k*uI
 
     #aus den Messwerten r(I) berechnen
     ur = (KL**2+ue**2)/(np.sqrt(2)*(KL-ue))
+
+    RF['r'] = np.array([value.nominal_value for value in ur])
+    RF['dr'] = np.array([value.s for value in ur])
+
+    header = ["I", 'dI' , 'durchI', 'DelDurchI', 'g', 'dg', "e", 'de', 'r', 'dr']
+
+    RF.to_csv(column[4], sep='&', columns = header, index = False)
 
     #Daten
     x_data = np.array([value.nominal_value for value in UdurchI])

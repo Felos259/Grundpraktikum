@@ -19,13 +19,11 @@ R = 0.068
 k = mu_0 *N/(2*R)*(4/5)**(3/2)
 
 RF = pd.read_csv('E12/Teil C/BFeldHomogen.csv', header=0, sep=';')
-print(RF)
+
 
 for j in range(0,len(RF['I']),1):
     RF.loc[j, 'dI'] = 0.015 * RF['I'][j] + 0.005
-    RF.loc[j, 'B'] = RF['B'][j] * 10**-3
-    RF.loc[j, 'dB'] = RF['dB'][j] * 10**-3
-print(RF)
+    
 
 uB = unp.uarray(RF['B'], RF['dB'])
 uI = unp.uarray(RF['I'], RF['dI'])
@@ -44,7 +42,7 @@ fig, ax = plt.subplots()
 
 # Achsen richten
 ax.set_xlim(0, 1.25)
-ax.set_ylim(0, 0.0025)
+ax.set_ylim(0, 2.75)
 
 # Plot der Messwerte L und 1/f mit Errorbars 
 ax.errorbar( x_data, y_data, xerr=x_err, yerr=y_err, label='$B(I)$', color = 'lightblue', linestyle='None', marker='o', capsize=8, markersize=9, elinewidth=1.5)
@@ -75,7 +73,7 @@ y_ax = fit_function(x_ax, A_value)
 plt.plot(x_ax, y_ax, label=f"Fit: $y = A \\cdot x$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$", linewidth=2, color='blue')
 
 plt.xlabel('Stromstärke $I$ in A', fontsize=fnt)
-plt.ylabel('Magnetfeldstärke $B$ in T', fontsize=fnt)
+plt.ylabel('Magnetfeldstärke $B$ in mT', fontsize=fnt)
 plt.legend(fontsize=fnt) #Legende printen
 plt.title("Magnetfeldstärke $B$ in Abhängigkeit der Stromstärke $I$", fontsize=fnt)
 
