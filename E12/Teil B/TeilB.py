@@ -49,9 +49,8 @@ for column_name, column in label.items():
 
     #I in SI-Einheit bringen und Unsicherheit berechnen 
     for j in range(0,len(RF['I']),1):
-        RF.loc[j, 'I'] = RF['I'][j] * 10**-3
-        RF.loc[j, 'dI'] = 0.012 * RF['I'][j] + 0.00005 
-
+        RF.loc[j, 'I']  = RF['I'][j] * 10**-1
+        RF.loc[j, 'dI'] = 0.012 * RF['I'][j] + 0.00005
 
     uU_k = unp.uarray(RF['Uk'], RF['dUk'])
     uI = unp.uarray(RF['I'], RF['dI'])
@@ -116,8 +115,8 @@ uA = unp.uarray([value.nominal_value for value in uA],
                 [value.s for value in uA]) 
 
 # e/m berechnen
-ue_m = ((uA/(ud*k)**2))/(2*uU_A) 
-print(ue_m)
+ue_m = uA**2/(2*uU_A*(ud*k)**2)
+print(ue_m*10**-11)
 # v berechnen
 uv = unp.sqrt(2* ue_m + uU_A)
 

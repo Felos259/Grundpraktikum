@@ -29,7 +29,7 @@ fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0, 1000)
+ax.set_xlim(0, 7)
 ax.set_ylim(0, 1)
 
 # Datenträger, damit man subplots ansprechen kann - für hübsche Legende
@@ -41,18 +41,18 @@ label = {'E12/Teil A/3kV.csv' : ['$U_A=3$kV', 'Fit zu $U_A=3$kV', 'lightblue' ,'
 # Abspeichern der FIT-Wert für Berechnungen von e/m
 uA = [] 
 
-
 for column_name, column in label.items():
-    
+
     RF = pd.read_csv(column_name, header=0, sep=';')
-    
+
     for j in range(0, len(RF['dI']) , 1):
         # Einheiten in SI umwandeln
-        RF.loc[j, 'I'] = RF['I'][j] * 10**-3
-        RF.loc[j, 'e'] = 0.08 - (RF['e'][j] / 1000) # e ist Schirmlänge Minus gemessener Wert, haben eigentlich g gemessen
-        RF.loc[j, 'de'] = RF['de'][j] / 1000
+        RF.loc[j, 'I']  = RF['I'][j] * 10**-1
+        RF.loc[j, 'e']  = 0.08 - (RF['e'][j] * 10**-3) # e ist Schirmlänge Minus gemessener Wert, haben eigentlich g gemessen
+        RF.loc[j, 'de'] = RF['de'][j] * 10**-3
         # Unsicherheiten in I Berechnen
-        RF.loc[j,'dI'] = 0.012 * RF['I'][j] + 0.00005
+        RF.loc[j, 'dI'] = 0.012 * RF['I'][j] + 0.00005
+
 
     ue = unp.uarray(RF['e'], RF['de'])
     uI = unp.uarray(RF['I'], RF['dI'])
@@ -63,7 +63,7 @@ for column_name, column in label.items():
     #uB = k*uI
 
     #aus den Messwerten r(I) berechnen
-    ur = (KL**2+ue**2)/(np.sqrt(2) * (KL-ue))
+    ur = (KL**2+ue**2)/(np.sqrt(2)*(KL-ue))
 
     #Daten
     x_data = np.array([value.nominal_value for value in UdurchI])
@@ -121,5 +121,5 @@ uA = unp.uarray([value.nominal_value for value in uA],
                 [value.s for value in uA]) 
 
 # e/m berechnen
-ue_m = 2 * uU_A / ((uA * k)**2)
-print(ue_m)
+ue_m = 2*uU_A / (k * uA)**2
+print(ue_m * 10**-11)
