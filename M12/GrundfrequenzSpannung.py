@@ -166,3 +166,4 @@ with open('M12/mu.csv', 'w', newline='') as csvfile:
 header = ["Masse", 'dM' , 'Kerbe', 'F_0', "deltaF_0", 'Grundfrequenz', 'df', 'fQuad', 'deltafQuad']
 
 RF.to_csv('M12/copyReson.csv', sep='&', columns = header, index = False)
+print(type(RF))
