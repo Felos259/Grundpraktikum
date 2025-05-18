@@ -24,12 +24,10 @@ k = mu_0 *N/(2*R)*(4/5)**(3/2)
 # irgendein Kondensatorplattenabstand in cm, weil Ablenkung auch in cm
 r = u.ufloat(0.007, 0.002)
 ud = unp.sqrt(2 * r**2)
-print(ud)
 
 # u.ufloat(0.01,0.004) 
 
 ################################
-
 
 fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
@@ -40,9 +38,9 @@ ax.set_ylim(0, 700)
 
 # Datenträger, damit man subplots ansprechen kann - für hübsche Legende
 # Labels und Farben für Achsen speichern 
-label = {'E12/Teil B/3kV.csv' : ['$U_A=3$kV', 'Fit zu $U_A=3$kV: ', 'lightblue' ,'blue'],
-         'E12/Teil B/4kV.csv' : ['$U_A=4$kV', 'Fit zu $U_A=4$kV: ', 'coral', 'red'],
-         'E12/Teil B/5kV.csv' : ['$U_A=5$kV', 'Fit zu $U_A=5$kV: ', 'limegreen', 'green']}
+label = {'E12/Teil B/3kV.csv' : ['$U_A=3$kV', 'Fit zu $U_A=3$kV: ', 'lightblue' ,'blue', 'E12/Teil B/3kVCOPY.csv'],
+         'E12/Teil B/4kV.csv' : ['$U_A=4$kV', 'Fit zu $U_A=4$kV: ', 'coral', 'red', 'E12/Teil B/4kVCOPY.csv'] ,
+         'E12/Teil B/5kV.csv' : ['$U_A=5$kV', 'Fit zu $U_A=5$kV: ', 'limegreen', 'green', 'E12/Teil B/5kVCOPY.csv']}
 
 UnsicherheitenI = {'E12/Teil B/3kV.csv' : 0.007, 
                    'E12/Teil B/4kV.csv' : 0.009, 
@@ -65,6 +63,12 @@ for column_name, column in label.items():
 
     uU_A = unp.uarray([3000, 4000, 5000], [100, 100, 100]) # Anodenspannungen
     KL = u.ufloat(0.08, 0.0005) # Kantenlänge Schirm
+
+    
+    header = ["I", 'dI' , 'Uk', 'dUk']
+
+    RF.to_csv(column[4], sep='&', columns = header, index = False)
+
 
     #aus den Messwerten Magnetfeldstärke berechnen
     #uB = k*uI
@@ -115,7 +119,7 @@ plt.yticks(fontsize=fnt)
 
 plt.savefig("E12/Teil B/r-I-Diagramm.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
 
-plt.show()
+# plt.show()
  
 # uA zu schönerem Datentyp machen
 uA = unp.uarray([value.nominal_value for value in uA],
@@ -124,7 +128,12 @@ uA = unp.uarray([value.nominal_value for value in uA],
 # e/m berechnen
 
 ue_m = ((uA/(k*ud))**2)/(2*uU_A)
-print(ue_m*10**-11)
 # v berechnen
-uv = unp.sqrt(2* ue_m + uU_A)
+uv = unp.sqrt(2* ue_m * uU_A)
 
+
+c = 299792458
+um = u.ufloat(9.1093837139 * 10**-31, 0.0000000028 * 10**-31)
+
+gamma = (1 /(unp.sqrt(1-(uv/c)**2)))
+print(gamma)
