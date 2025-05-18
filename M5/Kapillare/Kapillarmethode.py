@@ -32,6 +32,7 @@ colors = [['mediumblue', 'cornflowerblue'],
           ['chocolate', 'darkorange']]
 
 dmean = unp.uarray([0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0])
+dstandab = [0.0, 0.0, 0.0, 0.0]
 hmean = unp.uarray([0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0])
 
 fig, ax = plt.subplots()
@@ -43,8 +44,12 @@ ax.set_ylim(-50, 50)
 
 # Plot mit den gemessenen Steighöhen (Index-h-Diagramm)
 for i in range(0,4,1):
-    # Durchmesser der Kapillare berechenen
+    # Mittelwert des Durchmessers der Kapillare berechenen
     dmean[i] = np.mean(unp.uarray(Durchmesser['d'+str(i+1)], dd))
+    # Standardabweichung Mittelwert
+    dstandab[i] = np.std(Durchmesser['d'+str(i+1)],ddof=1)
+    # Unsicherheit von d anpassen: Mischung aus Größtfehler, systematihscer Messunsicherheit und statistischer Messunsicherheit
+    dmean[i].s = np.sqrt(dd**2 + (dstandab[i]/np.sqrt(len(Durchmesser)))**2 )
 
     # Steighöhe der Kapillare einlesen
     Steigh = pd.read_csv('M5/Kapillare/Steighohe'+str(i+1)+'.csv',  header=0, sep=';')
@@ -66,6 +71,7 @@ for i in range(0,4,1):
     # Horizontale Linie bei y=Mittelwert h
     plt.axhline(hmean[i].n, color=colors[i][0], linewidth=0.8, linestyle='--')  
 
+print(dstandab)
 
 plt.xlabel('n',fontsize=fnt)
 plt.ylabel('Steighöhe $h$ in m', fontsize=fnt)
