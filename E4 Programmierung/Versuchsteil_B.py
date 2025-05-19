@@ -39,7 +39,7 @@ ax.set_xlim(0,250)
 ax.set_ylim(0, 25)
 
 # Plot der Messwerte V und p mit Errorbars 
-ax.errorbar(RF.Frequenz, RF.Z_RL2, xerr=RF.df , yerr=RF.dZ_RL2, label='$|Z_{RL}|^2$ in Abhängigkeit der Frequanz', color = 'lightblue', linestyle='None', marker='o', capsize=6)
+ax.errorbar(RF.Frequenz, RF.Z_RL2, xerr=RF.df , yerr=RF.dZ_RL2, label='$|Z_{RL}|^2$ in Abhängigkeit der Frequenz', color = 'lightblue', linestyle='None', marker='o', capsize=6)
 
 # linearer Fit
 
