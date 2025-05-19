@@ -17,17 +17,13 @@ uf = unp.uarray(RF['Frequenz'], RF['df'])
 uuch1 = unp.uarray(RF['U_Ch1'], RF['dU_Ch1'])
 uuch2 = unp.uarray(RF['U_Ch2'], RF['dU_Ch2'])
 
-# Ohmscher Widerstand eintragen
-widerstand = unp.uarray([1],[0.01])
-##############################
+# R_RL = Summe aus Omhschen Widerstand und Spulenwiderstand
+widerstand = unp.uarray([10.16],[0.2016])+unp.uarray([151.02],[10*0.01+1.5102])
 
 # Scheinwiderstand bestimmen
 uscheinwiderstand = widerstand*uuch1/uuch2
-
-# Quadrat des Scheinwiderstandes bestimmen
-uquadratscheinwiderstand = uscheinwiderstand**2
-RF['Z_RL2']=np.array([value.nominal_value for value in uquadratscheinwiderstand])
-RF['dZ_RL2']=np.array([value.s for value in uquadratscheinwiderstand])
+RF['Z_RL2']=np.array([value.nominal_value for value in uscheinwiderstand])
+RF['dZ_RL2']=np.array([value.s for value in uscheinwiderstand])
 
 
 # Figure und Subplots erstellen - bei denen alle Subplots die gleichen Achsen haben
@@ -35,17 +31,17 @@ fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0,250)
-ax.set_ylim(0, 25)
+ax.set_xlim(0,600)
+ax.set_ylim(0, 40000)
 
 # Plot der Messwerte V und p mit Errorbars 
-ax.errorbar(RF.Frequenz, RF.Z_RL2, xerr=RF.df , yerr=RF.dZ_RL2, label='$|Z_{RL}|^2$ in Abhängigkeit der Frequenz', color = 'lightblue', linestyle='None', marker='o', capsize=6)
+ax.errorbar(RF.Frequenz, RF.Z_RL2, xerr=RF.df , yerr=RF.dZ_RL2, label='$|Z_{RL}|$ in Abhängigkeit der Frequenz', color = 'lightblue', linestyle='None', marker='o', capsize=6)
 
 # linearer Fit
 
 # Fitfunktion definieren
 def fit_function(x, A, x0):
-    return (x0)**2+(A * 2*np.pi*x)**2 #A entspricht der Induktivität der Spule, x0 entspricht R_RL
+    return np.sqrt((161.18)**2+(A * 2*np.pi*x)**2) #A entspricht der Induktivität der Spule, x0 entspricht R_RL
 
 #Daten
 x_data = RF['Frequenz']
@@ -62,22 +58,22 @@ x0_value = params[1]
 x0_error = fit_errors[1]
 
 dof = len(RF.index)-len(params)
-chi2 = sum([(fit_function(x,A_value,x0_value)-y)*2/u*2 for x,y,u in zip(x_data,y_data,y_err)])
+chi2 = sum([(fit_function(x,A_value,x0_value)-y)**2/u**2 for x,y,u in zip(x_data,y_data,y_err)])
 
 # Fit-Ergebnisse ausgeben
 print(f"A = {A_value:.6f} ± {A_error:.6f}")
 print(f"x0 = {x0_value:.6f} ± {x0_error:.6f}")
 print(f"Chi-Quadrat/dof: {chi2/dof}")
 
-x_ax=np.linspace(0, 250, 1000) 
+x_ax=np.linspace(0, 600, 1000) 
 y_ax = fit_function(x_ax, A_value,x0_value)
 
 # Plot zeichnen
-plt.plot(x_ax, y_ax, label=f"Fit: $y = (2\\cdot \\pi \\cdot A \\cdot x)^2+x_0^2$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$ \n $x_0= {x0_value:.6f} \\pm {x0_error:.6f}$", linewidth=2, color='blue')
+plt.plot(x_ax, y_ax, label=f"Fit: $y = \\sqrt{{(2\\cdot \\pi \\cdot A \\cdot x)^2+x_0^2}}$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$ \n $x_0= {x0_value:.6f} \\pm {x0_error:.6f}$", linewidth=2, color='blue')
 plt.xlabel('Frequenz $f$ in $s^{-1}$')
-plt.ylabel("$|Z_{LR}|^2$ in $\\Omega^{2}$")
+plt.ylabel("$|Z_{LR}|$ in $\\Omega$")
 plt.legend()
-plt.title("$f$-$|Z_{LR}|^2$-Diagramm")
+plt.title("$f$-$|Z_{LR}|$-Diagramm")
 
 
 # Inset
@@ -88,23 +84,24 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 ax_inset = inset_axes(ax, width="50%", height="50%", loc=2, bbox_to_anchor=(690,-20,300,300)) #Positionierung mit bbox(x-Achse,y-Achse,Größe,Größe)
 
 # Bereich für das Inset-Diagramm
-x_inset = np.linspace(-0.18, 0.18, 500)
+x_inset = np.linspace(-0.18, 125.18, 1000)
 y_inset = fit_function(x_inset, A_value,x0_value)
 
 # Plotten im Inset-Diagramm
-ax_inset.plot(x_inset, y_inset, linewidth=5)
+ax_inset.errorbar(RF.Frequenz, RF.Z_RL2, xerr=RF.df , yerr=RF.dZ_RL2, label='$|Z_{RL}|$ in Abhängigkeit der Frequenz', color = 'lightblue', linestyle='None', marker='o', capsize=6)
+ax_inset.plot(x_inset, y_inset, linewidth=2)
 
 # Inset-Bereich anpassen
-ax_inset.set_xlim(-0.18, 0.18)
-ax_inset.set_ylim(-0.18, 0.18)
-ax_inset.set_xticks([-0.1, 0, 0.1])
-ax_inset.set_yticks([-0.1, 0, 0.1])
+ax_inset.set_xlim(-0.18, 125.18)
+ax_inset.set_ylim(-0.18, 10000.18)
+ax_inset.set_xticks([0, 100])
+ax_inset.set_yticks([0, 2784.3,5000, 10000])
 ax_inset.tick_params(labelsize=8)
 
 # Induktivität L
 print("Die Induktivität der Spule beträgt",unp.sqrt(unp.uarray([np.sqrt(A_value**2)],[np.sqrt(A_error**2)])),"H")
 
-#plt.savefig("VersuchsteilB.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
+plt.savefig("VersuchsteilB.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
 #plt.savefig("VersuchsteilB.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
 
 plt.show()

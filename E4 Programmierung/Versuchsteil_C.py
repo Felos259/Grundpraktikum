@@ -18,28 +18,23 @@ uuch1 = unp.uarray(RF['U_Ch1'], RF['dU_Ch1'])
 uuch2 = unp.uarray(RF['U_Ch2'], RF['dU_Ch2'])
 uphi = unp.uarray(RF['phi'],RF['dphi'])
 
-
 ############################### Kapitel 8.3.1 #############################################################
 
-
-
-# Ohmscher Widerstand eintragen
-widerstand = unp.uarray([1],[0.01])
-##############################
+# R_RL = Summe aus Omhschen Widerstand und Spulenwiderstand
+widerstand = unp.uarray([10.16],[0.2016])+unp.uarray([151.02],[10*0.01+1.5102])
 
 # Scheinwiderstand bestimmen
-uscheinwiderstand = widerstand*uuch1/uuch2
+uscheinwiderstand = widerstand*uuch1/uuch2/1000 #in kOhm 
 RF['Z_RLC']=np.array([value.nominal_value for value in uscheinwiderstand])
 RF['dZ_RLC']=np.array([value.s for value in uscheinwiderstand])
-
 
 # Figure und Subplots erstellen - bei denen alle Subplots die gleichen Achsen haben
 fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0,250)
-ax.set_ylim(0, 25)
+ax.set_xlim(0,1600)
+ax.set_ylim(0, 90)
 
 # Plot der Messwerte V und p mit Errorbars 
 ax.errorbar(RF.Frequenz, RF.Z_RLC, xerr=RF.df , yerr=RF.dZ_RLC, label='$|Z_{RLC}|$ in Abhängigkeit der Frequanz', color = 'lightblue', linestyle='None', marker='o', capsize=6)
@@ -48,17 +43,17 @@ ax.errorbar(RF.Frequenz, RF.Z_RLC, xerr=RF.df , yerr=RF.dZ_RLC, label='$|Z_{RLC}
 
 # Fitfunktion definieren
 def fit_function(x, A, B, x0): #A = L und B = C laut Theorie
-    return np.sqrt((x0)**2+(2*np.pi*A * x-1/(2*np.pi*x * B))**2)
+    return np.sqrt((x0)**2+((2*np.pi*A*x)-(1/(2*np.pi*x * B)))**2)
 #A entspricht der Induktivität der Spule L, x0 entspricht R_RL, B entspricht der Kapazität C
 
 #Daten
 x_data = RF['Frequenz']
 x_err = RF['df']
 y_data = RF['Z_RLC']
-y_err = RF['dZ_RLC'] 
+y_err = RF['dZ_RLC']
 
 # Curve-Fit mit Unsicherheiten in y
-params, covariance = curve_fit(fit_function, x_data, y_data, sigma=y_err, absolute_sigma=True)
+params, covariance = curve_fit(fit_function, x_data, y_data, sigma=y_err, absolute_sigma=True,bounds = ([0,0,0],[50,10**(-3),50]))
 A_value = params[0]
 fit_errors = np.sqrt(np.diag(covariance))  # Fehler der Fit-Parameter
 A_error = fit_errors[0]
@@ -68,39 +63,41 @@ x0_value = params[2]
 x0_error = fit_errors[2]
 
 dof = len(RF.index)-len(params)
-chi2 = sum([(fit_function(x,A_value,B_value,x0_value)-y)*2/u*2 for x,y,u in zip(x_data,y_data,y_err)])
+chi2 = sum([(fit_function(x,A_value,B_value,x0_value)-y)**2/u**2 for x,y,u in zip(x_data,y_data,y_err)])
 
 # Fit-Ergebnisse ausgeben
 print(f"A = {A_value:.6f} ± {A_error:.6f}")
-print(f"B = {B_value:.6f} ± {B_error:.6f}")
+print(f"B = {B_value:.9f} ± {B_error:.9f}")
 print(f"x0 = {x0_value:.6f} ± {x0_error:.6f}")
 print(f"Chi-Quadrat/dof: {chi2/dof}")
 
 # Minimum berechnen
-induktivitaet = unp.uarray([A_value],[A_error])
-i_value = A_value
-kapazitaet = unp.uarray([B_value],[B_error])
-k_value = B_value
-ohmscherWiderstand = unp.uarray([x0_value],[x0_error])
-w_value = x0_value
-minimum = 1/unp.sqrt(16*np.pi**4*unp.sqrt((induktivitaet*kapazitaet)**2))
+induktivitaet = unp.uarray([A_value],[A_error])/1000
+i_value = A_value/1000
+print("Induktivität: ", induktivitaet)
+kapazitaet = unp.uarray([B_value],[B_error])/1000
+k_value = B_value/1000
+print("Kapazität: ", kapazitaet)
+ohmscherWiderstand = unp.uarray([x0_value],[x0_error])/1000
+w_value = x0_value/1000
+print("Widerstand :", ohmscherWiderstand)
+minimum = 1/(2*np.pi*unp.sqrt(induktivitaet*kapazitaet))
 print("Das Minimum liegt bei f=", minimum," Hz")
 
 
-x_ax=np.linspace(0.0001, 250, 1000) #Hier NICHT bei 0 anfangen, da man sonst einen Divide-by-zero-Fehler erzeugt!
+x_ax=np.linspace(0.0001, 1600, 10000) #Hier NICHT bei 0 anfangen, da man sonst einen Divide-by-zero-Fehler erzeugt!
 y_ax = fit_function(x_ax, A_value,B_value,x0_value)
 
 # Plot zeichnen
-plt.plot(x_ax, y_ax, label=f"Fit: $y = \\sqrt{{((A \\cdot 2\\cdot \\pi \\cdot x+ \\frac{{1}}{{(B\\cdot 2\\cdot \\pi\\cdot x)}})^2+x_0^2)}}$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$ \n $B = {B_value:.6f} \\pm {B_error:.6f}$ \n $x_0= {x0_value:.6f} \\pm {x0_error:.6f}$", linewidth=2, color='blue')
+plt.plot(x_ax, y_ax, label=f"Fit: $y = \\sqrt{{((A \\cdot 2\\cdot \\pi \\cdot x- \\frac{{1}}{{(B\\cdot 2\\cdot \\pi\\cdot x)}})^2+x_0^2)}}$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$ \n $B = {B_value:.6f} \\pm {B_error:.6f}$ \n $x_0= {x0_value:.6f} \\pm {x0_error:.6f}$", linewidth=2, color='blue')
 plt.xlabel('Frequenz $f$ in $s^{-1}$')
-plt.ylabel("$|Z_{LRC}|$ in $\\Omega$")
+plt.ylabel("$|Z_{LRC}|$ in $k\\Omega$")
 plt.legend()
 plt.title("$f$-$|Z_{LRC}|$-Diagramm")
 
-#plt.savefig("VersuchsteilC1.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
+plt.savefig("VersuchsteilC1.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
 #plt.savefig("VersuchsteilC1.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
-
-#plt.show()
+plt.show()
 
 
 # 2D list of variables (tabular data with rows and columns)
@@ -119,8 +116,8 @@ fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0,250)
-ax.set_ylim(0, 25)
+ax.set_xlim(0,1600)
+ax.set_ylim(-np.pi, 2*np.pi)
 
 # Plot der Messwerte V und p mit Errorbars 
 ax.errorbar(RF.Frequenz, RF.phi, xerr=RF.df , yerr=RF.dphi, label='Phasenverschiebung $\\varphi$ in Abhängigkeit der Frequanz', color = 'lightblue', linestyle='None', marker='o', capsize=6)
@@ -128,7 +125,7 @@ ax.errorbar(RF.Frequenz, RF.phi, xerr=RF.df , yerr=RF.dphi, label='Phasenverschi
 # linearer Fit
 
 # Fitfunktion definieren
-def fit_function(x, A, B, x0): #A = L und B = C laut Theorie
+def fit_function2(x, A, B, x0): #A = L und B = C laut Theorie
     return np.arctan((2*np.pi*x*A-1/(2*np.pi*x*B))/(x0))
 #A entspricht der Induktivität der Spule L, x0 entspricht R_RL, B entspricht der Kapazität C
 
@@ -139,7 +136,7 @@ y_data = RF['Z_RLC']
 y_err = RF['dZ_RLC'] 
 
 # Curve-Fit mit Unsicherheiten in y
-params, covariance = curve_fit(fit_function, x_data, y_data, sigma=y_err, absolute_sigma=True)
+params, covariance = curve_fit(fit_function2, x_data, y_data, sigma=y_err, absolute_sigma=True)
 A_value = params[0]
 fit_errors = np.sqrt(np.diag(covariance))  # Fehler der Fit-Parameter
 A_error = fit_errors[0]
@@ -149,7 +146,7 @@ x0_value = params[2]
 x0_error = fit_errors[2]
 
 dof = len(RF.index)-len(params)
-chi2 = sum([(fit_function(x,A_value,B_value,x0_value)-y)*2/u*2 for x,y,u in zip(x_data,y_data,y_err)])
+chi2 = sum([(fit_function2(x,A_value,B_value,x0_value)-y)*2/u*2 for x,y,u in zip(x_data,y_data,y_err)])
 
 # Fit-Ergebnisse ausgeben
 print(f"A = {A_value:.6f} ± {A_error:.6f}")
@@ -157,8 +154,8 @@ print(f"B = {B_value:.6f} ± {B_error:.6f}")
 print(f"x0 = {x0_value:.6f} ± {x0_error:.6f}")
 print(f"Chi-Quadrat/dof: {chi2/dof}")
 
-x_ax=np.linspace(0.0001, 250, 1000) #Hier NICHT bei 0 anfangen, da man sonst einen Divide-by-zero-Fehler erzeugt!
-y_ax = fit_function(x_ax, A_value,B_value,x0_value)
+x_ax=np.linspace(0.0001, 1600, 10000) #Hier NICHT bei 0 anfangen, da man sonst einen Divide-by-zero-Fehler erzeugt!
+y_ax = fit_function2(x_ax, A_value,B_value,x0_value)
 
 # Plot zeichnen
 plt.plot(x_ax, y_ax, label=f"Fit: $y = \\arctan(\\frac{{2\\cdot\\pi\\cdot x\\cdot A-\\frac{{1}}{{2\\cdot\\pi\\cdot x\\cdot B}}}}{{x_0}})$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$ \n $B = {B_value:.6f} \\pm {B_error:.6f}$ \n $x_0= {x0_value:.6f} \\pm {x0_error:.6f}$", linewidth=2, color='blue')
