@@ -28,14 +28,16 @@ fig, ax = plt.subplots()
 
 # Achsen richten
 ax.set_xlim(0.5,10.5)
-ax.set_ylim(689, 692)
+ax.set_ylim(688, 693)
 
 # Index renamen damit er bei 1 anfängt
 RF.index = np.arange(1, len(RF) + 1)
 
 # Plot der Messwerte V und p mit Errorbars 
 ax.errorbar(RF.index, RF.Frequenz , yerr=RF.dF , label='gemessene Resonanzfrequenzen', color = 'lightblue', linestyle='None', marker='o', capsize=6)
-plt.axhline(mean, color='blue', linewidth=0.8, linestyle='--') 
+plt.axhline(mean, color='blue', linewidth=0.8, linestyle='-', label = 'Mittelwert mit Unsicherheit') 
+plt.axhline(mean - deltaFBar, color='blue', linewidth=0.8, linestyle='--') 
+plt.axhline(mean + deltaFBar, color='blue', linewidth=0.8, linestyle='--') 
 
 
 plt.xlabel('n',fontsize=fnt)
