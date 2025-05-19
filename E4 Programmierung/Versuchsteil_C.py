@@ -28,7 +28,7 @@ widerstand = unp.uarray([1],[0.01])
 ##############################
 
 # Scheinwiderstand bestimmen
-uscheinwiderstand = widerstand*uuch2/uuch1
+uscheinwiderstand = widerstand*uuch1/uuch2
 RF['Z_RLC']=np.array([value.nominal_value for value in uscheinwiderstand])
 RF['dZ_RLC']=np.array([value.s for value in uscheinwiderstand])
 
@@ -68,7 +68,7 @@ x0_value = params[2]
 x0_error = fit_errors[2]
 
 dof = len(RF.index)-len(params)
-chi2 = sum([((fit_function(x,A_value,B_value,x0_value)-y)**2)/(u**2) for x,y,u in zip(x_data,y_data,y_err)])
+chi2 = sum([(fit_function(x,A_value,B_value,x0_value)-y)*2/u*2 for x,y,u in zip(x_data,y_data,y_err)])
 
 # Fit-Ergebnisse ausgeben
 print(f"A = {A_value:.6f} ± {A_error:.6f}")
@@ -100,9 +100,7 @@ plt.title("$f$-$|Z_{LRC}|$-Diagramm")
 #plt.savefig("VersuchsteilC1.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
 #plt.savefig("VersuchsteilC1.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
 
-#
-plt.show()
-
+#plt.show()
 
 
 # 2D list of variables (tabular data with rows and columns)
@@ -173,7 +171,5 @@ plt.title("$f$-$\\varphi$-Diagramm")
 #plt.savefig("VersuchsteilC2.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
 #plt.savefig("VersuchsteilC2.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
 
-
 plt.show()
-
 

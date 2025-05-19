@@ -1,8 +1,13 @@
-﻿in Hz,in Hz,Spitze-Spitze-Abstand in Volt,,Spitze-Spitze-Abstand in Volt,
-Frequenz,df,U_Ch1,dU_Ch1,U_Ch2,dU_Ch2
-1,0.01,1,0.01,5,0.02
-2,0.01,2,0.01,6,0.02
-3,0.01,3,0.01,7,0.02
-4,0.01,4,0.01,8,0.02
-5,0.01,4,0.01,9,0.02
-6,0.01,4,0.01,10,0.02
+﻿in Hz,"in Hz (Ableseunsichereit: Bei zwei Nachkommastellen 0.05, bei drei Nachkommastellen 0.02)",,,Spitze-Spitze-Abstand in Volt,Ableseunsicherheit halbes Kästchen,,,,Spitze-Spitze-Abstand in mV,Ableseunsicherheit halbes Kästchen,
+Frequenz,df,Auflösung (V),Kästchen,U_Ch1,dU_Ch1,Auflösung (mV),Kästchen,Kästchen,U_Ch2,dU_Ch2,Verhältnis
+98.85,0.02,2,14,28,7,50,11,15.5,0.775,0.00775,36.1
+340.83,0.05,5,11.5,57.5,5.75,50,12,11,0.55,0.0055,104.5
+281.17,0.05,5,12,60,6,50,,12,0.6,0.006,100.0
+239.88,0.05,2,28,56,14,50,,14,0.7,0.007,80.0
+189.9,0.05,2,28,56,14,50,,18,0.9,0.009,62.2
+196.83,0.05,2,15,30,7.5,50,,9,0.45,0.0045,66.7
+383.75,0.05,2,15,30,7.5,50,,4.5,0.225,0.00225,133.3
+424.43,0.05,2,15,30,7.5,50,,4,0.2,0.002,150.0
+498.23,0.05,2,14.5,29,7.25,50,,3.5,0.175,0.00175,165.7
+79.785,0.02,2,32,64,16,50,,40,2,0.02,32.0
+21.886,0.02,2,16,32,8,50,,34.5,1.725,0.01725,18.6
