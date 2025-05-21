@@ -12,6 +12,8 @@ import csv #Output meine Berechnungen in eine CSV-Datei
 
 
 RF = pd.read_csv('Versuchsteil_C.csv', header=1)
+RG = pd.read_csv('Versuchsteil_C_phi.csv', header=1)
+
 
 uf = unp.uarray(RF['Frequenz'], RF['df'])
 uuch1 = unp.uarray(RF['U_Ch1'], RF['dU_Ch1'])
@@ -21,9 +23,9 @@ uphi = unp.uarray(RF['phi'],RF['dphi'])
 ############################### Kapitel 8.3.1 #############################################################
 
 # R_RL = Summe aus Omhschen Widerstand und Spulenwiderstand
-widerstand = unp.uarray([10.16],[0.2016])+unp.uarray([151.02],[10*0.01+1.5102])
-wid=161.18/1000
-uwid=1.6227712716214817/1000
+widerstand = unp.uarray([10.16],[0.2016])+unp.uarray([151.02],[10*0.01+1.5102]) #in Ohm
+wid=161.18/1000 #in Kilo-Ohm
+uwid=1.6227712716214817/1000 #in Kilo-Ohm
 
 # Scheinwiderstand bestimmen
 uscheinwiderstand = widerstand*uuch1/uuch2/1000 #in kOhm 
@@ -51,7 +53,7 @@ def fit_function(x, A, B): #A = L und B = C laut Theorie
 #Daten
 x_data = RF['Frequenz']
 x_err = RF['df']
-y_data = RF['Z_RLC']
+y_data = RF['Z_RLC'] #in Kilo-Ohm
 y_err = RF['dZ_RLC']
 
 # Curve-Fit mit Unsicherheiten in y
@@ -74,11 +76,11 @@ print(f"B = {B_value:.9f} ± {B_error:.9f}")
 print(f"Chi-Quadrat/dof: {chi2/dof}")
 
 # Minimum berechnen
-induktivitaet = unp.uarray([A_value],[A_error])*1000
-i_value = A_value*1000
+induktivitaet = unp.uarray([A_value],[A_error])*1000 #in H
+i_value = A_value #in kH
 print("Induktivität (H): ", induktivitaet)
-kapazitaet = unp.uarray([B_value],[B_error])/1000
-k_value = B_value/1000
+kapazitaet = unp.uarray([B_value],[B_error])/1000 #in F
+k_value = B_value #in mF
 print("Kapazität (F): ", kapazitaet)
 #ohmscherWiderstand = unp.uarray([x0_value],[x0_error])*1000
 #w_value = x0_value*1000
@@ -119,55 +121,60 @@ fig, ax = plt.subplots()
 
 # Achsen richten
 ax.set_xlim(0,1600)
-ax.set_ylim(-np.pi, 2*np.pi)
+ax.set_ylim(-np.pi, 3*np.pi)
 
 # Plot der Messwerte V und p mit Errorbars 
-ax.errorbar(RF.Frequenz, RF.phi, xerr=RF.df , yerr=RF.dphi, label='Phasenverschiebung $\\varphi$ in Abhängigkeit der Frequanz', color = 'lightblue', linestyle='None', marker='o', capsize=6)
+ax.errorbar(RG.Frequenz, RG.phi_besser, xerr=RG.df , yerr=RG.dphi, label='$tan(\\varphi)$ in Abhängigkeit der Frequanz', color = 'lightblue', linestyle='None', marker='o', capsize=6)
 
-# linearer Fit
 
 # Fitfunktion definieren
-def fit_function2(x, A, B, x0): #A = L und B = C laut Theorie
-    return np.arctan((2*np.pi*x*A-1/(2*np.pi*x*B))/(x0))
+def fit_function2(x, A, B): #A = L und B = C laut Theorie
+    return ((2*np.pi*x*A)-1/(2*np.pi*x*B))/(wid*1000)
 #A entspricht der Induktivität der Spule L, x0 entspricht R_RL, B entspricht der Kapazität C
 
 #Daten
-x_data = RF['Frequenz']
-x_err = RF['df']
-y_data = RF['Z_RLC']
-y_err = RF['dZ_RLC'] 
+x_data = RG['Frequenz']
+x_err = RG['df']
+y_data = RG['phi_besser']
+y_err = RG['dphi']
 
 # Curve-Fit mit Unsicherheiten in y
-params, covariance = curve_fit(fit_function2, x_data, y_data, sigma=y_err, absolute_sigma=True)
+params, covariance = curve_fit(fit_function2, x_data, y_data, sigma=y_err, absolute_sigma=True)#, bounds = ([0,0],[50,10**(-3)]))
 A_value = params[0]
 fit_errors = np.sqrt(np.diag(covariance))  # Fehler der Fit-Parameter
 A_error = fit_errors[0]
 B_value = params[1]
 B_error = fit_errors[1]
-x0_value = params[2]
-x0_error = fit_errors[2]
+#x0_value = params[2]
+#x0_error = fit_errors[2]
 
-dof = len(RF.index)-len(params)
-chi2 = sum([(fit_function2(x,A_value,B_value,x0_value)-y)*2/u*2 for x,y,u in zip(x_data,y_data,y_err)])
+dof = len(RG.index)-len(params)
+chi2 = sum([(fit_function2(x,A_value,B_value)-y)**2/u**2 for x,y,u in zip(x_data,y_data,y_err)])
 
 # Fit-Ergebnisse ausgeben
 print(f"A = {A_value:.6f} ± {A_error:.6f}")
 print(f"B = {B_value:.6f} ± {B_error:.6f}")
-print(f"x0 = {x0_value:.6f} ± {x0_error:.6f}")
+#print(f"x0 = {x0_value:.6f} ± {x0_error:.6f}")
 print(f"Chi-Quadrat/dof: {chi2/dof}")
 
 x_ax=np.linspace(0.0001, 1600, 10000) #Hier NICHT bei 0 anfangen, da man sonst einen Divide-by-zero-Fehler erzeugt!
-y_ax = fit_function2(x_ax, A_value,B_value,x0_value)
+y_ax = fit_function2(x_ax, A_value,B_value)
 
 # Plot zeichnen
-plt.plot(x_ax, y_ax, label=f"Fit: $y = \\arctan(\\frac{{2\\cdot\\pi\\cdot x\\cdot A-\\frac{{1}}{{2\\cdot\\pi\\cdot x\\cdot B}}}}{{x_0}})$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$ \n $B = {B_value:.6f} \\pm {B_error:.6f}$ \n $x_0= {x0_value:.6f} \\pm {x0_error:.6f}$", linewidth=2, color='blue')
-plt.plot(x_ax, np.arctan((2*np.pi*x_ax*i_value-1/(2*np.pi*x_ax*k_value))/(wid)),label=f"Aus den Werten von $C$,$L$ und $R_{{RL}}$ resultierender Fit", linewidth=1.5, color='orange')
-plt.xlabel('Frequenz $f$ in $s^{-1}$')
-plt.ylabel("Phasenverschiebung $\\varphi$ in rad")
-plt.legend()
-plt.title("$f$-$\\varphi$-Diagramm")
+plt.plot(x_ax, y_ax, label=f"Fit: $y = \\frac{{2\\cdot\\pi\\cdot x\\cdot A-\\frac{{1}}{{2\\cdot\\pi\\cdot x\\cdot B}}}}{{x_0}}$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$ \n $B = {B_value:.6f} \\pm {B_error:.6f}$ \n $x_0= {wid*1000:.6f} \\pm {uwid*1000:.6f}$", linewidth=2, color='blue')
+plt.plot(x_ax, y_ax, linewidth=2, color='blue')
+#k_alt_value=107.4*10**(-9)
+#i_alt_value=9.22
 
-#plt.savefig("VersuchsteilC2.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
+# In der folgenden Zeile ist das Problem... Einheiten: Widerstand in Kilo-Ohm, Induktivität (I-Value) in kH, Kapazität (k-Value) in mF 
+plt.plot(x_ax, (2*np.pi/(wid)*x_ax*i_value-1/(2*np.pi*wid*x_ax*k_value)),label=f"Aus den Werten von $C$,$L$, $R_{{RL}}$ resultierender Fit", linewidth=1.5, color='orange')
+#Teilt man die Zeile über dieser Zeile durch 1000, so kommt ein relativ okayer Fit heraus
+plt.xlabel('Frequenz $f$ in $s^{-1}$')
+plt.ylabel("Tangens der Phasenverschiebung $\\tan(\\varphi)$")
+plt.legend()
+plt.title("$f$-$Tan(\\varphi)$-Diagramm")
+
+plt.savefig("VersuchsteilC2mitFits.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
 #plt.savefig("VersuchsteilC2.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
 
 plt.show()
