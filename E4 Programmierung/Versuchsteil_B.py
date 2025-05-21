@@ -10,8 +10,10 @@ import uncertainties.umath as um
 from uncertainties import unumpy as unp
 import csv #Output meine Berechnungen in eine CSV-Datei
 
+fnt = 20 # fontsize for zooming, default 10
+plt.rcParams['figure.figsize'] = [19.2,10.8]
 
-RF = pd.read_csv('Versuchsteil_B.csv', header=1)
+RF = pd.read_csv('E4 Programmierung/Versuchsteil_B.csv', header=1)
 
 uf = unp.uarray(RF['Frequenz'], RF['df'])
 uuch1 = unp.uarray(RF['U_Ch1'], RF['dU_Ch1'])
@@ -81,7 +83,7 @@ plt.title("$f$-$|Z_{LR}|$-Diagramm")
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
 # Position des Inset-Diagramms definieren
-ax_inset = inset_axes(ax, width="50%", height="50%", loc=2, bbox_to_anchor=(690,-20,300,300)) #Positionierung mit bbox(x-Achse,y-Achse,Größe,Größe)
+ax_inset = inset_axes(ax, width="30%", height="30%", loc=2, borderpad = 5, bbox_to_anchor=ax.bbox) #Positionierung mit bbox(x-Achse,y-Achse,Größe,Größe)
 
 # Bereich für das Inset-Diagramm
 x_inset = np.linspace(-0.18, 125.18, 1000)
@@ -110,7 +112,7 @@ plt.show()
 input_variable = [["Frequenz","df","Z_LR2","dZ_LR2"],[x_data,x_err,y_data,y_err]]
  
 # Example.csv gets created in the current working directory
-with open ('WertetabelleVersuchsteilB.csv','w',newline = '') as csvfile:
+with open ('E4 Programmierung/WertetabelleVersuchsteilB.csv','w',newline = '') as csvfile:
     my_writer = csv.writer(csvfile, delimiter = ',')
     my_writer.writerows(input_variable)
 
