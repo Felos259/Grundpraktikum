@@ -40,7 +40,7 @@ plt.axhline(mean - deltaFBar, color='blue', linewidth=0.8, linestyle='--')
 plt.axhline(mean + deltaFBar, color='blue', linewidth=0.8, linestyle='--') 
 
 
-plt.xlabel('n',fontsize=fnt)
+plt.xlabel('n', fontsize=fnt)
 plt.ylabel('Frequenz $f$ in Hz', fontsize=fnt)
 plt.legend(fontsize=fnt) #Legende printen
 plt.title("Resonanzfrequenzen des RCL-Schwingkreises", fontsize=fnt)

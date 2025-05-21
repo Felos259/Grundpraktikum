@@ -10,8 +10,11 @@ import uncertainties.umath as um
 from uncertainties import unumpy as unp
 import csv #Output meine Berechnungen in eine CSV-Datei
 
+fnt = 20
+plt.rcParams['figure.figsize'] = [19.2,10.8]
 
-RF = pd.read_csv('Versuchsteil_B.csv', header=1)
+
+RF = pd.read_csv('E4 Programmierung/Versuchsteil_B.csv', header=1)
 
 uf = unp.uarray(RF['Frequenz'], RF['df'])
 uuch1 = unp.uarray(RF['U_Ch1'], RF['dU_Ch1'])
@@ -78,17 +81,20 @@ y_ax2 = fit_function2(x_ax2, A_value2)
 
 # Plot zeichnen
 plt.plot(x_ax2, y_ax2, label=f"Fit: $y^2 = (2\\cdot \\pi \\cdot A\\cdot x)^2 +x_0^2$ \n $A = {A_value2:.6f} \\pm {A_error2:.6f}$ \n $x_0={wid:.6f} \\pm {uwid:.6f}$", linewidth=2, color='blue')
-plt.xlabel('Frequenz $f$ in $s^{-1}$')
-plt.ylabel("$|Z_{LR}|^2$ in $(k\\Omega)^2$")
-plt.legend()
-plt.title("$f$-$|Z_{LR}|^2$-Diagramm")
+plt.xlabel('Frequenz $f$ in $s^{-1}$', fontsize=fnt)
+plt.ylabel("$|Z_{LR}|^2$ in $(k\\Omega)^2$", fontsize=fnt)
+plt.legend(fontsize=fnt)
+plt.title("$f$-$|Z_{LR}|^2$-Diagramm", fontsize=fnt)
+
+plt.xticks(fontsize=fnt)
+plt.yticks(fontsize=fnt)
 
 # Inset
 # Inset-Diagramm erstellen
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
 # Position des Inset-Diagramms definieren
-ax2_inset = inset_axes(ax2, width="50%", height="50%", loc=2, bbox_to_anchor=(690,-20,300,300)) #Positionierung mit bbox(x-Achse,y-Achse,Größe,Größe)
+ax2_inset = inset_axes(ax2, width="30%", height="30%", loc=6, borderpad = 5, bbox_to_anchor=ax2.bbox) #Positionierung mit bbox(x-Achse,y-Achse,Größe,Größe)
 
 # Bereich für das Inset-Diagramm
 x_inset = np.linspace(-0.18, 140, 1000)
@@ -96,16 +102,14 @@ y_inset = fit_function2(x_inset, A_value2)
 
 # Plotten im Inset-Diagramm
 ax2_inset.errorbar(RF.Frequenz, RF.Z_RL2, xerr=RF.df , yerr=RF.dZ_RL2, label='$|Z_{RL}|$ in Abhängigkeit der Frequenz', color = 'lightblue', linestyle='None', marker='o', capsize=6)
-ax2_inset.plot(x_inset, y_inset, linewidth=2)
+ax2_inset.plot(x_inset, y_inset, linewidth=2, color = 'blue')
 
 # Inset-Bereich anpassen
 ax2_inset.set_xlim(-0.18, 125)
 ax2_inset.set_ylim(-18, 100)
 ax2_inset.set_xticks([0, 100])
 ax2_inset.set_yticks([0, 100])
-ax2_inset.tick_params(labelsize=8)
-
-
+ax2_inset.tick_params(labelsize=20)
 
 
 plt.savefig("VersuchsteilBQuadratisch.pdf",format='pdf',bbox_inches='tight',pad_inches=0.5)
