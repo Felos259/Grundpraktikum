@@ -14,7 +14,6 @@ import csv #Output meine Berechnungen in eine CSV-Datei
 RF = pd.read_csv('Versuchsteil_C.csv', header=1)
 RG = pd.read_csv('Versuchsteil_C_phi.csv', header=1)
 
-
 uf = unp.uarray(RF['Frequenz'], RF['df'])
 uuch1 = unp.uarray(RF['U_Ch1'], RF['dU_Ch1'])
 uuch2 = unp.uarray(RF['U_Ch2'], RF['dU_Ch2'])
@@ -28,7 +27,7 @@ wid=161.18/1000 #in Kilo-Ohm
 uwid=1.6227712716214817/1000 #in Kilo-Ohm
 
 # Scheinwiderstand bestimmen
-uscheinwiderstand = widerstand*uuch1/uuch2/1000 #in kOhm 
+uscheinwiderstand = widerstand*(uuch1/uuch2)/1000 #in kOhm 
 RF['Z_RLC']=np.array([value.nominal_value for value in uscheinwiderstand])
 RF['dZ_RLC']=np.array([value.s for value in uscheinwiderstand])
 
@@ -46,9 +45,12 @@ ax.errorbar(RF.Frequenz, RF.Z_RLC, xerr=RF.df , yerr=RF.dZ_RLC, label='$|Z_{RLC}
 # linearer Fit
 
 # Fitfunktion definieren
-def fit_function(x, A, B): #A = L und B = C laut Theorie
-    return np.sqrt((wid)**2+((2*np.pi*A*x)-(1/(2*np.pi*x * B)))**2)
+# def fit_function(x, A, B): #A = L und B = C laut Theorie
+#     return np.sqrt((wid)**2+((2*np.pi*A*x)-(1/(2*np.pi*x * B)))**2)
 #A entspricht der Induktivität der Spule L, x0 entspricht R_RL, B entspricht der Kapazität C
+
+def fit_function(x, A, B): #A = L und B = C laut Theorie
+    return np.sqrt((wid)**2+(2*np.pi*A*x)**2-2(A/B)+(1/(2*np.pi*x * B)**2))
 
 #Daten
 x_data = RF['Frequenz']
