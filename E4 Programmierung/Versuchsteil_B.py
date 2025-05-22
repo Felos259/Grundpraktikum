@@ -23,7 +23,7 @@ uuch2 = unp.uarray(RF['U_Ch2'], RF['dU_Ch2'])
 widerstand = unp.uarray([10.16],[0.2016])+unp.uarray([151.02],[10*0.01+1.5102])
 
 # Scheinwiderstand bestimmen
-uscheinwiderstand = widerstand*uuch1/uuch2
+uscheinwiderstand = widerstand*(uuch1/uuch2)
 RF['Z_RL2']=np.array([value.nominal_value for value in uscheinwiderstand])
 RF['dZ_RL2']=np.array([value.s for value in uscheinwiderstand])
 
