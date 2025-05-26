@@ -11,8 +11,8 @@ from uncertainties import unumpy as unp
 import csv #Output meine Berechnungen in eine CSV-Datei
 
 
-RF = pd.read_csv('Versuchsteil_C.csv', header=1)
-RG = pd.read_csv('Versuchsteil_C_phi.csv', header=1)
+RF = pd.read_csv('E4 Programmierung/Versuchsteil_C.csv', header=1)
+RG = pd.read_csv('E4 Programmierung/Versuchsteil_C_phi.csv', header=1)
 
 uf = unp.uarray(RF['Frequenz'], RF['df'])
 uuch1 = unp.uarray(RF['U_Ch1'], RF['dU_Ch1'])
@@ -45,12 +45,12 @@ ax.errorbar(RF.Frequenz, RF.Z_RLC, xerr=RF.df , yerr=RF.dZ_RLC, label='$|Z_{RLC}
 # linearer Fit
 
 # Fitfunktion definieren
-# def fit_function(x, A, B): #A = L und B = C laut Theorie
-#     return np.sqrt((wid)**2+((2*np.pi*A*x)-(1/(2*np.pi*x * B)))**2)
+def fit_function(x, A, B): #A = L und B = C laut Theorie
+    return np.sqrt((wid)**2+((2*np.pi*A*x)-(1/(2*np.pi*x * B)))**2)
 #A entspricht der Induktivität der Spule L, x0 entspricht R_RL, B entspricht der Kapazität C
 
-def fit_function(x, A, B): #A = L und B = C laut Theorie
-    return np.sqrt((wid)**2+(2*np.pi*A*x)**2-2(A/B)+(1/(2*np.pi*x * B)**2))
+# def fit_function(x, A, B): #A = L und B = C laut Theorie
+#     return np.sqrt((wid)**2+(2*np.pi*A*x)**2-2(A/B)+(1/(2*np.pi*x * B)**2))
 
 #Daten
 x_data = RF['Frequenz']
@@ -127,7 +127,6 @@ ax.set_ylim(-np.pi, 3*np.pi)
 
 # Plot der Messwerte V und p mit Errorbars 
 ax.errorbar(RG.Frequenz, RG.phi_besser, xerr=RG.df , yerr=RG.dphi, label='$tan(\\varphi)$ in Abhängigkeit der Frequanz', color = 'lightblue', linestyle='None', marker='o', capsize=6)
-
 
 # Fitfunktion definieren
 def fit_function2(x, A, B): #A = L und B = C laut Theorie

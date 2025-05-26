@@ -13,15 +13,19 @@ fnt = 20 # fontsize for zooming, default 10
 plt.rcParams['figure.figsize'] = [19.2,10.8]
 
 RF = pd.read_csv('E4 Programmierung\Versuchsteil_D.csv', header=1, sep=',')
+RF['dF'] = RF['dF'] *10
 
 mean = np.mean(RF['Frequenz'])
-
+print('MEAN: ', mean)
 # korrigierte Standardabweichung berechnen
 std = np.std(RF['Frequenz'], ddof=1)
+print('STD: ' ,std)
 
 deltaStd = std * np.sqrt(10)
+print('DELTA STD: ', deltaStd)
 
-deltaFBar = np.sqrt(deltaStd**2+0.05**2)
+deltaFBar = np.sqrt(deltaStd**2+0.5**2)
+print('DELTA FBAR: ', deltaFBar)
 
 fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
