@@ -25,29 +25,9 @@ RF = pd.read_csv('M5/Bugelmethode/Kalibrierung.csv', header=1, sep=';')
 ## l un dl in mm!!!
 
 
-# Mittelwert des Nullpunktes bestimmen
-# a_0 = [1.45, 1.6, 1.55, 1.5] # nachgemessene Werte
-a_0 = [2.25, 2.5, 2.54,2.67]
-
-
-mean = np.mean(a_0)
-print('MEAN: ', mean)
-# korrigierte Standardabweichung berechnen
-std = np.std(a_0, ddof=1)
-print('STD: ', std)
-
-deltaStd = std * np.sqrt(4)
-print('DELTA STD: ', deltaStd)
-
-deltaa_0Bar = np.sqrt(deltaStd**2+0.2**2)
-print('DELTA FBAR: ', deltaa_0Bar, '\n')
-
-# Ausgangspunkt der Messung in MILLIMETERN
-a_0 = u.ufloat(mean, deltaa_0Bar)
-
 # l abspeichern und Kalibrierungs l' berechnen
 ul = unp.uarray(RF['l'], RF['dl'])  # UNSICHERHEIT IST ABSOLUT!!!
-ulStrich = (ul-a_0)*10**-3
+ulStrich = (ul)*10**-3
 
 aF = 0.1 * RF['Kerbe'] * um * ug
 
@@ -74,17 +54,19 @@ ax.errorbar( x_data[9:18], y_data[9:18], xerr=x_err[9:18], yerr=y_err[9:18], lab
 
 # linearer Fit
 # Fitfunktion definieren
-def fit_function(x, A):
-    return A * x
+def fit_function(x, A, x_0):
+    return A * x + x_0
 
 # Curve-Fit mit Unsicherheiten in y
 params, covariance = curve_fit(fit_function, x_data, y_data, sigma=y_err, absolute_sigma=True)
 A_value = params[0]
+x0_value = params[1]
 fit_errors = np.sqrt(np.diag(covariance))  # Fehler der Fit-Parameter
 A_error = fit_errors[0]
+x0_error = fit_errors[1]
 
 dof = len(RF.index)-len(params)
-chi2 = sum([((fit_function(x,A_value)-y)**2)/(u**2) for x,y,u in zip(x_data,y_data,y_err)])
+chi2 = sum([((fit_function(x,A_value, x0_value)-y)**2)/(u**2) for x,y,u in zip(x_data,y_data,y_err)])
 
 # Fit-Ergebnisse ausgeben
 #print(f"A = {A_value:.6f} ± {A_error:.6f}")
@@ -92,10 +74,10 @@ chi2 = sum([((fit_function(x,A_value)-y)**2)/(u**2) for x,y,u in zip(x_data,y_da
 #print(f"Chi-Quadrat/dof: {chi2/dof}")
 
 x_ax = np.linspace(0, 10, 1000) 
-y_ax = fit_function(x_ax, A_value)
+y_ax = fit_function(x_ax, A_value, x0_value)
 
 # Plot zeichnen
-plt.plot(x_ax, y_ax, label=f"Fit: $y = A \\cdot x$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$", linewidth=2, color='blue')
+plt.plot(x_ax, y_ax, label=f"Fit: $y = A \\cdot x$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$, \n $ x_0 = {x0_value:.6f} \\pm {x0_error:.6f}$", linewidth=2, color='blue')
 
 plt.xlabel('Auslenkungskraft $F$ in N', fontsize=fnt)
 plt.ylabel('Auslenkung $a\'$ in m', fontsize=fnt)
@@ -105,9 +87,9 @@ plt.title("Auslenkung der Federwaage in Abhängigkeit der Belastung", fontsize=f
 plt.xticks(fontsize=fnt)
 plt.yticks(fontsize=fnt)
 
-plt.savefig("M5/Bugelmethode/Kalibrierungsdiagramm.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
+plt.savefig("M5/Bugelmethode/Kalibrierungsdiagramm_experimentellesA0.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
 
-#plt.show()
+plt.show()
  
 # ------------------ 
 
@@ -118,7 +100,6 @@ NN = pd.read_csv('M5/Bugelmethode/Bugelmethode0.csv', header=1, sep=';')
 # Werte ZimmerTemperatur
 ZT = pd.read_csv('M5/Bugelmethode/Bugelmethode20.csv', header=0, sep=';')
 
-#....................... Mittelwerte der Abrissenullpunkte bestimmen
 
 # Mittelwert der 2.-6. Messung berechnen, um einen Nullpunkt für die Messung nahe Null zu finden (Messmethode zuerst falsch angewendet)
 a0mean_NN = np.mean(NN['a_0'][1:])
@@ -128,7 +109,7 @@ print('MEAN A0 NN: ', a0mean_NN)
 std_NN = np.std(NN['a_0'][1:], ddof=1)
 print('STD A0 NN: ', std_NN)
 
-deltaStd_NN = std_NN * np.sqrt(len(NN['a_0'][1:]))
+deltaStd_NN = std_NN * np.sqrt(5)
 print('DELTA STD A0 NN: ', deltaStd_NN)
 
 deltaa_0Bar_NN = np.sqrt(deltaStd_NN**2+0.2**2)
@@ -137,30 +118,9 @@ print('DELTA a0BAR A0 NN: ', deltaa_0Bar_NN, '\n')
 # Mittelwert abspeichern
 a0NN = u.ufloat(a0mean_NN, deltaa_0Bar_NN)
 
-
-# Mittelwert der 2.-6. Messung berechnen, um einen Nullpunkt für die Messung nahe Null zu finden (Messmethode zuerst falsch angewendet)
-a0mean_ZT = np.mean(ZT['a_0'])
-print('MEAN A0 ZT: ', a0mean_ZT)
-
-# korrigierte Standardabweichung berechnen
-std_ZT = np.std(ZT['a_0'], ddof=1)
-print('STD A0 ZT: ', std_ZT)
-
-deltaStd_ZT = std_ZT * np.sqrt(len(ZT['a_0']))
-print('DELTA STD A0 ZT: ', deltaStd_ZT)
-
-deltaa_0Bar_ZT = np.sqrt(deltaStd_ZT**2+0.2**2)
-print('DELTA a0BAR A0 ZT: ', deltaa_0Bar_ZT, '\n')
-
-# Mittelwert abspeichern
-a0ZT = u.ufloat(a0mean_ZT, deltaa_0Bar_ZT)
-
-
-#.......................
-
 # Abrisswerte abspeichern
 aAbrissNN = unp.uarray(NN['abrissA'], NN['dabrissA']) - a0NN
-aAbrissZT = unp.uarray(ZT['abrissA'], ZT['dabrissA']) - a0ZT
+aAbrissZT = unp.uarray(ZT['abrissA'], ZT['dabrissA']) - a_0
 
 
 #Mittelwert des Abrisses bei Temperaturen Nahe Null

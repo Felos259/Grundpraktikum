@@ -23,13 +23,17 @@ rho = 1000
 ug = u.ufloat(9.812669, 0.000011)
 
 # Durchmesser der Kapillaren bestimmen
-Durchmesser = pd.read_csv('M5/Kapillare/DurchmesserKapillaren.csv', header=0, sep=';')
+Durchmesser = pd.read_csv('M5/Kapillare/DurchmesserKapillaren.csv', header=1, sep=';')
 
 # Farben Error- und Fitdiagramm
 colors = [['mediumblue', 'cornflowerblue'],
           ['forestgreen', 'greenyellow'],
           ['firebrick', 'tomato'],
           ['chocolate', 'darkorange']]
+
+
+
+
 
 dmean = unp.uarray([0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0])
 dstandab = [0.0, 0.0, 0.0, 0.0]

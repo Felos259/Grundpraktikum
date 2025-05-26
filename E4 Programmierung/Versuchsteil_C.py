@@ -107,7 +107,6 @@ plt.savefig("VersuchsteilC1.pdf", format='pdf', bbox_inches='tight', pad_inches=
 #plt.savefig("VersuchsteilC1.svg", format='svg', bbox_inches='tight', pad_inches=0.5) 
 #plt.show()
 
-
 # 2D list of variables (tabular data with rows and columns)
 input_variable = [["Frequenz","df","Z_LRC","dZ_LRC"],[x_data,x_err,y_data,y_err]]
  
@@ -117,6 +116,13 @@ with open ('WertetabelleVersuchsteilCTeil1.csv','w',newline = '') as csvfile:
     my_writer.writerows(input_variable)
 
 ############################### Kapitel 8.3.2 #############################################################
+
+# Phis berechnen
+phi = 2 * np.pi * RF['t_VerK'] / RF['t_Ch1K']
+# DPHI ÜBER AUFLÖSUNG
+
+
+
 
 # Figure und Subplots erstellen - bei denen alle Subplots die gleichen Achsen haben
 fig, ax = plt.subplots()
