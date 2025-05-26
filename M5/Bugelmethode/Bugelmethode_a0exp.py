@@ -11,6 +11,9 @@ import csv
 fnt = 20 # fontsize for zooming, default 10
 plt.rcParams['figure.figsize'] = [19.2,10.8]
 
+### Grundzustand der Kalibrierungsmessung per Fit bestimmen
+
+
 
 # Gewicht des Bügels in KILOGRAMM
 um = u.ufloat(1.293, 0.001)*10**-3
