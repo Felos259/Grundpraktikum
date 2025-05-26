@@ -47,7 +47,6 @@ y_err2 = 2*RF['Z_RL2']*RF['dZ_RL2'] #Gaußsche Fehlerfortpflanzung
 # Plot der Messwerte V und p mit Errorbars 
 ax2.errorbar(x_data2, y_data2, xerr=x_err2 , yerr=y_err2, label='$|Z_{RL}|^2$ in Abhängigkeit der Frequenz', color = 'lightblue', linestyle='None', marker='o', capsize=6)
 
-
 # Fitfunktion definieren
 def fit_function2(x, A):
     return (wid)**2+((A * 2*np.pi*x)**2) #A entspricht der Induktivität der Spule, x0 entspricht R_RL

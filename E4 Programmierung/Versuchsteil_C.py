@@ -23,12 +23,13 @@ uphi = unp.uarray(RF['phi'],RF['dphi'])
 ############################### Kapitel 8.3.1 #############################################################
 
 # R_RL = Summe aus Omhschen Widerstand und Spulenwiderstand
-widerstand = unp.uarray([10.16],[0.2016]) #in Ohm
-wid=10.16/1000 #in Kilo-Ohm
-uwid=0.2016/1000 #in Kilo-Ohm
+uR = u.ufloat(10.16,0.2016)
+widerstand = u.ufloat(10.16,0.2016)+u.ufloat(151.02,10*0.01+1.5102) #in Ohm
+wid = widerstand.n / 1000 #in Kilo-Ohm
+uwid= widerstand.s / 1000 #in Kilo-Ohm
 
 # Scheinwiderstand bestimmen
-uscheinwiderstand = widerstand*uuch1/uuch2/1000 #in kOhm 
+uscheinwiderstand = uR*uuch1/uuch2/1000 #in kOhm 
 RF['Z_RLC']=np.array([value.nominal_value for value in uscheinwiderstand])
 RF['dZ_RLC']=np.array([value.s for value in uscheinwiderstand])
 
@@ -49,12 +50,9 @@ ax.errorbar(RF.Frequenz, RF.Z_RLC, xerr=RF.df , yerr=RF.dZ_RLC, label='$|Z_{RLC}
 def fit_function(x, A, B): #A = L und B = C laut Theorie
     return np.sqrt((wid)**2+((2*np.pi*A*x)-(1/(2*np.pi*x * B)))**2)
 #A entspricht der Induktivität der Spule L, x0 entspricht R_RL, B entspricht der Kapazität C
-<<<<<<< HEAD
 
 # def fit_function(x, A, B): #A = L und B = C laut Theorie
 #     return np.sqrt((wid)**2+(2*np.pi*A*x)**2-2(A/B)+(1/(2*np.pi*x * B)**2))
-=======
->>>>>>> f686e93139c6a63b25326028f2d8257fa475d605
 
 #Daten
 x_data = RF['Frequenz']
@@ -117,7 +115,6 @@ input_variable = [["Frequenz","df","Z_LRC","dZ_LRC"],[x_data,x_err,y_data,y_err]
 with open ('WertetabelleVersuchsteilCTeil1.csv','w',newline = '') as csvfile:
     my_writer = csv.writer(csvfile, delimiter = ',')
     my_writer.writerows(input_variable)
-
 
 ############################### Kapitel 8.3.2 #############################################################
 
