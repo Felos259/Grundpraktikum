@@ -14,6 +14,7 @@ import csv #Output meine Berechnungen in eine CSV-Datei
 RF = pd.read_csv('Versuchsteil_C.csv', header=1)
 RG = pd.read_csv('Versuchsteil_C_phi.csv', header=1)
 
+
 uf = unp.uarray(RF['Frequenz'], RF['df'])
 uuch1 = unp.uarray(RF['U_Ch1'], RF['dU_Ch1'])
 uuch2 = unp.uarray(RF['U_Ch2'], RF['dU_Ch2'])
@@ -22,12 +23,12 @@ uphi = unp.uarray(RF['phi'],RF['dphi'])
 ############################### Kapitel 8.3.1 #############################################################
 
 # R_RL = Summe aus Omhschen Widerstand und Spulenwiderstand
-widerstand = unp.uarray([10.16],[0.2016])+unp.uarray([151.02],[10*0.01+1.5102]) #in Ohm
-wid=161.18/1000 #in Kilo-Ohm
-uwid=1.6227712716214817/1000 #in Kilo-Ohm
+widerstand = unp.uarray([10.16],[0.2016]) #in Ohm
+wid=10.16/1000 #in Kilo-Ohm
+uwid=0.2016/1000 #in Kilo-Ohm
 
 # Scheinwiderstand bestimmen
-uscheinwiderstand = widerstand*(uuch1/uuch2)/1000 #in kOhm 
+uscheinwiderstand = widerstand*uuch1/uuch2/1000 #in kOhm 
 RF['Z_RLC']=np.array([value.nominal_value for value in uscheinwiderstand])
 RF['dZ_RLC']=np.array([value.s for value in uscheinwiderstand])
 
@@ -37,7 +38,7 @@ fig, ax = plt.subplots()
 
 # Achsen richten
 ax.set_xlim(0,1600)
-ax.set_ylim(0, 90)
+ax.set_ylim(0, 8)
 
 # Plot der Messwerte V und p mit Errorbars 
 ax.errorbar(RF.Frequenz, RF.Z_RLC, xerr=RF.df , yerr=RF.dZ_RLC, label='$|Z_{RLC}|$ in Abhängigkeit der Frequanz', color = 'lightblue', linestyle='None', marker='o', capsize=6)
@@ -45,12 +46,9 @@ ax.errorbar(RF.Frequenz, RF.Z_RLC, xerr=RF.df , yerr=RF.dZ_RLC, label='$|Z_{RLC}
 # linearer Fit
 
 # Fitfunktion definieren
-# def fit_function(x, A, B): #A = L und B = C laut Theorie
-#     return np.sqrt((wid)**2+((2*np.pi*A*x)-(1/(2*np.pi*x * B)))**2)
-#A entspricht der Induktivität der Spule L, x0 entspricht R_RL, B entspricht der Kapazität C
-
 def fit_function(x, A, B): #A = L und B = C laut Theorie
-    return np.sqrt((wid)**2+(2*np.pi*A*x)**2-2(A/B)+(1/(2*np.pi*x * B)**2))
+    return np.sqrt((wid)**2+((2*np.pi*A*x)-(1/(2*np.pi*x * B)))**2)
+#A entspricht der Induktivität der Spule L, x0 entspricht R_RL, B entspricht der Kapazität C
 
 #Daten
 x_data = RF['Frequenz']
@@ -139,9 +137,10 @@ x_data = RG['Frequenz']
 x_err = RG['df']
 y_data = RG['phi_besser']
 y_err = RG['dphi']
+print(y_data)
 
 # Curve-Fit mit Unsicherheiten in y
-params, covariance = curve_fit(fit_function2, x_data, y_data, sigma=y_err, absolute_sigma=True)#, bounds = ([0,0],[50,10**(-3)]))
+params, covariance = curve_fit(fit_function2, x_data, y_data, sigma=y_err, absolute_sigma=True, bounds = ([0,0],[50,10**(-3)]))
 A_value = params[0]
 fit_errors = np.sqrt(np.diag(covariance))  # Fehler der Fit-Parameter
 A_error = fit_errors[0]
