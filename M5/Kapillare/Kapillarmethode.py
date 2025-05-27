@@ -9,7 +9,7 @@ import uncertainties.umath as um
 from uncertainties import unumpy as unp
 import csv
 
-fnt = 15 # fontsize for zooming, default 10
+fnt = 18 # fontsize for zooming, default 10
 plt.rcParams['figure.figsize'] = [19.2,10.8]
 
 # Systematische Unsicherheit Durchmesser Kapillare in mm

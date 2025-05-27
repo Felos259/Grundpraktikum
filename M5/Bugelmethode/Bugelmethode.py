@@ -25,7 +25,7 @@ RF = pd.read_csv('M5/Bugelmethode/Kalibrierung.csv', header=1, sep=';')
 ## l un dl in mm!!!
 
 
-# Mittelwert des Nullpunktes bestimmen
+# Mittelwert des Nullpunktes der Kalibrierung bestimmen
 # a_0 = [1.45, 1.6, 1.55, 1.5] # nachgemessene Werte
 a_0 = [2.25, 2.5, 2.54,2.67]
 
