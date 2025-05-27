@@ -36,7 +36,7 @@ print('MEAN: ', mean)
 std = np.std(a_0, ddof=1)
 print('STD: ', std)
 
-deltaStd = std * np.sqrt(4)
+deltaStd = std / np.sqrt(4)
 print('DELTA STD: ', deltaStd)
 
 deltaa_0Bar = np.sqrt(deltaStd**2+0.2**2)
@@ -128,7 +128,7 @@ print('MEAN A0 NN: ', a0mean_NN)
 std_NN = np.std(NN['a_0'][1:], ddof=1)
 print('STD A0 NN: ', std_NN)
 
-deltaStd_NN = std_NN * np.sqrt(len(NN['a_0'][1:]))
+deltaStd_NN = std_NN / np.sqrt(len(NN['a_0'][1:]))
 print('DELTA STD A0 NN: ', deltaStd_NN)
 
 deltaa_0Bar_NN = np.sqrt(deltaStd_NN**2+0.2**2)
@@ -146,7 +146,7 @@ print('MEAN A0 ZT: ', a0mean_ZT)
 std_ZT = np.std(ZT['a_0'], ddof=1)
 print('STD A0 ZT: ', std_ZT)
 
-deltaStd_ZT = std_ZT * np.sqrt(len(ZT['a_0']))
+deltaStd_ZT = std_ZT / np.sqrt(len(ZT['a_0']))
 print('DELTA STD A0 ZT: ', deltaStd_ZT)
 
 deltaa_0Bar_ZT = np.sqrt(deltaStd_ZT**2+0.2**2)
@@ -171,7 +171,7 @@ print('MEAN NN: ', aBarNN)
 std_NN = np.std([value.nominal_value for value in aAbrissNN], ddof=1)
 print('STD NN: ', std_NN)
 
-deltaStd_NN = std_NN * np.sqrt(6)
+deltaStd_NN = std_NN / np.sqrt(len([value.nominal_value for value in aAbrissNN]))
 print('DELTA STD NN: ', deltaStd_NN)
 
 deltaa_0Bar_NN = np.sqrt(deltaStd_NN**2+0.4**2)
@@ -188,7 +188,7 @@ print('MEAN ZT: ', aBarZT)
 std_ZT = np.std([value.nominal_value for value in aAbrissZT], ddof=1)
 print('STD ZT: ', std_ZT)
 
-deltaStd_ZT = std_ZT * np.sqrt(6)
+deltaStd_ZT = std_ZT / np.sqrt(len([value.nominal_value for value in aAbrissZT]))
 print('DELTA STD NN: ', deltaStd_ZT)
 
 deltaa_0Bar_ZT = np.sqrt(deltaStd_ZT**2+0.4**2)
