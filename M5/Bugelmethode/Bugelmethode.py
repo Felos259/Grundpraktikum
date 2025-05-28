@@ -196,11 +196,60 @@ print('DELTA FBAR NN: ', deltaa_0Bar_ZT, '\n')
 
 aBarZT = u.ufloat(aBarZT, deltaa_0Bar_ZT)
 
-# Oberflächenspannung aus Kalibrierungskruve berechnen
-sigmaNN = aBarNN/(2*uA*uDrahtlaenge)
-print('Sigma nahe Null =', sigmaNN)
-print(sigmaNN.s, '\n')
 
-sigmaZT = aBarZT/(2*uA*uDrahtlaenge)
+
+# Oberflächenspannung aus Kalibrierungskruve berechnen
+sigmaNN = aBarNN*10**-3/(2*uA*uDrahtlaenge)
+print('Sigma nahe Null =', sigmaNN)
+print(sigmaNN.n, sigmaNN.s, '\n')
+
+sigmaZT = aBarZT*10**-3/(2*uA*uDrahtlaenge)
 print('Sigma Zimmertemperatur =', sigmaZT)
-print(sigmaZT.s)
+print(sigmaZT.n, sigmaZT.s)
+
+
+
+
+#########################################
+
+#Diagramm der Abrisswerte erstellen
+
+colors = [['mediumblue', 'cornflowerblue'],
+          ['olivedrab', 'mediumaquamarine']]
+
+fig, ax = plt.subplots()
+# fig ist das eigentliche Bild, ax ist ein Datenobjeke
+
+# Achsen richten
+ax.set_xlim(0.0011, 6.5)
+ax.set_ylim(0.0, 10.0)
+
+# Index renamen damit er bei 1 anfängt
+ZT.index = np.arange(1, len(ZT) + 1)
+
+# Plot der Abrisswerte
+ax.errorbar(ZT.index, [value.nominal_value for value in aAbrissNN], [value.s for value in aAbrissNN], label='$a_r\'$ nahe Null Grad', color = colors[1][1], linestyle='None', marker='o', capsize=8, markersize=9, elinewidth=1.5)
+ax.errorbar(ZT.index, [value.nominal_value for value in aAbrissZT], [value.s for value in aAbrissZT], label='$a_r\'$ bei Zimmertemperatur', color = colors[0][1], linestyle='None', marker='o', capsize=8, markersize=9, elinewidth=1.5)
+
+#Plots der Mittelwerte mit Unsicherheitem
+plt.axhline(aBarZT.n - aBarZT.s, color=colors[0][0], linewidth=1, linestyle='--') 
+plt.axhline(aBarZT.n + aBarZT.s, color=colors[0][0], linewidth=1, linestyle='--') 
+plt.axhline(aBarZT.n, label = 'Mittelwert (mit Unsicherheit) von $a_r\'$ bei Zimmertemperatur', color=colors[0][0], linewidth=1, linestyle='-')  
+
+plt.axhline(aBarNN.n - aBarNN.s, color=colors[1][0], linewidth=1, linestyle='--') 
+plt.axhline(aBarNN.n + aBarNN.s, color=colors[1][0], linewidth=1, linestyle='--') 
+plt.axhline(aBarNN.n, label = 'Mittelwert (mit Unsicherheit) von $a_r\'$ nahe Null Grad', color=colors[1][0], linewidth=1, linestyle='-')  
+
+
+plt.xlabel('Messung Nr. n', fontsize=fnt)
+plt.ylabel('Auslenkung $a_r\'$ in mm', fontsize=fnt)
+plt.legend(fontsize=fnt, loc=2) #Legende printen
+plt.title("Auslenkung der Feder bei Abriss der Wasserlamelle (abzüglich Grundstellung)", fontsize=fnt)
+
+plt.xticks(fontsize=fnt)
+plt.yticks(fontsize=fnt)
+
+plt.savefig("M5/Bugelmethode/Abrissdiagramm.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
+
+#plt.show()
+ 

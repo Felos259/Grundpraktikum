@@ -9,7 +9,7 @@ import uncertainties.umath as um
 from uncertainties import unumpy as unp
 import csv
 
-fnt = 18 # fontsize for zooming, default 10
+fnt = 16 # fontsize for zooming, default 10
 plt.rcParams['figure.figsize'] = [19.2,10.8]
 
 # Systematische Unsicherheit Durchmesser Kapillare in mm
@@ -30,7 +30,6 @@ colors = [['mediumblue', 'cornflowerblue'],
           ['olivedrab', 'mediumaquamarine'],
           ['darkred', 'tomato'],
           ['chocolate', 'gold']]
-
 
 dmean = unp.uarray([0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0])
 dstandab = [0.0, 0.0, 0.0, 0.0]
@@ -81,7 +80,6 @@ for i in range(0,4,1):
     plt.axhline(hmean[i].n, label = 'Mittelwert der Steighöhe (mit Unsicherheit) zu $d_' + str(i+1) + '\\cong$('+ str(dmean[i]*10**3) + ')mm'  ,color=colors[i][0], linewidth=1, linestyle='-')  
 
 
-
 plt.xlabel('n',fontsize=fnt)
 plt.ylabel('Steighöhe $h$ in m', fontsize=fnt)
 plt.legend(fontsize=fnt, loc='upper left') #Legende printen
@@ -103,14 +101,13 @@ plt.savefig("M5/Kapillare/Index-h-Diagramm.pdf", format='pdf', bbox_inches='tigh
 # Plot der Mittelwerte
 #
 
-durchr = 1/(0.5*dmean) *10**-3 #1 durch r in 10*3/m= 1/mm
-print(durchr)
+durchr = 1/(0.5*dmean) #1 durch r in 1/m
 
 fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0, 5)
+ax.set_xlim(0, 5000)
 ax.set_ylim(0, 0.065)
 
 # Figure und Subplots erstellen - bei denen alle Subplots die gleichen Achsen haben
@@ -152,9 +149,9 @@ y_ax = fit_function(x_ax, A_value)
 plt.plot(x_ax, y_ax, label=f"Fit: $y = A \\cdot x$ \n $A = {A_value:.6f} \\pm {A_error:.6f}$", linewidth=2, color=colors[0][1])
 
 # Plot zeichnen
-plt.xlabel('$\\frac{1}{r}$ in mm$^-1$',fontsize=fnt)
+plt.xlabel('$\\frac{1}{r}$ in m$^-1$',fontsize=fnt)
 plt.ylabel('mittlere Steighöhe $\\bar{h}$ in m', fontsize=fnt)
-plt.legend(fontsize=fnt) #Legende printen
+plt.legend(fontsize=fnt, loc='upper left') #Legende printen
 plt.title("Mittelwerte der Steighöhen der Kapillaren $\\bar{h}$ in Abhängigkeit des Radius $r$", fontsize=fnt)
 
 plt.xticks(fontsize=fnt)
@@ -166,4 +163,4 @@ plt.show()
 uA = u.ufloat(A_value, A_error)
 
 sigma = uA * rho * ug * 0.5
-print('Sigma = ', sigma)
+print('Sigma = ', sigma.n, sigma.s)
