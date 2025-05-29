@@ -62,7 +62,9 @@ for i in range(0,4,1):
     hmean_v = np.mean([value.nominal_value for value in h])
     hstandab[i] = np.std([value.nominal_value for value in h],ddof=1)
     # Unsicherheit von d anpassen: Mischung aus Größtfehler, systematihscer Messunsicherheit und statistischer Messunsicherheit
-    hmean[i] = u.ufloat(hmean_v , (np.sqrt((0.05*10**-2)**2 + (hstandab[i]/np.sqrt(len(h)))**2 )))
+    # Größtfehler von 1mm = 0.001 m = 0.1 cm = 0.1 * 10**-2
+    
+    hmean[i] = u.ufloat(hmean_v , (np.sqrt((0.001)**2 + (hstandab[i]/np.sqrt(len(h)))**2 )))
 
     # Index renamen damit er bei 1 anfängt
     Steigh.index = np.arange(1, len(Steigh) + 1)
@@ -79,6 +81,9 @@ for i in range(0,4,1):
     plt.axhline(hmean[i].n + hmean[i].s, color=colors[i][0], linewidth=1, linestyle='--') 
     plt.axhline(hmean[i].n, label = 'Mittelwert der Steighöhe (mit Unsicherheit) zu $d_' + str(i+1) + '\\cong$('+ str(dmean[i]*10**3) + ')mm'  ,color=colors[i][0], linewidth=1, linestyle='-')  
 
+print(hmean)
+# print(hstandab)
+# print(hmean)
 
 plt.xlabel('n',fontsize=fnt)
 plt.ylabel('Steighöhe $h$ in m', fontsize=fnt)
@@ -158,7 +163,7 @@ plt.xticks(fontsize=fnt)
 plt.yticks(fontsize=fnt)
 
 plt.savefig("M5/Kapillare/durchr-h-Diagramm.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
-plt.show()
+# plt.show()
 
 uA = u.ufloat(A_value, A_error)
 
