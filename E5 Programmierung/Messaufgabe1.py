@@ -15,54 +15,54 @@ RF = pd.read_csv('Messaufgabe1.csv', header=2)
 kapazitaet = unp.uarray([10**(-5)],[0]) #Kapazitaet des Kondensators in Farad
 
 # Unsicherheiten aller Art
-ableseAmpere = 1 #Ableseunsicherheit am Amperemeter in Ampere
-sysAmpere = 0 #Systematische Unsicherheit des Amperemeters in Ampere
-RF['uI1oC']=[np.sqrt((ableseAmpere)**2+(sysAmpere)**2)]*(len(RF['I_1Weg_ohneC']))
-RF['uI1mC']=[np.sqrt((ableseAmpere)**2+(sysAmpere)**2)]*(len(RF['I_1Weg_mitC']))
-RF['uI2oC']=[np.sqrt((ableseAmpere)**2+(sysAmpere)**2)]*(len(RF['I_2Weg_ohneC']))
-RF['uI2mC']=[np.sqrt((ableseAmpere)**2+(sysAmpere)**2)]*(len(RF['I_2Weg_mitC']))
+#ableseAmpere = 1 #Ableseunsicherheit am Amperemeter in Ampere
+#sysAmpere = 0 #Systematische Unsicherheit des Amperemeters in Ampere
+#RF['uI1oC']=[np.sqrt((ableseAmpere)**2+(sysAmpere)**2)]*(len(RF['I_1Weg_ohneC']))
+#RF['uI1mC']=[np.sqrt((ableseAmpere)**2+(sysAmpere)**2)]*(len(RF['I_1Weg_mitC']))
+#RF['uI2oC']=[np.sqrt((ableseAmpere)**2+(sysAmpere)**2)]*(len(RF['I_2Weg_ohneC']))
+#RF['uI2mC']=[np.sqrt((ableseAmpere)**2+(sysAmpere)**2)]*(len(RF['I_2Weg_mitC']))
 
-ableseVolt2 = 1 #Ableseunsicherheit am Voltmeter 2 (nach Schaltplan) in Volt
-sysVolt2 = 0 #Systematische Unsicherheit des Voltmeters 2 (nach Schaltplan) in Volt
-RF['uV1oC']=[np.sqrt((ableseVolt2)**2+(sysVolt2)**2)]*(len(RF['U_1Weg_ohneC']))
-RF['uV1mC']=[np.sqrt((ableseVolt2)**2+(sysVolt2)**2)]*(len(RF['U_1Weg_mitC']))
-RF['uV2oC']=[np.sqrt((ableseVolt2)**2+(sysVolt2)**2)]*(len(RF['U_2Weg_ohneC']))
-RF['uV2mC']=[np.sqrt((ableseVolt2)**2+(sysVolt2)**2)]*(len(RF['U_2Weg_mitC']))
+#ableseVolt2 = 1 #Ableseunsicherheit am Voltmeter 2 (nach Schaltplan) in Volt
+#sysVolt2 = 0 #Systematische Unsicherheit des Voltmeters 2 (nach Schaltplan) in Volt
+#RF['uV1oC']=[np.sqrt((ableseVolt2)**2+(sysVolt2)**2)]*(len(RF['U_1Weg_ohneC']))
+#RF['uV1mC']=[np.sqrt((ableseVolt2)**2+(sysVolt2)**2)]*(len(RF['U_1Weg_mitC']))
+#RF['uV2oC']=[np.sqrt((ableseVolt2)**2+(sysVolt2)**2)]*(len(RF['U_2Weg_ohneC']))
+#RF['uV2mC']=[np.sqrt((ableseVolt2)**2+(sysVolt2)**2)]*(len(RF['U_2Weg_mitC']))
 
 # Figure und Subplots erstellen - bei denen alle Subplots die gleichen Achsen haben
 fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0,50)
-ax.set_ylim(0, 50)
+ax.set_xlim(0,0.2)
+ax.set_ylim(0,1000)
 
 #Daten
-x_data_1 = RF['I_1Weg_ohneC']
+x_data_1 = RF['I_1Weg_ohneC']*10**(-3)
 x_err_1 = RF['uI1oC']
-y_data_1 = RF['U_1Weg_ohneC']
+y_data_1 = RF['U_1Weg_ohneC']*10/3
 y_err_1 = RF['uV1oC']
 
-x_data_2 = RF['I_1Weg_mitC']
+x_data_2 = RF['I_1Weg_mitC']*10**(-3)
 x_err_2 = RF['uI1mC']
-y_data_2 = RF['U_1Weg_mitC']
+y_data_2 = RF['U_1Weg_mitC']*10/3
 y_err_2 = RF['uV1mC']
 
-x_data_3 = RF['I_2Weg_ohneC']
+x_data_3 = RF['I_2Weg_ohneC']*10**(-3)
 x_err_3 = RF['uI2oC']
-y_data_3 = RF['U_2Weg_ohneC']
+y_data_3 = RF['U_2Weg_ohneC']*10/3
 y_err_3 = RF['uV2oC']
 
-x_data_4 = RF['I_2Weg_mitC']
+x_data_4 = RF['I_2Weg_mitC']*10**(-3)
 x_err_4 = RF['uI2mC']
-y_data_4 = RF['U_2Weg_mitC']
+y_data_4 = RF['U_2Weg_mitC']*10/3
 y_err_4 = RF['uV2mC']
 
 # Plot der Messwerte V und p mit Errorbars 
-ax.errorbar(RF.I_1Weg_ohneC, RF.U_1Weg_ohneC, xerr=RF.uI1oC , yerr=RF.uV1oC, label='EWG ohne Kondensator', color = 'lightblue', linestyle='None', marker='o', capsize=6)
-ax.errorbar(RF.I_1Weg_mitC, RF.U_1Weg_mitC, xerr=RF.uI1mC , yerr=RF.uV1mC, label='EWG mit Kondensator', color = 'darkblue', linestyle='None', marker='o', capsize=6)
-ax.errorbar(RF.I_2Weg_ohneC, RF.U_2Weg_ohneC, xerr=RF.uI2oC , yerr=RF.uV2oC, label='ZWG ohne Kondensator', color = 'lightgreen', linestyle='None', marker='o', capsize=6)
-ax.errorbar(RF.I_2Weg_mitC, RF.U_2Weg_mitC, xerr=RF.uI2mC , yerr=RF.uV2mC, label='ZWG mit Kondensator', color = 'darkgreen', linestyle='None', marker='o', capsize=6)
+ax.errorbar(x_data_1,y_data_1, xerr=x_err_1 , yerr=y_err_1, label='EWG ohne Kondensator', color = 'lightblue', linestyle='None', marker='o', capsize=6)
+ax.errorbar(x_data_2, y_data_2, xerr=x_err_2 , yerr=y_err_2, label='EWG mit Kondensator', color = 'darkblue', linestyle='None', marker='o', capsize=6)
+ax.errorbar(x_data_3, y_data_3, xerr=x_err_3 , yerr=y_err_3, label='ZWG ohne Kondensator', color = 'lightgreen', linestyle='None', marker='o', capsize=6)
+ax.errorbar(x_data_4, y_data_4, xerr=x_err_4 , yerr=y_err_4, label='ZWG mit Kondensator', color = 'darkgreen', linestyle='None', marker='o', capsize=6)
 
 
 #To-Do: Gemäß theoretischen Ergebnis überarbeiten!
@@ -88,7 +88,7 @@ I0_1=-unp.uarray([x0_1_value],[x0_1_error])/(unp.uarray([A_1_value],[A_1_error])
 print("Kurzschlussstrom EWG: ", I0_1)
 print(f"1-Weg ohne Kondensator: Chi-Quadrat/dof: {chi2_1/dof_1}")
 # Fit-Ergebnisse plotten
-x_ax_1=np.linspace(0, 100, 1000) 
+x_ax_1=np.linspace(0, 300, 1000) 
 y_ax_1 = fit_function(x_ax_1, A_1_value,x0_1_value)
 plt.plot(x_ax_1, y_ax_1, label=f"EWG-Fit: $y = A \\cdot x+x_0$ \n $A = {A_1_value:.6f} \\pm {A_1_error:.6f}$ \n $x_0 = {x0_1_value:.6f} \\pm {x0_1_error:.6f}$", linewidth=2, color='blue')
 
@@ -108,9 +108,9 @@ print(f"2-Weg ohne Kondensator: x0 = {x0_3_value:.6f} ± {x0_3_error:.6f} (Leerl
 I0_1=-unp.uarray([x0_3_value],[x0_3_error])/(unp.uarray([A_3_value],[A_3_error]))
 print("Kurzschlussstrom EWG: ", I0_1)
 print(f"2-Weg ohne Kondensator: Chi-Quadrat/dof: {chi2_3/dof_3}")
-x_ax_3=np.linspace(0, 100, 1000) 
+x_ax_3=np.linspace(0, 300, 1000) 
 y_ax_3 = fit_function(x_ax_3, A_3_value,x0_3_value)
-plt.plot(x_ax_3, y_ax_3, label=f"ZWG-Fit: $y = A \\cdot x+x_0$ \n $A = {A_3_value:.6f} \\pm {A_3_error:.6f}$ \n $x_0 = {x0_3_value:.6f} \\pm {x0_3_error:.6f}$", linewidth=2, color='green')
+plt.plot(x_ax_3, y_ax_3, label=f"ZWG-Fit: $y = A \\cdot x+x_0$ \n $A = {A_3_value:.6f} \\pm {A_3_error:.6f}$ \n $x_0 = {x0_3_value:.6f} \\pm {x0_3_error:.6f}$", linewidth=2, color='limegreen')
 
 # Plot zeichnen
 plt.xlabel('Laststrom $I$ in A')
