@@ -34,7 +34,7 @@ fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0,0.2)
+ax.set_xlim(0,0.11)
 ax.set_ylim(0,1000)
 
 #Daten
