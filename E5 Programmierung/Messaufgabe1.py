@@ -118,5 +118,48 @@ plt.title("Zeitliche Mittelwerte der Gleichspannungen in Abhängigkeit des Lasts
 
 plt.savefig("Messreihe1.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5)
 
+
+# Residuenplot E1 :)
+residuen_1 = (unp.uarray(y_data_1,y_err_1) - u.ufloat(A_1_value,A_1_error)*(unp.uarray(x_data_1,x_err_1)-u.ufloat(x0_1_value,x0_1_error)))
+
+residuen_1_value = np.array([value.nominal_value for value in residuen_1])
+residuen_1_error = np.array([value.s for value in residuen_1])
+
+fig, ax = plt.subplots()
+ax.set_xlim(-0.001,0.05)
+ax.set_ylim(-50,20)
+
+plt.errorbar(x_data_1, residuen_1_value, xerr=x_err_1, yerr=residuen_1_error, fmt='o', label='Residuen', capsize=5, color='red')
+plt.tick_params(axis="both",direction="in",top=True,left=True,right=True,bottom=True)
+plt.axhline(0, color='black', linewidth=0.8, linestyle='--')  # Horizontale Linie bei y=0
+plt.xlabel('Laststrom $I$ in A')
+plt.ylabel('Residuen $(U_i - \\hat{U}_i)$ in V')
+plt.legend()
+plt.title("Residuendarstellung zum $U$-$I$-Diagramm für den Aufbau E1")
+
+plt.savefig("ResiduumE1.pdf", format='pdf', bbox_inches='tight', pad_inches=0.1)
+
+
+# Residuenplot Z1 :)
+residuen_3 = (unp.uarray(y_data_3,y_err_3) - u.ufloat(A_3_value,A_3_error)*(unp.uarray(x_data_3,x_err_3)-u.ufloat(x0_3_value,x0_3_error)))
+
+residuen_3_value = np.array([value.nominal_value for value in residuen_3])
+residuen_3_error = np.array([value.s for value in residuen_3])
+
+fig, ax = plt.subplots()
+ax.set_xlim(-0.001,0.11)
+ax.set_ylim(-26,22)
+
+plt.errorbar(x_data_3, residuen_3_value, xerr=x_err_3, yerr=residuen_3_error, fmt='o', label='Residuen', capsize=5, color='red')
+plt.tick_params(axis="both",direction="in",top=True,left=True,right=True,bottom=True)
+plt.axhline(0, color='black', linewidth=0.8, linestyle='--')  # Horizontale Linie bei y=0
+plt.xlabel('Laststrom $I$ in A')
+plt.ylabel('Residuen $(U_i - \\hat{U}_i)$ in V')
+plt.legend()
+plt.title("Residuendarstellung zum $U$-$I$-Diagramm für den Aufbau Z1")
+
+plt.savefig("ResiduumZ1.pdf", format='pdf', bbox_inches='tight', pad_inches=0.1) 
+
+
 plt.show()
 
