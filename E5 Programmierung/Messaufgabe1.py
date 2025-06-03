@@ -35,27 +35,27 @@ fig, ax = plt.subplots()
 
 # Achsen richten
 ax.set_xlim(0,0.11)
-ax.set_ylim(0,1000)
+ax.set_ylim(0,100)
 
 #Daten
 x_data_1 = RF['I_1Weg_ohneC']*10**(-3)
 x_err_1 = RF['uI1oC']
-y_data_1 = RF['U_1Weg_ohneC']*10/3
+y_data_1 = RF['U_1Weg_ohneC']/3
 y_err_1 = RF['uV1oC']
 
 x_data_2 = RF['I_1Weg_mitC']*10**(-3)
 x_err_2 = RF['uI1mC']
-y_data_2 = RF['U_1Weg_mitC']*10/3
+y_data_2 = RF['U_1Weg_mitC']/3
 y_err_2 = RF['uV1mC']
 
 x_data_3 = RF['I_2Weg_ohneC']*10**(-3)
 x_err_3 = RF['uI2oC']
-y_data_3 = RF['U_2Weg_ohneC']*10/3
+y_data_3 = RF['U_2Weg_ohneC']/3
 y_err_3 = RF['uV2oC']
 
 x_data_4 = RF['I_2Weg_mitC']*10**(-3)
 x_err_4 = RF['uI2mC']
-y_data_4 = RF['U_2Weg_mitC']*10/3
+y_data_4 = RF['U_2Weg_mitC']/3
 y_err_4 = RF['uV2mC']
 
 # Plot der Messwerte V und p mit Errorbars 
@@ -127,7 +127,7 @@ residuen_1_error = np.array([value.s for value in residuen_1])
 
 fig, ax = plt.subplots()
 ax.set_xlim(-0.001,0.05)
-ax.set_ylim(-50,20)
+ax.set_ylim(-5,2)
 
 plt.errorbar(x_data_1, residuen_1_value, xerr=x_err_1, yerr=residuen_1_error, fmt='o', label='Residuen', capsize=5, color='red')
 plt.tick_params(axis="both",direction="in",top=True,left=True,right=True,bottom=True)
@@ -148,7 +148,7 @@ residuen_3_error = np.array([value.s for value in residuen_3])
 
 fig, ax = plt.subplots()
 ax.set_xlim(-0.001,0.11)
-ax.set_ylim(-26,22)
+ax.set_ylim(-3,2)
 
 plt.errorbar(x_data_3, residuen_3_value, xerr=x_err_3, yerr=residuen_3_error, fmt='o', label='Residuen', capsize=5, color='red')
 plt.tick_params(axis="both",direction="in",top=True,left=True,right=True,bottom=True)
