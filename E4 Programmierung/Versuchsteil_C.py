@@ -123,7 +123,6 @@ phi = 2 * np.pi * RF['t_VerK'] / RF['t_Ch1K']
 
 
 
-
 # Figure und Subplots erstellen - bei denen alle Subplots die gleichen Achsen haben
 fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
