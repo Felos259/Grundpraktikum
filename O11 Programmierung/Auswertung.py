@@ -44,7 +44,7 @@ fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0,90)
+ax.set_xlim(0,90/360*2*np.pi)
 ax.set_ylim(0,1)
 
 #Daten
@@ -82,7 +82,7 @@ chi2 = sum([((fit_function_parallel(x,B_value)-y)**2)/(u**2) for x,y,u in zip(x_
 print(f"Parallel: B = {B_value:.6f} ± {B_error:.6f}")
 print(f"Parallel: Chi-Quadrat/dof: {chi2/dof}")
 # Fit-Ergebnisse plotten
-x_ax=np.linspace(0, 300, 1000) 
+x_ax=np.linspace(0, 2, 1000) 
 y_ax_parallel = fit_function_parallel(x_ax, B_value)
 plt.plot(x_ax, y_ax_parallel, label=f"Fit zu parallel polarisierten Licht mit Fitparameter \n $B = {B_value:.6f} \\pm {B_error:.6f}$", linewidth=2, color='blue')
 
@@ -97,7 +97,7 @@ chi2 = sum([((fit_function_senkrecht(x,B_value)-y)**2)/(u**2) for x,y,u in zip(x
 # Fit-Ergebnisse ausgeben
 print(f"Senkrecht: B = {B_value:.6f} ± {B_error:.6f}")
 print(f"Senkrecht: Chi-Quadrat/dof: {chi2/dof}")
-x_ax=np.linspace(0, 300, 1000) 
+x_ax=np.linspace(0, 2, 1000) 
 y_ax_senkrecht = fit_function_senkrecht(x_ax, B_value)
 plt.plot(x_ax, y_ax_senkrecht, label=f"Fit zu senkrecht polarisierten Licht mit Fitparameter \n $B = {B_value:.6f} \\pm {B_error:.6f}$", linewidth=2, color='limegreen')
 
