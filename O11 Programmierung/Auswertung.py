@@ -104,13 +104,13 @@ y_ax_senkrecht = fit_function_senkrecht(x_ax, B_value)
 plt.plot(x_ax, y_ax_senkrecht, label=f"Fit zu senkrecht polarisierten Licht mit Fitparameter \n $\\alpha_B = {B_value:.6f} \\pm {B_error:.6f}$", linewidth=2, color='limegreen')
 
 # Plot zeichnen
-plt.xlabel('Eingangswinkel $\\alpha_E$ in Radiant',fontsize=10)
-plt.ylabel('$\\sqrt{R}$ in 1',fontsize=10)
-plt.legend(fontsize=10)
-plt.title("Wurzel des Reflexionsvermögen von parallel und senkrecht polarisierten Licht in Abhängigkeit des Einfallwinkels",fontsize=10)
+plt.xlabel('Eingangswinkel $\\alpha_E$ in Radiant',fontsize=20)
+plt.ylabel('$\\sqrt{R}$ in 1',fontsize=20)
+plt.legend(fontsize=20)
+plt.title("Wurzel des Reflexionsvermögen von parallel und senkrecht polarisierten Licht in Abhängigkeit des Einfallwinkels",fontsize=20)
 
-plt.xticks(fontsize=10)
-plt.yticks(fontsize=10)
+plt.xticks(fontsize=20)
+plt.yticks(fontsize=20)
 
 plt.savefig("O11Auswertung.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5)
 
