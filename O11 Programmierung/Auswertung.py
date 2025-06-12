@@ -61,8 +61,8 @@ y_err_senkrecht = RF['dRSP']
 
 
 # Plot der Messwerte V und p mit Errorbars 
-ax.errorbar(x_data,y_data_parallel, xerr=x_err , yerr=y_err_parallel, label='Intensität des reflektierten Strahls für parallel polarisiertes Licht', color = 'darkblue', linestyle='None', marker='o', capsize=6)
-ax.errorbar(x_data, y_data_senkrecht, xerr=x_err , yerr=y_err_senkrecht, label='Intensität des reflektierten Strahls für senkrecht polarisiertes Licht', color = 'darkgreen', linestyle='None', marker='o', capsize=6)
+ax.errorbar(x_data,y_data_parallel, xerr=x_err , yerr=y_err_parallel, label='Intensität des reflektierten Strahls für parallel polarisiertes Licht', color = 'darkblue', linestyle='None', marker='o', capsize=8, markersize=9, elinewidth=2)
+ax.errorbar(x_data, y_data_senkrecht, xerr=x_err , yerr=y_err_senkrecht, label='Intensität des reflektierten Strahls für senkrecht polarisiertes Licht', color = 'darkgreen', linestyle='None', marker='o', capsize=8, markersize=9, elinewidth=2)
 
 # Fitfunktion definieren
 def fit_function_parallel(x, B):
@@ -104,10 +104,13 @@ y_ax_senkrecht = fit_function_senkrecht(x_ax, B_value)
 plt.plot(x_ax, y_ax_senkrecht, label=f"Fit zu senkrecht polarisierten Licht mit Fitparameter \n $\\alpha_B = {B_value:.6f} \\pm {B_error:.6f}$", linewidth=2, color='limegreen')
 
 # Plot zeichnen
-plt.xlabel('Eingangswinkel $\\alpha_E$ in Radiant')
-plt.ylabel('$\\sqrt{R}$ in 1')
-plt.legend()
-plt.title("Wurzel des Reflexionsvermögen von parallel und senkrecht polarisierten Licht in Abhängigkeit des Einfallwinkels")
+plt.xlabel('Eingangswinkel $\\alpha_E$ in Radiant',fontsize=10)
+plt.ylabel('$\\sqrt{R}$ in 1',fontsize=10)
+plt.legend(fontsize=10)
+plt.title("Wurzel des Reflexionsvermögen von parallel und senkrecht polarisierten Licht in Abhängigkeit des Einfallwinkels",fontsize=10)
+
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
 
 plt.savefig("O11Auswertung.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5)
 
