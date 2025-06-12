@@ -42,3 +42,40 @@ delta_std = std/np.sqrt(len(numeric_f))
 print('DELTA STD: ', delta_std)
 
 
+
+#Mittelwert plotten
+
+fig, ax = plt.subplots()
+# fig ist das eigentliche Bild, ax ist ein Datenobjeke
+
+# Achsen richten
+ax.set_xlim(0.5, 6.5)
+ax.set_ylim(0.0, 0.1)
+
+# Index renamen damit er bei 1 anfängt
+RF.index = np.arange(1, len(RF) + 1)
+
+#Daten
+x_data = RF.index
+y_data = np.array([value.nominal_value for value in f])
+y_err = np.array([value.s for value in f])
+
+#Messwerte plotten
+ax.errorbar(x_data, y_data, yerr=y_err, label= 'Brennweite $f_i$' , color = 'mediumblue', linestyle='None', marker='o', capsize=8, markersize=9, elinewidth=2 )
+# Horizontale Linie bei y=Mittelwert h
+plt.axhline(mean - delta_std, color='cornflowerblue', linewidth=1, linestyle='--') 
+plt.axhline(mean + delta_std, color='cornflowerblue', linewidth=1, linestyle='--') 
+plt.axhline(mean , label = 'Mittelwert $\\Delta \\Overline{f}$ der Brennweiten'  ,color= 'cornflowerblue', linewidth=1, linestyle='-')  
+
+
+plt.xlabel('i',fontsize=fnt)
+plt.ylabel('Brennweite $f$ in EINHEIT!!!!!', fontsize=fnt)
+plt.legend(fontsize=fnt, loc='upper left') #Legende printen
+plt.title("Brennweiten", fontsize=fnt)
+
+plt.xticks(fontsize=fnt)
+plt.yticks(fontsize=fnt)
+
+plt.savefig("O10/Brennweite.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
+plt.show()
+
