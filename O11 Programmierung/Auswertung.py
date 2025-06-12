@@ -86,7 +86,7 @@ print(f"Parallel: Chi-Quadrat/dof: {chi2/dof}")
 # Fit-Ergebnisse plotten
 x_ax=np.linspace(0, 2, 1000) 
 y_ax_parallel = fit_function_parallel(x_ax, B_value)
-plt.plot(x_ax, y_ax_parallel, label=f"Fit zu parallel polarisierten Licht mit Fitparameter \n $\\alpha_B = {B_value:.6f} \\pm {B_error:.6f}$", linewidth=2, color='blue')
+plt.plot(x_ax, y_ax_parallel, label=f"Fit zu parallel polarisierten Licht mit Fitparameter \n $\\alpha_{{B,\\text{{parallel}}}} = {B_value:.6f} \\pm {B_error:.6f}$", linewidth=2, color='blue')
 
 # Curve-Fit für senkrecht polarisiertes Licht
 params, covariance = curve_fit(fit_function_senkrecht, x_data, y_data_senkrecht, sigma=y_err_senkrecht, absolute_sigma=True)
@@ -101,7 +101,7 @@ print(f"Senkrecht: B = {B_value:.6f} ± {B_error:.6f}")
 print(f"Senkrecht: Chi-Quadrat/dof: {chi2/dof}")
 x_ax=np.linspace(0, 2, 1000) 
 y_ax_senkrecht = fit_function_senkrecht(x_ax, B_value)
-plt.plot(x_ax, y_ax_senkrecht, label=f"Fit zu senkrecht polarisierten Licht mit Fitparameter \n $\\alpha_B = {B_value:.6f} \\pm {B_error:.6f}$", linewidth=2, color='limegreen')
+plt.plot(x_ax, y_ax_senkrecht, label=f"Fit zu senkrecht polarisierten Licht mit Fitparameter \n $\\alpha_{{B,\\text{{senkrecht}}}} = {B_value:.6f} \\pm {B_error:.6f}$", linewidth=2, color='limegreen')
 
 # Plot zeichnen
 plt.xlabel('Eingangswinkel $\\alpha_E$ in Radiant',fontsize=20)
