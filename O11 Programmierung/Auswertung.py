@@ -11,6 +11,8 @@ from uncertainties import unumpy as unp
 
 RF = pd.read_csv('MessdatenO11.csv', header=1)
 
+plt.rcParams['figure.figsize'] = [19.2,10.8]
+
 #To-Do: Unsicherheiten
 
 RF['grundIntensitaet'] = 2400 #U_E in mV
@@ -59,8 +61,8 @@ y_err_senkrecht = RF['dRSP']
 
 
 # Plot der Messwerte V und p mit Errorbars 
-ax.errorbar(x_data,y_data_parallel, xerr=x_err , yerr=y_err_parallel, label='Intensität des reflektierten Strahls für parallel polarisiertes Licht', color = 'darkblue', linestyle='None', marker='o', capsize=6)
-ax.errorbar(x_data, y_data_senkrecht, xerr=x_err , yerr=y_err_senkrecht, label='Intensität des reflektierten Strahls für senkrecht polarisiertes Licht', color = 'darkgreen', linestyle='None', marker='o', capsize=6)
+ax.errorbar(x_data,y_data_parallel, xerr=x_err , yerr=y_err_parallel, label='Intensität des reflektierten Strahls für parallel polarisiertes Licht', color = 'darkblue', linestyle='None', marker='o', capsize=8, markersize=9, elinewidth=2)
+ax.errorbar(x_data, y_data_senkrecht, xerr=x_err , yerr=y_err_senkrecht, label='Intensität des reflektierten Strahls für senkrecht polarisiertes Licht', color = 'darkgreen', linestyle='None', marker='o', capsize=8, markersize=9, elinewidth=2)
 
 # Fitfunktion definieren
 def fit_function_parallel(x, B):
@@ -84,7 +86,7 @@ print(f"Parallel: Chi-Quadrat/dof: {chi2/dof}")
 # Fit-Ergebnisse plotten
 x_ax=np.linspace(0, 2, 1000) 
 y_ax_parallel = fit_function_parallel(x_ax, B_value)
-plt.plot(x_ax, y_ax_parallel, label=f"Fit zu parallel polarisierten Licht mit Fitparameter \n $B = {B_value:.6f} \\pm {B_error:.6f}$", linewidth=2, color='blue')
+plt.plot(x_ax, y_ax_parallel, label=f"Fit zu parallel polarisierten Licht mit Fitparameter \n $\\alpha_{{B,\\text{{parallel}}}} = {B_value:.6f} \\pm {B_error:.6f}$", linewidth=2, color='blue')
 
 # Curve-Fit für senkrecht polarisiertes Licht
 params, covariance = curve_fit(fit_function_senkrecht, x_data, y_data_senkrecht, sigma=y_err_senkrecht, absolute_sigma=True)
@@ -99,13 +101,16 @@ print(f"Senkrecht: B = {B_value:.6f} ± {B_error:.6f}")
 print(f"Senkrecht: Chi-Quadrat/dof: {chi2/dof}")
 x_ax=np.linspace(0, 2, 1000) 
 y_ax_senkrecht = fit_function_senkrecht(x_ax, B_value)
-plt.plot(x_ax, y_ax_senkrecht, label=f"Fit zu senkrecht polarisierten Licht mit Fitparameter \n $B = {B_value:.6f} \\pm {B_error:.6f}$", linewidth=2, color='limegreen')
+plt.plot(x_ax, y_ax_senkrecht, label=f"Fit zu senkrecht polarisierten Licht mit Fitparameter \n $\\alpha_{{B,\\text{{senkrecht}}}} = {B_value:.6f} \\pm {B_error:.6f}$", linewidth=2, color='limegreen')
 
 # Plot zeichnen
-plt.xlabel('Eingangswinkel $\\alpha_E$ in Radiant')
-plt.ylabel('$\\sqrt{R}$ in 1')
-plt.legend()
-plt.title("Wurzel des Reflexionsvermögen von parallel und senkrecht polarisierten Licht in Abhängigkeit des Einfallwinkels")
+plt.xlabel('Eingangswinkel $\\alpha_E$ in Radiant',fontsize=20)
+plt.ylabel('$\\sqrt{R}$ in 1',fontsize=20)
+plt.legend(fontsize=20)
+plt.title("Wurzel des Reflexionsvermögen von parallel und senkrecht polarisierten Licht in Abhängigkeit des Einfallwinkels",fontsize=20)
+
+plt.xticks(fontsize=20)
+plt.yticks(fontsize=20)
 
 plt.savefig("O11Auswertung.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5)
 
