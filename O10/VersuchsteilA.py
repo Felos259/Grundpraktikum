@@ -9,23 +9,24 @@ import uncertainties as u
 import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
-r = u.ufloat(0.0, 0.0)
+# Radius des Sphärometers in mm
+r = 15
 
-# Gemessene Höhen in EINHEIT
-h_1 = u.ufloat(0.0, 0.0) 
-h_2 = u.ufloat(0.0, 0.0) 
+# Gemessene Höhen in mm mit Unsicherheit
+h_1 = u.ufloat(0.635, 0.005) 
+h_2 = u.ufloat(0.635, 0.005) 
 
 R_1 = r**2/(2*h_1) + h_1/2
 R_2 = r**2/(2*h_2) + h_2/2
 
-print('Krümmungsradius R_1: ' + R_1 )
+print('Krümmungsradius R_1: ' + str(R_1) + 'mm')
 
-print('Krümmungsradius R_2: ' + R_2 )
+print('Krümmungsradius R_2: ' + str(R_2) + 'mm')
 
 # Brechungszahl des Materials
-n = 0
+n = 1.52
 
 # Brennweite bestimmen
 f = 1/((n-1) * ((1/R_1) + (1/R_2)))
 
-print('Brennweite: ' + f)
+print('Brennweite: ' + str(f) + 'mm')
