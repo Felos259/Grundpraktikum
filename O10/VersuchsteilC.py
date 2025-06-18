@@ -46,10 +46,9 @@ fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0.0, 1.5)
-ax.set_ylim(0.0, 45)
-print(1/gamma)
-print(y)
+ax.set_xlim(0.5, 6.5)
+ax.set_ylim(0.0, 0.1)
+
 
 data = [[value.n for value in 1/gamma], [value.n for value in 1/gammastrich]]
 labels = [ ["$y\\left(\\frac{1}{\\gamma}\\right)$-Messwerte", "Fit zu $y\\left(\\frac{1}{\\gamma}\\right)$: $y = f \\cdot \\left(1+\\frac{1}{\\gamma}\\right) + c $"],   
