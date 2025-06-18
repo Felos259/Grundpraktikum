@@ -15,26 +15,25 @@ fnt = 20 # fontsize for zooming, default 10
 plt.rcParams['figure.figsize'] = [19.2,10.8]
 
 # Dinge in Einheiten?
-RF = pd.read_csv('O10/Abbe.csv', header=1, sep=';')
-print(RF)
+RF = pd.read_csv('O10/Abbe.csv', header=2, sep=';')
 
 d = 1.0
 
-array = [d, d, d, d, d, d, d, d]
+array = [d, d, d, d, d, d, d, d, d, d]
 
-
+d = 0.3
 P_G = unp.uarray( RF["P_G"], array)
 
+d = 0.1
 P_K = unp.uarray( RF["P_K"], array)
 
-G = unp.uarray( RF["G"], array)
+G = RF["G"]
 
-B = unp.uarray( RF["B"], array)
+B = unp.uarray( RF["B"], RF["dB"])
 
-Gstrich = unp.uarray( RF["G'"], array)
+Gstrich = RF["G'"]
 
-Bstrich = unp.uarray( RF["B'"], array)
-
+Bstrich = unp.uarray( RF["B'"], RF["dB'"])
 
 y = P_K - P_G
 
@@ -47,12 +46,14 @@ fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0.5, 6.5)
-ax.set_ylim(0.0, 0.1)
-
+ax.set_xlim(0.0, 1.5)
+ax.set_ylim(0.0, 45)
+print(1/gamma)
+print(y)
 
 data = [[value.n for value in 1/gamma], [value.n for value in 1/gammastrich]]
-labels = [ ["$\\frac{1}{\\gamma}$-$y$ in EINHEIT!!", "Fit zu $y\\left(\\frac{1}{\\gamma}\\right)$: "],   ["$\\frac{1}{\\gamma'}$-$y$ in EINHEIT!!", "Fit zu $y\\left(\\frac{1}{\\gamma'}\\right)$: "]  ]
+labels = [ ["$y\\left(\\frac{1}{\\gamma}\\right)$-Messwerte", "Fit zu $y\\left(\\frac{1}{\\gamma}\\right)$: $y = f \\cdot \\left(1+\\frac{1}{\\gamma}\\right) + c $"],   
+           ["$y'\\left(\\frac{1}{\\gamma'}\\right)$-Messwerte", "Fit zu $y'\\left(\\frac{1}{\\gamma'}\\right)$: $y' = f \\cdot \\left(1+\\frac{1}{\\gamma'}\\right) + c $"]  ]
 colors = [['mediumblue', 'cornflowerblue'], ['darkred', 'tomato']]
 
 
@@ -90,7 +91,7 @@ for i in range(0,2,1):
     x_ax = np.linspace(0, 10, 1000) 
     y_ax = fit_function(x_ax, f_value, c_value)
 
-    labels[i][1] = labels[i][1] + f"$y = f \\cdot (1+x) + c$ \n $f = {f_value:.6f} \\pm {f_error:.6f}$\n $c = {c_value:.6f} \\pm {c_error:.6f}$"
+    labels[i][1] = labels[i][1] + f"\n $f = {f_value:.6f} \\pm {f_error:.6f}$\n $c = {c_value:.6f} \\pm {c_error:.6f}$"
     # Plot zeichnen
     plt.plot(x_ax, y_ax, label=labels[i][1], linewidth=2, color=colors[i][1])
 
@@ -99,10 +100,10 @@ for i in range(0,2,1):
 
 
 
-plt.xlabel("$\\frac{1}{\\gamma}$ bzw. $\\frac{1}{\\gamma'}$",fontsize=fnt)
-plt.ylabel("Entfernung $y$ bzw. $'y'$ zwischen Kante und Gegenstand in EINHEIT!!!!!", fontsize=fnt)
+plt.xlabel("$\\frac{1}{\\gamma}$",fontsize=fnt)
+plt.ylabel("$y$ in cm", fontsize=fnt)
 plt.legend(fontsize=fnt, loc='upper left') #Legende printen
-plt.title("$y\\left(\\frac{1}{\\gamma}\\right)$ und $y\\left(\\frac{1}{\\gamma'}\\right)$", fontsize=fnt)
+plt.title("Entfernung $y$ zwischen Kante und Gegenstand in Abhängigkeit von $\\frac{1}{\\gamma}$", fontsize=fnt)
 
 plt.xticks(fontsize=fnt)
 plt.yticks(fontsize=fnt)

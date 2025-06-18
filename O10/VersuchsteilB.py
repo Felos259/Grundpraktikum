@@ -30,6 +30,8 @@ e = P_L - P_R
 
 f = (l**2 - e**2) / (4 * l)
 
+print(f)
+
 numeric_f = [value.n for value in f]
 
 mean = np.mean(numeric_f)
@@ -42,15 +44,14 @@ delta_std = std/np.sqrt(len(numeric_f))
 print('DELTA STD: ', delta_std)
 
 
-
 #Mittelwert plotten
 
 fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0.5, 6.5)
-ax.set_ylim(0.0, 0.1)
+ax.set_xlim(0.5, 8.5)
+ax.set_ylim(20, 30)
 
 # Index renamen damit er bei 1 anfängt
 RF.index = np.arange(1, len(RF) + 1)
@@ -61,15 +62,15 @@ y_data = np.array([value.nominal_value for value in f])
 y_err = np.array([value.s for value in f])
 
 #Messwerte plotten
-ax.errorbar(x_data, y_data, yerr=y_err, label= 'Brennweite $f_i$' , color = 'mediumblue', linestyle='None', marker='o', capsize=8, markersize=9, elinewidth=2 )
+ax.errorbar(x_data, y_data, yerr=y_err, label= 'Brennweite $f_{2,i}$' , color = 'mediumblue', linestyle='None', marker='o', capsize=8, markersize=9, elinewidth=2 )
 # Horizontale Linie bei y=Mittelwert h
 plt.axhline(mean - delta_std, color='cornflowerblue', linewidth=1, linestyle='--') 
 plt.axhline(mean + delta_std, color='cornflowerblue', linewidth=1, linestyle='--') 
-plt.axhline(mean , label = 'Mittelwert $\\Delta \\Overline{f}$ der Brennweiten'  ,color= 'cornflowerblue', linewidth=1, linestyle='-')  
+plt.axhline(mean , label = 'Mittelwert $\\Delta \\overline{f}$ der Brennweiten'  ,color= 'cornflowerblue', linewidth=1, linestyle='-')  
 
 
 plt.xlabel('i',fontsize=fnt)
-plt.ylabel('Brennweite $f$ in EINHEIT!!!!!', fontsize=fnt)
+plt.ylabel('Brennweite $f$ in cm', fontsize=fnt)
 plt.legend(fontsize=fnt, loc='upper left') #Legende printen
 plt.title("Brennweiten", fontsize=fnt)
 
