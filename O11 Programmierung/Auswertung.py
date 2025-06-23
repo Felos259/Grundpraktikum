@@ -15,22 +15,30 @@ plt.rcParams['figure.figsize'] = [19.2,10.8]
 
 #To-Do: Unsicherheiten
 
-RF['grundIntensitaet'] = 2400 #U_E in mV
+RF['grundIntensitaet'] = 4.896 #U_E in V
 
-ableseWinkel = 1 #Ableseunsicherheit Winkel in Grad
-sysWinkel = 1 #Systematische Unsicherheit Winkel in Grad
+#Diese Korrektur ist an den Haaren herbeigezogen: Idee ist, dass bei kleinen Werten der Wert ähnlich ist.
+#Die Nachnormierung (aktuell /1.125) habe ich jetzt Pi mal Daumen aus Juliens Werten.
+#Wenn wir sammeln, können wir eine statistisch signifikante Auswertung der Abweichungen "guter" Messwerte bei 10° berechnen und so einen "wissenschaftlichen" Anpassungsfaktor ergaunern
+RF['conradsKorrektur'] = RF['intenseSP'][0]/RF['intensePP'][0]/1.125 
+
+ableseWinkel = 3 #Ableseunsicherheit Winkel in Grad
+sysWinkel = 0 #Systematische Unsicherheit Winkel in Grad
 RF['dWinkel'] = np.sqrt(ableseWinkel**2+sysWinkel**2)
 
 
-ableseIntensitaet = 1 #Größtfehlerabschätzung der Intensität in mV
-sysIntensitaet = 1 #Größtfehlerabschätzung der Intensität in mV
-RF['unsicherheitIntensitaet'] = np.sqrt(ableseIntensitaet**2+sysIntensitaet**2)
+RF['dableseIntensitaet'] = 0.01 #Größtfehlerabschätzung der Intensität in V
+RF['dsysIntensitaetPP'] = RF['intensePP']*0.0005+0.001 #Syst. Unsicereit der Intensität in V
+RF['dsysIntensitaetSP'] = RF['intenseSP']*0.0005+0.001 #Syst. Unsicereit der Intensitt in V
+
+RF['unsicherheitIntensitaetPP'] = np.sqrt(RF['dableseIntensitaet']**2+RF['dsysIntensitaetPP']**2)
+RF['unsicherheitIntensitaetSP'] = np.sqrt(RF['dableseIntensitaet']**2+RF['dsysIntensitaetSP']**2)
 
 
 # Berechnung Wurzel R für parallel polarisiertes Licht (PP) und senkrecht polarisiertes Licht (SP)
-uRE = unp.uarray(RF['grundIntensitaet'],RF['unsicherheitIntensitaet'])
-uRPP = unp.uarray(RF['intensePP'],RF['unsicherheitIntensitaet'])
-uRSP = unp.uarray(RF['intenseSP'],RF['unsicherheitIntensitaet'])
+uRE = unp.uarray(RF['grundIntensitaet'],RF['unsicherheitIntensitaetSP'])
+uRPP = unp.uarray((RF['intensePP']-RF['offsetIntense'])*RF['conradsKorrektur'],RF['unsicherheitIntensitaetPP'])
+uRSP = unp.uarray(RF['intenseSP']-RF['offsetIntense'],RF['unsicherheitIntensitaetSP'])
 print(uRPP)
 
 uwRpp = unp.sqrt(uRPP/uRE)
@@ -46,8 +54,8 @@ fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0,90/360*2*np.pi)
-ax.set_ylim(0,1)
+ax.set_xlim(0,90/360*(2*np.pi))
+ax.set_ylim(0,1.1)
 
 #Daten
 x_data = RF['winkel']/360*(2*np.pi)
@@ -66,30 +74,30 @@ ax.errorbar(x_data, y_data_senkrecht, xerr=x_err , yerr=y_err_senkrecht, label='
 
 # Fitfunktion definieren
 def fit_function_parallel(x, B):
-    return ((np.tan(x-np.arcsin(np.sin(x)/np.tan(B))))**2)/((np.tan(x+np.arcsin(np.sin(x)/np.tan(B))))**2)
+    return np.sqrt(((np.tan(x-np.arcsin(np.sin(x)/np.tan(B))))**2)/((np.tan(x+np.arcsin(np.sin(x)/np.tan(B))))**2))
 
 def fit_function_senkrecht(x,B):
-    return ((np.sin(x-np.arcsin(np.sin(x)/np.tan(B))))**2)/((np.sin(x+np.arcsin(np.sin(x)/np.tan(B))))**2)
+    return np.sqrt(((np.sin(x-np.arcsin(np.sin(x)/np.tan(B))))**2)/((np.sin(x+np.arcsin(np.sin(x)/np.tan(B))))**2))
 
 
 # Curve-Fit für parallel polarisiertes Licht
-params, covariance = curve_fit(fit_function_parallel, x_data, y_data_parallel, sigma=y_err_parallel, absolute_sigma=True)
+params, covariance = curve_fit(fit_function_parallel, x_data, y_data_parallel, sigma=y_err_parallel, absolute_sigma=True,bounds=[0.5,1.5])
 fit_errors = np.sqrt(np.diag(covariance))  # Fehler der Fit-Parameter
-B_value = params[0]
-B_error = fit_errors[0]
+B_value_par = params[0]
+B_error_par = fit_errors[0]
 #Chi^2/dof berechnen
 dof = len(RF.index)-len(params)
-chi2 = sum([((fit_function_parallel(x,B_value)-y)**2)/(u**2) for x,y,u in zip(x_data,y_data_parallel,y_err_parallel)])
+chi2 = sum([((fit_function_parallel(x,B_value_par)-y)**2)/(u**2) for x,y,u in zip(x_data,y_data_parallel,y_err_parallel)])
 # Fit-Ergebnisse ausgeben
-print(f"Parallel: B = {B_value:.6f} ± {B_error:.6f}")
+print(f"Parallel: B = {B_value_par:.6f} ± {B_error_par:.6f}")
 print(f"Parallel: Chi-Quadrat/dof: {chi2/dof}")
 # Fit-Ergebnisse plotten
 x_ax=np.linspace(0, 2, 1000) 
-y_ax_parallel = fit_function_parallel(x_ax, B_value)
-plt.plot(x_ax, y_ax_parallel, label=f"Fit zu parallel polarisierten Licht mit Fitparameter \n $\\alpha_{{B,\\text{{parallel}}}} = {B_value:.6f} \\pm {B_error:.6f}$", linewidth=2, color='blue')
+y_ax_parallel = fit_function_parallel(x_ax, 0.94)
+plt.plot(x_ax, y_ax_parallel, label=f"Fit zu parallel polarisierten Licht mit Fitparameter \n $\\alpha_{{B,\\text{{parallel}}}} = {B_value_par:.6f} \\pm {B_error_par:.6f}$", linewidth=2, color='blue')
 
 # Curve-Fit für senkrecht polarisiertes Licht
-params, covariance = curve_fit(fit_function_senkrecht, x_data, y_data_senkrecht, sigma=y_err_senkrecht, absolute_sigma=True)
+params, covariance = curve_fit(fit_function_senkrecht, x_data, y_data_senkrecht, sigma=y_err_senkrecht, absolute_sigma=True, bounds=[0.5,1.5])
 fit_errors = np.sqrt(np.diag(covariance))  # Fehler der Fit-Parameter
 B_value = params[0]
 B_error = fit_errors[0]
