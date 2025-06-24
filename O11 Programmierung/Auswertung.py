@@ -24,7 +24,7 @@ RG['dgrundIntensitaet']=RG['grundIntensitaet']*0.0005+0.001
 #Diese Korrektur ist an den Haaren herbeigezogen: Idee ist, dass bei kleinen Werten der Wert ähnlich ist.
 #Die Nachnormierung (aktuell /1.125) habe ich jetzt Pi mal Daumen aus Juliens Werten.
 #Wenn wir sammeln, können wir eine statistisch signifikante Auswertung der Abweichungen "guter" Messwerte bei 10° berechnen und so einen "wissenschaftlichen" Anpassungsfaktor ergaunern
-RG['conradsKorrektur'] = RF['intenseSP'][0]/RG['intensePP'][0]/1.125 
+RG['conradsKorrektur'] = RF['intenseSP'][1]/RG['intensePP'][1]*1.086387735
 
 ableseWinkel = 3 #Ableseunsicherheit Winkel in Grad
 sysWinkel = 0 #Systematische Unsicherheit Winkel in Grad
@@ -34,8 +34,8 @@ RG['dWinkel'] = np.sqrt(ableseWinkel**2+sysWinkel**2)
 
 RF['dableseIntensitaet'] = 0.01 #Größtfehlerabschätzung der Intensität in V
 RG['dableseIntensitaet'] = 0.01
-RG['dsysIntensitaetPP'] = RG['intensePP']*0.0005+0.001 #Syst. Unsicereit der Intensität in V
-RF['dsysIntensitaetSP'] = RF['intenseSP']*0.0005+0.001 #Syst. Unsicereit der Intensitt in V
+RG['dsysIntensitaetPP'] = RG['intensePP']*0.0005+0.001 #Syst. Unsicherheit der Intensität in V
+RF['dsysIntensitaetSP'] = RF['intenseSP']*0.0005+0.001 #Syst. Unsicherheit der Intensitt in V
 
 RG['unsicherheitIntensitaetPP'] = np.sqrt(RG['dableseIntensitaet']**2+RG['dsysIntensitaetPP']**2)
 RF['unsicherheitIntensitaetSP'] = np.sqrt(RF['dableseIntensitaet']**2+RF['dsysIntensitaetSP']**2)
@@ -102,7 +102,7 @@ chi2 = sum([((fit_function_parallel(x,B_value_par)-y)**2)/(u**2) for x,y,u in zi
 print(f"Parallel: B = {B_value_par:.6f} ± {B_error_par:.6f}")
 print(f"Parallel: Chi-Quadrat/dof: {chi2/dof}")
 # Fit-Ergebnisse plotten
-x_ax=np.linspace(0, 2, 1000) 
+x_ax=np.linspace(0.001, 1.55, 1000) 
 y_ax_parallel = fit_function_parallel(x_ax, 0.94)
 plt.plot(x_ax, y_ax_parallel, label=f"Fit zu parallel polarisierten Licht mit Fitparameter \n $\\alpha_{{B,\\text{{parallel}}}} = {B_value_par:.6f} \\pm {B_error_par:.6f}$", linewidth=2, color='blue')
 
@@ -117,7 +117,7 @@ chi2 = sum([((fit_function_senkrecht(x,B_value)-y)**2)/(u**2) for x,y,u in zip(x
 # Fit-Ergebnisse ausgeben
 print(f"Senkrecht: B = {B_value:.6f} ± {B_error:.6f}")
 print(f"Senkrecht: Chi-Quadrat/dof: {chi2/dof}")
-x_ax=np.linspace(0, 2, 1000) 
+x_ax=np.linspace(0.001, 1.55, 1000) 
 y_ax_senkrecht = fit_function_senkrecht(x_ax, B_value)
 plt.plot(x_ax, y_ax_senkrecht, label=f"Fit zu senkrecht polarisierten Licht mit Fitparameter \n $\\alpha_{{B,\\text{{senkrecht}}}} = {B_value:.6f} \\pm {B_error:.6f}$", linewidth=2, color='limegreen')
 
