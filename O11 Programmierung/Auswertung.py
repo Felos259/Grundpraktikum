@@ -9,42 +9,49 @@ import uncertainties as u
 import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
-RF = pd.read_csv('MessdatenO11.csv', header=1)
+RF = pd.read_csv('MessdatenO11SP.csv', header=1)
+RG = pd.read_csv('MessdatenO11PP.csv', header=1)
 
 plt.rcParams['figure.figsize'] = [19.2,10.8]
 
 #To-Do: Unsicherheiten
 
 RF['grundIntensitaet'] = 4.896 #U_E in V
+RF['dgrundIntensitaet']=RF['grundIntensitaet']*0.0005+0.001 #Unsicherheit der Grundintensität
+RG['grundIntensitaet'] = 4.896
+RG['dgrundIntensitaet']=RG['grundIntensitaet']*0.0005+0.001
 
 #Diese Korrektur ist an den Haaren herbeigezogen: Idee ist, dass bei kleinen Werten der Wert ähnlich ist.
 #Die Nachnormierung (aktuell /1.125) habe ich jetzt Pi mal Daumen aus Juliens Werten.
 #Wenn wir sammeln, können wir eine statistisch signifikante Auswertung der Abweichungen "guter" Messwerte bei 10° berechnen und so einen "wissenschaftlichen" Anpassungsfaktor ergaunern
-RF['conradsKorrektur'] = RF['intenseSP'][0]/RF['intensePP'][0]/1.125 
+RG['conradsKorrektur'] = RF['intenseSP'][0]/RG['intensePP'][0]/1.125 
 
 ableseWinkel = 3 #Ableseunsicherheit Winkel in Grad
 sysWinkel = 0 #Systematische Unsicherheit Winkel in Grad
 RF['dWinkel'] = np.sqrt(ableseWinkel**2+sysWinkel**2)
+RG['dWinkel'] = np.sqrt(ableseWinkel**2+sysWinkel**2)
 
 
 RF['dableseIntensitaet'] = 0.01 #Größtfehlerabschätzung der Intensität in V
-RF['dsysIntensitaetPP'] = RF['intensePP']*0.0005+0.001 #Syst. Unsicereit der Intensität in V
+RG['dableseIntensitaet'] = 0.01
+RG['dsysIntensitaetPP'] = RG['intensePP']*0.0005+0.001 #Syst. Unsicereit der Intensität in V
 RF['dsysIntensitaetSP'] = RF['intenseSP']*0.0005+0.001 #Syst. Unsicereit der Intensitt in V
 
-RF['unsicherheitIntensitaetPP'] = np.sqrt(RF['dableseIntensitaet']**2+RF['dsysIntensitaetPP']**2)
+RG['unsicherheitIntensitaetPP'] = np.sqrt(RG['dableseIntensitaet']**2+RG['dsysIntensitaetPP']**2)
 RF['unsicherheitIntensitaetSP'] = np.sqrt(RF['dableseIntensitaet']**2+RF['dsysIntensitaetSP']**2)
 
 
 # Berechnung Wurzel R für parallel polarisiertes Licht (PP) und senkrecht polarisiertes Licht (SP)
-uRE = unp.uarray(RF['grundIntensitaet'],RF['unsicherheitIntensitaetSP'])
-uRPP = unp.uarray((RF['intensePP']-RF['offsetIntense'])*RF['conradsKorrektur'],RF['unsicherheitIntensitaetPP'])
+uRE = unp.uarray(RF['grundIntensitaet'],RF['dgrundIntensitaet'])
+uREP = unp.uarray(RG['grundIntensitaet'],RG['dgrundIntensitaet'])
+uRPP = unp.uarray((RG['intensePP']-RG['offsetIntense'])*RG['conradsKorrektur'],RG['unsicherheitIntensitaetPP'])
 uRSP = unp.uarray(RF['intenseSP']-RF['offsetIntense'],RF['unsicherheitIntensitaetSP'])
 print(uRPP)
 
-uwRpp = unp.sqrt(uRPP/uRE)
+uwRpp = unp.sqrt(uRPP/uREP)
 uwRsp = unp.sqrt(uRSP/uRE)
-RF['RPP']=np.array([value.nominal_value for value in uwRpp])
-RF['dRPP']=np.array([value.s for value in uwRpp])
+RG['RPP']=np.array([value.nominal_value for value in uwRpp])
+RG['dRPP']=np.array([value.s for value in uwRpp])
 RF['RSP']=np.array([value.nominal_value for value in uwRsp])
 RF['dRSP']=np.array([value.s for value in uwRsp])
 
@@ -61,15 +68,18 @@ ax.set_ylim(0,1.1)
 x_data = RF['winkel']/360*(2*np.pi)
 x_err = RF['dWinkel']/360*(2*np.pi)
 
-y_data_parallel = RF['RPP']
-y_err_parallel = RF['dRPP']
+x_data_parallel = RG['winkel']/360*(2*np.pi)
+x_err_parallel = RG['dWinkel']/360*(2*np.pi)
+
+y_data_parallel = RG['RPP']
+y_err_parallel = RG['dRPP']
 
 y_data_senkrecht = RF['RSP']
 y_err_senkrecht = RF['dRSP']
 
 
 # Plot der Messwerte V und p mit Errorbars 
-ax.errorbar(x_data,y_data_parallel, xerr=x_err , yerr=y_err_parallel, label='Intensität des reflektierten Strahls für parallel polarisiertes Licht', color = 'darkblue', linestyle='None', marker='o', capsize=8, markersize=9, elinewidth=2)
+ax.errorbar(x_data_parallel,y_data_parallel, xerr=x_err_parallel , yerr=y_err_parallel, label='Intensität des reflektierten Strahls für parallel polarisiertes Licht', color = 'darkblue', linestyle='None', marker='o', capsize=8, markersize=9, elinewidth=2)
 ax.errorbar(x_data, y_data_senkrecht, xerr=x_err , yerr=y_err_senkrecht, label='Intensität des reflektierten Strahls für senkrecht polarisiertes Licht', color = 'darkgreen', linestyle='None', marker='o', capsize=8, markersize=9, elinewidth=2)
 
 # Fitfunktion definieren
@@ -81,13 +91,13 @@ def fit_function_senkrecht(x,B):
 
 
 # Curve-Fit für parallel polarisiertes Licht
-params, covariance = curve_fit(fit_function_parallel, x_data, y_data_parallel, sigma=y_err_parallel, absolute_sigma=True,bounds=[0.5,1.5])
+params, covariance = curve_fit(fit_function_parallel, x_data_parallel, y_data_parallel, sigma=y_err_parallel, absolute_sigma=True,bounds=[0.5,1.5])
 fit_errors = np.sqrt(np.diag(covariance))  # Fehler der Fit-Parameter
 B_value_par = params[0]
 B_error_par = fit_errors[0]
 #Chi^2/dof berechnen
 dof = len(RF.index)-len(params)
-chi2 = sum([((fit_function_parallel(x,B_value_par)-y)**2)/(u**2) for x,y,u in zip(x_data,y_data_parallel,y_err_parallel)])
+chi2 = sum([((fit_function_parallel(x,B_value_par)-y)**2)/(u**2) for x,y,u in zip(x_data_parallel,y_data_parallel,y_err_parallel)])
 # Fit-Ergebnisse ausgeben
 print(f"Parallel: B = {B_value_par:.6f} ± {B_error_par:.6f}")
 print(f"Parallel: Chi-Quadrat/dof: {chi2/dof}")
