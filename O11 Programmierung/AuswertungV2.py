@@ -11,7 +11,7 @@ from uncertainties import unumpy as unp
 
 SP = pd.read_csv('MessdatenO11SP.csv', header=1)
 PP = pd.read_csv('MessdatenO11PP.csv', header=1)
-BN = pd.read_csv('BerechnungNormierung.csv',)
+BN = pd.read_csv('BerechnungNormierung.csv')
 
 plt.rcParams['figure.figsize'] = [19.2,10.8]
 
@@ -19,6 +19,7 @@ plt.rcParams['figure.figsize'] = [19.2,10.8]
 SP['wU_E'] =4.896
 SP['dU_E']=SP['wU_E']*0.0005+0.001
 SP['uU_E']=unp.uarray(SP['wU_E'],SP['dU_E'])
+print("U_E: ",SP['uU_E'][1]) 
 
 SP['dWinkel']=3 #Ableseunsicherheit in Grad
 SP['uWinkel']=unp.uarray(SP['winkel'],SP['dWinkel'])
@@ -91,7 +92,7 @@ fig, ax = plt.subplots()
 
 # Achsen richten
 ax.set_xlim(0,90/360*(2*np.pi))
-ax.set_ylim(0,1)
+ax.set_ylim(0,1.1)
 
 #Daten
 x_data_SP = SP['winkel_rad']
@@ -160,6 +161,15 @@ plt.xticks(fontsize=20)
 plt.yticks(fontsize=20)
 
 plt.savefig("O11Auswertung.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5)
+
+# Mittelwert Brewster-Winkel
+meanBrewster = (B_value_SP+B_value_PP)/2
+dBrewster = np.sqrt(B_error_SP**2+B_error_PP**2)/4
+print("Mittelwert Brewster (Radiant): ", meanBrewster)
+print("Mittelwert Brewster (Grad): ",meanBrewster/(2*np.pi)*360)
+print("Unsicherheit Brewster: ", dBrewster)
+print("Brechunsindex Luft: ",np.tan(meanBrewster))
+print("Unsicherheit Brechungsindex Luft: ", dBrewster/(np.cos(meanBrewster)**2))
 
 
 plt.show()
