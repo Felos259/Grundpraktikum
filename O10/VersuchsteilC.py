@@ -10,62 +10,60 @@ import uncertainties.umath as um
 from uncertainties import unumpy as unp
 
 
-
 fnt = 20 # fontsize for zooming, default 10
 plt.rcParams['figure.figsize'] = [19.2,10.8]
 
 # Dinge in Einheiten?
 RF = pd.read_csv('O10/Abbe.csv', header=2, sep=';')
 
-d = 1.0
-
-array = [d, d, d, d, d, d, d, d, d, d]
-
 d = 0.3
+array = [d, d, d, d, d, d, d, d, d, d]
 P_G = unp.uarray( RF["P_G"], array)
 
+
 d = 0.1
+array = [d, d, d, d, d, d, d, d, d, d]
 P_K = unp.uarray( RF["P_K"], array)
+P_Kstrich = unp.uarray( RF["P_K'"], array)
+
 
 G = RF["G"]
-
-B = unp.uarray( RF["B"], RF["dB"])
-
 Gstrich = RF["G'"]
 
+B = unp.uarray( RF["B"], RF["dB"])
 Bstrich = unp.uarray( RF["B'"], RF["dB'"])
 
 y = P_K - P_G
+ystrich = P_Kstrich - P_G
 
 gamma = B/G
 
 gammastrich = Bstrich/Gstrich
 
-
 fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achsen richten
-ax.set_xlim(0.5, 6.5)
-ax.set_ylim(0.0, 0.1)
+ax.set_xlim(0.0, 1.3)
+ax.set_ylim(0.0, 25.0)
 
 
-data = [[value.n for value in 1/gamma], [value.n for value in 1/gammastrich]]
+datax = [[value.n for value in 1/gamma], [value.n for value in 1/gammastrich]]
+datay = [y, ystrich]
+
 labels = [ ["$y\\left(\\frac{1}{\\gamma}\\right)$-Messwerte", "Fit zu $y\\left(\\frac{1}{\\gamma}\\right)$: $y = f \\cdot \\left(1+\\frac{1}{\\gamma}\\right) + c $"],   
            ["$y'\\left(\\frac{1}{\\gamma'}\\right)$-Messwerte", "Fit zu $y'\\left(\\frac{1}{\\gamma'}\\right)$: $y' = f \\cdot \\left(1+\\frac{1}{\\gamma'}\\right) + c $"]  ]
 colors = [['mediumblue', 'cornflowerblue'], ['darkred', 'tomato']]
 
 
-y_data = np.array([value.nominal_value for value in y])
-y_err = np.array([value.s for value in y])
-
-
 for i in range(0,2,1):
     #Daten
-    x_data = data[i]
+    x_data = datax[i]
+    y_data = [value.n for value in datay[i]]
+    y_err = np.array([value.s for value in datay[i]])
 
     #Messwerte plotten
-    ax.errorbar(x_data, y_data, yerr=y_err, label=labels[i][0]  , color = colors[i][0], linestyle='None', marker='o', capsize=8, markersize=9, elinewidth=2 )
+    ax.errorbar(x_data, y_data, yerr=y_err, label=labels[i][0]  , color = colors[i][0], linestyle='None', marker='o', capsize=8, markersize=6, elinewidth=2 )
 
     # Fitfunktion definieren
     def fit_function(x, f, c):
@@ -95,18 +93,25 @@ for i in range(0,2,1):
     plt.plot(x_ax, y_ax, label=labels[i][1], linewidth=2, color=colors[i][1])
 
 
-
-
-
-
 plt.xlabel("$\\frac{1}{\\gamma}$",fontsize=fnt)
 plt.ylabel("$y$ in cm", fontsize=fnt)
-plt.legend(fontsize=fnt, loc='upper left') #Legende printen
+plt.legend(fontsize=fnt, loc='lower right') #Legende printen
 plt.title("Entfernung $y$ zwischen Kante und Gegenstand in Abhängigkeit von $\\frac{1}{\\gamma}$", fontsize=fnt)
 
 plt.xticks(fontsize=fnt)
 plt.yticks(fontsize=fnt)
 
-plt.savefig("O10/Brennweite.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
+plt.savefig("O10/Abbe.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
 plt.show()
 
+
+# df = pd.DataFrame({'P_K': P_K, 
+#        'B' : B,
+#        "P_K'": P_Kstrich,
+#        "B'" : Bstrich,
+#        "gamma" : gamma,
+#        "gamma'" : gammastrich,
+#        "1durchgamma": 1/gamma,
+#        "1durchgammaStrich": 1/gammastrich})
+
+# df.to_csv('O10/copyAbb.csv', sep='&', index = False)

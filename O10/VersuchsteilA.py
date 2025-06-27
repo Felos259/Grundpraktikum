@@ -12,17 +12,20 @@ from uncertainties import unumpy as unp
 # Radius des Sphärometers in mm
 r = 15
 
+deltah = np.sqrt(0.007**2+0.005**2)
+print("Delta h: " + str(deltah) + 'mm')
+
 # Gemessene Höhen in mm mit Unsicherheit
-h_1 = u.ufloat(0.635, 0.005) 
-h_2 = u.ufloat(0.635, 0.005) 
+h_1 = u.ufloat(0.635, deltah) 
+h_2 = u.ufloat(0.635, deltah) 
 
 R_1 = r**2/(2*h_1) + h_1/2
 R_2 = r**2/(2*h_2) + h_2/2
 
+
 print('Krümmungsradius R_1: ' + str(R_1) + 'mm')
 
 print('Krümmungsradius R_2: ' + str(R_2) + 'mm')
-
 # Brechungszahl des Materials
 n = 1.52
 
