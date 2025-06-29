@@ -38,7 +38,10 @@ fit_errors=[[0]*2,[0]*2,[0]*2,[0]*2,[0]*2,[0]*2]
 chi2=[[0]*2,[0]*2,[0]*2,[0]*2,[0]*2,[0]*2]
 dof=[[0]*2,[0]*2,[0]*2,[0]*2,[0]*2,[0]*2]
 chi2dof=[[0]*2,[0]*2,[0]*2,[0]*2,[0]*2,[0]*2]
+h_1=[0,0,0,0,0,0]
 h_2=[0,0,0,0,0,0]
+kappa=[0,0,0,0,0,0]
+k=[0,0,0,0,0,0]
 
 for i in range(0,anzahlVersuchsreihen,1):
     ##### Berechnungen Unsicherheiten ####
@@ -82,9 +85,19 @@ for i in range(0,anzahlVersuchsreihen,1):
         print("i =",i+1, " and j = ", j, " and A =", A_value[i][j], "+/-", A_error[i][j], "and x0 =", x0_value[i][j], "+/-", x0_error[i][j])
         print("i =",i+1, " and j = ", j, " and Chi-Quadrat/dof:", chi2dof[i][j])
 
+    h_1[i] = RF['uh_MR'+str(i+1)][5]
     h_2[i] = fit_function(RF['t_MR'+str(i+1)][6],A_value[i][1],x0_value[i][1])
-    #Unsicherheit h_2_i
+    #TO-DO: Unsicherheit h_2_i
+    print("h_1_",str(i+1),"=", h_1[i])
     print("h_2_",str(i+1),"=", h_2[i])
+    kappa[i]=h_1[i]/(h_1[i]-h_2[i])
+    print("Kappa_",str(i+1),"=",kappa[i])
+    
+#### Mittelwert berechnen ####
+mean = np.mean([value.nominal_value for value in kappa])
+standab = np.std([value.nominal_value for value in kappa],ddof=1)
+dmean = u.ufloat(mean,standab)
+print("Mittelwert Kappa:", dmean)
 
 #### Plot zeichnen ####
 ax.set_xlim(-10,610)
