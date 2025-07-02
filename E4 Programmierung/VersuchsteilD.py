@@ -15,6 +15,7 @@ plt.rcParams['figure.figsize'] = [19.2,10.8]
 RF = pd.read_csv('E4 Programmierung\Versuchsteil_D.csv', header=1, sep=',')
 RF['dF'] = RF['dF'] *10
 
+
 mean = np.mean(RF['Frequenz'])
 print('MEAN: ', mean)
 # korrigierte Standardabweichung berechnen
