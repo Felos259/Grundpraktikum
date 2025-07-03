@@ -30,7 +30,7 @@ deltaOneCm = 28
 Cm = u.ufloat(1.0, (deltaOneCm/4) / oneCm )
 
 # Fehlerbehaftung der Distance einbauen
-position = RF['Distance_unit'] * Cm
+position = RF['Distance_(unit)'] * Cm
 RF['position'] = np.array([value.nominal_value for value in position])
 
 ###############
@@ -56,7 +56,7 @@ for k in range(0, int(length/dgs) , 1):
     j = dgs * k + 1
     # Wenn noch genug Pixel übrig sind, um sie zu vereinigen
     if ((rest - j) >= dgs):
-        col = ['Distance_unit', 'Intensity']
+        col = ['Distance_(unit)', 'Intensity']
         means = [0.0, 0.0]
         deltas = [0.0, 0.0]
 
@@ -153,28 +153,29 @@ peaks = SmoothRF[SmoothRF.index.isin(indexList)]
 #     deltaint = std * np.sqrt(len(positions))
 #     peaks = pd.concat([peaks, pd.DataFrame({'position': [meanpos], 'dPos': [deltapos], 'Intensity': [meanint], 'dInt': [deltaint]})])
 
-# ERSTE DREI PEAKS ENTFERNEN, WEIL SIE SHUTTER SIND
+# ERSTE ZWEI PEAKS ENTFERNEN, WEIL SIE SHUTTER SIND
 peaks = peaks.iloc[2:]
 
 peaks = peaks.sort_values('position')
-print(peaks)
+
 
 # Werte abspeichern
 peaks.to_csv('O8/Einzelspalt.csv', sep=';', index = False)
 
-plt.plot(peaks['position'],  peaks['Intensity'], label = "Maximum der smoothed Data mit agrrelmax", color = 'lightgreen', linestyle='None', marker='o', markersize=6)
+plt.plot(peaks['position'],  peaks['Intensity'], 
+        label = "Minima der geglätteten Daten", color = 'lightgreen', linestyle='None', marker='o', markersize=8)
 # plt.plot(SmoothRF['position'][local_min_smooth],  SmoothRF['Intensity'][local_min_smooth], label = "Maximum der smoothed Data mit find_peaks", color = 'lightgreen', linestyle='None', marker='o', markersize=4)
 
 # Smoothed Data
 ax.errorbar(x = SmoothRF['position'], y = SmoothRF['Intensity'], 
-         label = "Smooth Data - je " + str(dgs) + " Pixel zusammengefasst", 
+         label = "geglättete Daten - je " + str(dgs) + " Pixel zusammengefasst", 
          color = 'red', linestyle='None', marker='o',  markersize=2)
 
 #,xerr = SmoothRF['dPos'], yerr = SmoothRF['dInt'],  markersize=6, capsize=3, elinewidth = 0.5 
 
 
 #Messwerte plotten
-ax.errorbar(x_data, y_data, label = 'Intensität des Lichtes Einzelspat', 
+ax.errorbar(x_data, y_data, label = 'Intensität des Lichtes Einzelspalt', 
             color = 'mediumblue', linestyle='None', marker='o', capsize=3, markersize=1, elinewidth = 0.5 )
 
 
@@ -186,7 +187,7 @@ plt.xlabel('Position $x$ in cm',fontsize=fnt)
 plt.ylabel('Intensität in % des maximalen Grauwertes', fontsize=fnt)
 plt.legend(fontsize=fnt, loc='upper left') #Legende printen
 plt.title("Intensitätsverteilung Einzelspalt", fontsize=fnt)
-
+plt.grid()
 plt.xticks(fontsize=fnt)
 plt.yticks(fontsize=fnt)
 

@@ -12,33 +12,40 @@ from uncertainties import unumpy as unp
 fnt = 20 # fontsize for zooming, default 10
 plt.rcParams['figure.figsize'] = [19.2,10.8]
 
-RF = pd.read_csv('O8/Einzelspalt.csv', header=0, sep=';')
+RF = pd.read_csv('O8/Lochblende.csv', header=0, sep=';')
+
+# Durchmesser mit Mikroskop
+d = 20 * u.ufloat(4.98, 0.02) * 10**-3
+print('Durchmesser Mikroskop: d='+ str(d) + "cm")
 
 # Absstand zwischen Schirm und Spalt
-SS = u.ufloat(161.0, 0.5) - u.ufloat(9.1, 0.5) 
+SS = u.ufloat(86.5, 0.5) - u.ufloat(2.0, 0.5) 
 lamb = 532 * 10**-6
 
 # Position der Minima
 position = unp.uarray(RF['position'], RF['dPos'])
 
-
 # Index renamen damit die Ordnungen richtig liegen
-RF.index =  np.delete(np.arange(-1 * (RF.idxmax()[2]+1), len(RF) - RF.idxmax()[2]), RF.idxmax()[2]+1)
+RF.index =  np.arange(-1 * RF.idxmax()[2], len(RF) - RF.idxmax()[2])
 # RF.idxmax()[2] = Index an dem Intensity maximal ist => Index, welches Macima der Ordnung - ist
 
 # Positionen so verschieben, dass 0 cm zwischen den Minimas der Ordnung 1 liegt
-position = (position - (RF['position'][-1] +  0.5*(RF['position'][1] - RF['position'][-1]) ))
+position = (position - RF['position'][0])
+
+print(position)
 
 # Kleiwinkelnäherung sin(alp)=tan(alp)= pos/SS
 sinAlph = position/SS
 
+print(sinAlph)
 
 fig, ax = plt.subplots()
 # fig ist das eigentliche Bild, ax ist ein Datenobjeke
 
 # Achse richten
-ax.set_xlim(0, 16.3)
-ax.set_ylim(0, 0.05)
+ax.set_xlim(-0.2, 4.3)
+ax.set_ylim(-0.03, 0.05)
+
 
 #Daten
 x_data = abs(RF.index)
@@ -48,6 +55,7 @@ y_err = np.array([value.s for value in sinAlph])
 #Messwerte plotten
 ax.errorbar(x_data, y_data, yerr=y_err, label = 'Messwerte', 
             color = 'mediumblue', linestyle='None', marker='o', capsize=6, markersize=6, elinewidth = 0.5 )
+
 
 # linearer Fit
 # Fitfunktion definieren
@@ -71,7 +79,7 @@ chi2 = sum([((fit_function(x,A_value)-y)**2)/(u**2) for x,y,u in zip(x_data,y_da
 x_ax = np.linspace(-20, 20, 1000) 
 y_ax = fit_function(x_ax, A_value)
 
-label = r'Fit: $\sin(\alpha) = n \cdot \frac{\lambda}{b}$' + f"\n $(b = {A_value:.6f} \\pm {A_error:.6f})$ cm"
+label = r'Fit: $\sin(\alpha) = n \cdot \frac{\lambda}{g}$' + f"\n $(g = {A_value:.6f} \\pm {A_error:.6f})$ cm"
 
 # Plot zeichnen
 plt.plot(x_ax, y_ax, label = label, linewidth = 2, color = 'lightblue')
@@ -84,10 +92,10 @@ plt.plot(x_ax, y_ax, label = label, linewidth = 2, color = 'lightblue')
 plt.xlabel('Ordnung n des Minimas',fontsize=fnt)
 plt.ylabel('$\\sin{\\alpha}$', fontsize=fnt)
 plt.legend(fontsize=fnt, loc='upper left') #Legende printen
-plt.title("Abhänigkeit der Position eines Minimas von seiner Ordnung n", fontsize=fnt)
+plt.title("Abhänigkeit der Position eines Maximas von seiner Ordnung n", fontsize=fnt)
 
 plt.xticks(fontsize=fnt)
 plt.yticks(fontsize=fnt)
 plt.grid()
-plt.savefig("O8/EinzelspaltOrdnungen.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
+plt.savefig("O8/LochblendeOrdnungen.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
 plt.show()
