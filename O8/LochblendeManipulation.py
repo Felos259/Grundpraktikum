@@ -113,15 +113,15 @@ peaks.to_csv('O8/Lochblende.csv', sep=';', index = False)
 #######################
 # Positionen so verschieben, dass Maximum 0. Ordnung bei 0cm liegt
 
-position = position - RF['position'].iloc[peaks.idxmax().iloc[2]*dgs]
+
 
 # posminus1 = peaks.idxmax().iloc[2]
 # print(posminus1)
  
 halfpoint = (SmoothRF['position'].iloc[449] + SmoothRF['position'].iloc[607] )  /2
 
-
-peaks['position'] = peaks['position']- halfpoint
+position = position - halfpoint
+peaks['position'] = peaks['position'] - halfpoint
 SmoothRF['position'] = SmoothRF['position'] - halfpoint
 
 ###################################################################################################
@@ -134,12 +134,8 @@ ax.set_xlim(-3.0, 3.0)
 # Peaks plotten
 ax.errorbar(peaks['position'],  peaks['Intensity'], 
         label = "Minima der geglätteten Daten", 
-        color = 'mediumblue', linestyle='None', marker='o', markersize=8)
+        color = 'lightgreen', linestyle='None', marker='o', markersize=8)
 
-
-#Messwerte plotten
-# ax.errorbar(np.array([value.n for value in position]),  Intensity, label = 'Intensität des Lichtes Lochblende', 
-#             color = 'mediumblue', linestyle='None', marker='o', capsize=3, markersize=1, elinewidth = 0.5)
 
 #Nullstellen Bessel
 NS = [-19.6159, -16.471, -13.324, -10.173, -7.016, -3.832, 0.0, 3.832, 7.016, 10.173, 13.324, 16.471, 19.6159]
@@ -166,8 +162,12 @@ ax.errorbar(x = [value.n for value in posMin] , y = [theoFunkt(value.n, I_0) for
 # Smoothed Data plotten
 ax.errorbar(x = SmoothRF['position'], y = SmoothRF['Intensity'], 
         label = "geglättete Daten - je " + str(dgs) + " Pixel zusammengefasst", 
-        color = 'crimson', linestyle='None', marker='o', markersize=2, capsize=3, elinewidth = 0.5)
+        color = 'crimson', linestyle='None', marker='o', markersize=3, capsize=3, elinewidth = 0.5)
 # xerr = SmoothRF['dPos'], yerr = SmoothRF['dInt'],
+
+# Messwerte plotten
+ax.errorbar(np.array([value.n for value in position]),  Intensity, label = 'Intensität des Lichtes Lochblende', 
+            color = 'mediumblue', linestyle='None', marker='o', capsize=3, markersize=1, elinewidth = 0.5)
 
 ################
 

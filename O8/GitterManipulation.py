@@ -126,7 +126,7 @@ plt.plot(peaks['position'],  peaks['Intensity'],
 # Smoothed Data plotten
 ax.errorbar(x = SmoothRF['position'], y = SmoothRF['Intensity'], 
         label = "geglättete Daten - je " + str(dgs) + " Pixel zusammengefasst", 
-        color = 'red', linestyle='None', marker='o', markersize=2, capsize=3, elinewidth = 0.5)
+        color = 'crimson', linestyle='None', marker='o', markersize=3, capsize=3, elinewidth = 0.5)
 # xerr = SmoothRF['dPos'], yerr = SmoothRF['dInt'],
 
 #Messwerte plotten
@@ -137,7 +137,7 @@ y_data = Intensity
 
 
 ax.errorbar(x_data, y_data, label = 'Intensität des Lichtes Gitter', 
-            color = 'mediumblue', linestyle='None', marker='o', capsize=3, markersize=1, elinewidth = 0.5 )
+            color = 'mediumblue', linestyle='None', marker='o', markersize=1, elinewidth = 0.5 )
 # xerr = x_err,
 
 
