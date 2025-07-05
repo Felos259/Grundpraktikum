@@ -29,6 +29,8 @@ RF.index =  np.arange(-1 * RF.idxmax()[2], len(RF) - RF.idxmax()[2])
 # Positionen so verschieben, dass 0 cm zwischen den Minimas der Ordnung 1 liegt
 position = (position - RF['position'][0])
 
+print(RF['position'][0])
+
 print(position)
 
 # Kleiwinkelnäherung sin(alp)=tan(alp)= pos/SS

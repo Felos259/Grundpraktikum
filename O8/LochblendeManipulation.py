@@ -23,10 +23,11 @@ dgs = 4
 lamb = 532 * 10**-6
 SS = u.ufloat(86.5, 0.5) - u.ufloat(2.0, 0.5) 
 # Durchmesser mit Mikroskop
-B = 20 * u.ufloat(4.98, 0.02) * 10**-3
-print('Durchmesser Lochblende Mikroskop: B='+ str(B) + "cm")
+Blende = 20 * u.ufloat(4.98, 0.02) * 10**-3
+print('Durchmesser Lochblende Mikroskop: B='+ str(Blende) + "cm")
 
-
+# Unsicherheitsfaktor für Intensität
+uInt = 0.1
 
 ###############
 
@@ -49,8 +50,8 @@ RF['position'] = np.array([value.nominal_value for value in position])
 # Maximal Wert ist 255 wegen RGB - kommt aber auch beim Suchen heraus
 maxGray = 255
 
-Intensity = RF["Gray_Value"] / maxGray
-RF['Intensity'] = Intensity
+RF['Intensity'] = RF["Gray_Value"] / maxGray
+RF['dInt'] = uInt * RF['Intensity']
 
 ##################
 # Smooth data
@@ -86,10 +87,9 @@ for k in range(0, int(length/dgs) , 1):
             deltas[p] = std * np.sqrt(dgs)
             #print('DELTA STD: ', deltas[p])
 
-
         if deltas[1]==0:
             deltas[1] = 1 * 10**.4 # vermeiden, dass Unsicherheit 0.0 beträgt
-        SmoothRF.loc[k] = [means[0], np.sqrt(deltas[0]**2 + (means[0]*Cm.s)**2), means[1], deltas[1]]
+        SmoothRF.loc[k] = [means[0], np.sqrt(deltas[0]**2 + (means[0]*Cm.s)**2), means[1], np.sqrt(deltas[1]**2 + (means[1]*uInt)**2)]
 
 #################
 # Peaks bestimmen
@@ -128,52 +128,84 @@ SmoothRF['position'] = SmoothRF['position'] - halfpoint
 # Plot
 fig, ax = plt.subplots()
 
-ax.set_ylim(-0.1, 1.4)
+ax.set_ylim(-0.1, 1.6)
 ax.set_xlim(-3.0, 3.0)
 
 # Peaks plotten
-ax.errorbar(peaks['position'],  peaks['Intensity'], 
+ax.errorbar(peaks['position'],  peaks['Intensity'], xerr= peaks['dPos'], yerr=peaks['dInt'],
         label = "Minima der geglätteten Daten", 
-        color = 'lightgreen', linestyle='None', marker='o', markersize=8)
+        color = 'lightgreen', linestyle='None', marker='o', markersize=8, capsize = 10)
 
 
 #Nullstellen Bessel
 NS = [-19.6159, -16.471, -13.324, -10.173, -7.016, -3.832, 0.0, 3.832, 7.016, 10.173, 13.324, 16.471, 19.6159]
 
+
+I_0 = 1.5
+b = 0.095
+
+x_data = SmoothRF['position']
+y_data = SmoothRF['Intensity']
+y_err  = SmoothRF['dInt']
+
+def fit_function(x, I, B):
+    return I * (j1( np.pi * B * x / (SS.n*lamb)) / (np.pi * B * x / (2.0*SS.n*lamb)) )**2
+
+# ax.errorbar(x = x_ax , y = y_ax,
+#         label = f"theoretische Funktion mit \n $B$={b}cm und $I_0$={I_0}", color = 'plum')
+
+# Curve-Fit mit Unsicherheiten in y
+params, covariance = curve_fit(fit_function, x_data, y_data, sigma=y_err, absolute_sigma=True)
+I_value = params[0]
+B_value = params[1]
+fit_errors = np.sqrt(np.diag(covariance))  # Fehler der Fit-Parameter
+I_error = fit_errors[0]
+B_error = fit_errors[1]
+
+dof = len(RF.index)-len(params)
+chi2 = sum([((fit_function(x,I_value, B_value)-y)**2)/(u**2) for x,y,u in zip(x_data,y_data,y_err)])
+
+# Fit-Ergebnisse ausgeben
+#print(f"A = {A_value:.6f} ± {A_error:.6f}")
+#print(f"x0 = {x0_value:.6f} ± {x0_error:.6f}")
+#print(f"Chi-Quadrat/dof: {chi2/dof}")
+
+x_ax = np.linspace(-20, 20, 1000) 
+y_ax = fit_function(x_ax, I_value, B_value)
+
+label = f"theoretische Funktion mit \n $B$={B_value}cm und $I_0$={I_value}"
+
+# Plot zeichnen
+plt.plot(x_ax, y_ax, label = label, linewidth = 2, color = 'plum')
+
+
 #Theoretische Minimapositionen
-posMin = [value * lamb * SS / (np.pi * B) for value in NS]
+posMin = [value * lamb * SS / (np.pi * B_value) for value in NS]
 
-I_0 = 1.0
 
-def theoFunkt(x, I):
-    return I * (j1( np.pi * B.n * x / (SS.n*lamb)) / (np.pi * B.n * x / (2.0*SS.n*lamb)) )**2
 
-x_ax = np.linspace(-3, 3, 7000) 
-y_ax = theoFunkt(x_ax, I_0)
+##########################
 
-ax.errorbar(x = x_ax , y = y_ax,
-        label = "theoretische Funktion mit B aus dem Mikroskop", color = 'plum')
-
-ax.errorbar(x = [value.n for value in posMin] , y = [theoFunkt(value.n, I_0) for value in posMin], xerr = [value.s for value in posMin], 
+ax.errorbar(x = [value.n for value in posMin] , y = [fit_function(value.n, I_value, B_value) for value in posMin], xerr = [value.s for value in posMin], 
         label = "Nullstellen der theoretischen Funktion ", 
         color = 'purple', linestyle='None', marker='o', markersize=5, capsize=6)
 
  
 # Smoothed Data plotten
-ax.errorbar(x = SmoothRF['position'], y = SmoothRF['Intensity'], 
+ax.errorbar(x = SmoothRF['position'], y = SmoothRF['Intensity'],
         label = "geglättete Daten - je " + str(dgs) + " Pixel zusammengefasst", 
         color = 'crimson', linestyle='None', marker='o', markersize=3, capsize=3, elinewidth = 0.5)
 # xerr = SmoothRF['dPos'], yerr = SmoothRF['dInt'],
 
 # Messwerte plotten
-ax.errorbar(np.array([value.n for value in position]),  Intensity, label = 'Intensität des Lichtes Lochblende', 
+ax.errorbar(np.array([value.n for value in position]), RF['Intensity'], label = 'Intensität des Lichtes Lochblende', 
             color = 'mediumblue', linestyle='None', marker='o', capsize=3, markersize=1, elinewidth = 0.5)
 
 ################
 
 # cosmetics
 plt.xlabel('Position $x$ in cm',fontsize=fnt)
-plt.ylabel('Intensität in % des maximalen Grauwertes', fontsize=fnt)
+plt.ylabel('relative Intensität', fontsize=fnt)
 plt.legend(fontsize=fnt, loc='upper left') #Legende printen
 plt.title("Intensitätsverteilung Lochblende", fontsize=fnt)
 plt.grid()

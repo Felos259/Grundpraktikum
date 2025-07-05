@@ -19,6 +19,9 @@ plt.rcParams['figure.figsize'] = [19.2,10.8]
 # degree of smoothness - Anzahl der Bits, die zusammengefasst werden
 dgs = 4
 
+# Unsicherheitsfaktor für Intensität
+uInt = 0.1
+
 ###############
 
 # so viele Pixel sind 1cm
@@ -40,9 +43,8 @@ RF['position'] = np.array([value.nominal_value for value in position])
 # Maximal Wert ist 255 wegen RGB - kommt aber auch beim Suchen heraus
 maxGray = 255
 
-Intensity = RF["Gray_Value"] / maxGray
-RF['Intensity'] = Intensity
-
+RF['Intensity'] = RF["Gray_Value"] / maxGray
+RF['dInt'] = uInt * RF['Intensity']
 ##################
 # Smooth data
 
@@ -85,7 +87,7 @@ for k in range(0, int(length/dgs) , 1):
         # Index 2 => Mittelwert über dgs Pixel bzgl Intensity 
         # Index 3 => Unsicherheit Index 2
         # Unsicherheit ist rein Statistisch, da wir nichts über die Genauigkeit 
-        SmoothRF.loc[k] = [means[0], np.sqrt(deltas[0]**2 + (means[0]*Cm.s)**2), means[1], deltas[1]]
+        SmoothRF.loc[k] = [means[0], np.sqrt(deltas[0]**2 + (means[0]*Cm.s)**2), means[1], np.sqrt(deltas[1]**2 + (means[1]*uInt)**2)]
 
 #################
 # Peaks bestimmen
@@ -115,13 +117,12 @@ fig, ax = plt.subplots()
 
 # Achsen richten
 ax.set_xlim(0, 12.5)
-ax.set_ylim(0, 1.4)
-
+ax.set_ylim(0, 1.6)
 
 # Peaks plotten
-plt.plot(peaks['position'],  peaks['Intensity'], 
-        label = "Maxima der geglätteten Daten", 
-        color = 'lightgreen', linestyle='None', marker='o', markersize=8)
+plt.errorbar(peaks['position'],  peaks['Intensity'], xerr = peaks['dPos'], yerr= peaks['dInt'],
+               label = "Maxima der geglätteten Daten", 
+        color = 'lightgreen', linestyle='None', marker='o', markersize=8, capsize=8)
  
 # Smoothed Data plotten
 ax.errorbar(x = SmoothRF['position'], y = SmoothRF['Intensity'], 
@@ -133,7 +134,7 @@ ax.errorbar(x = SmoothRF['position'], y = SmoothRF['Intensity'],
 #Daten
 x_data = RF['position']
 x_err = np.array([value.s for value in position])
-y_data = Intensity
+y_data = RF['Intensity']
 
 
 ax.errorbar(x_data, y_data, label = 'Intensität des Lichtes Gitter', 
@@ -146,7 +147,7 @@ ax.errorbar(x_data, y_data, label = 'Intensität des Lichtes Gitter',
 # cosmetics
 
 plt.xlabel('Position $x$ in cm',fontsize=fnt)
-plt.ylabel('Intensität in % des maximalen Grauwertes', fontsize=fnt)
+plt.ylabel('relative Intensität', fontsize=fnt)
 plt.legend(fontsize=fnt, loc='upper left') #Legende printen
 plt.title("Intensitätsverteilung Gitter", fontsize=fnt)
 plt.grid()

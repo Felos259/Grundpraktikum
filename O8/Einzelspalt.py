@@ -29,6 +29,8 @@ RF.index =  np.delete(np.arange(-1 * (RF.idxmax()[2]+1), len(RF) - RF.idxmax()[2
 # Positionen so verschieben, dass 0 cm zwischen den Minimas der Ordnung 1 liegt
 position = (position - (RF['position'][-1] +  0.5*(RF['position'][1] - RF['position'][-1]) ))
 
+print(RF['position'][-1] +  0.5*(RF['position'][1] - RF['position'][-1]) )
+
 # Kleiwinkelnäherung sin(alp)=tan(alp)= pos/SS
 sinAlph = position/SS
 
@@ -81,10 +83,10 @@ plt.plot(x_ax, y_ax, label = label, linewidth = 2, color = 'lightblue')
 
 # cosmetics
 
-plt.xlabel('Ordnung n des Minimas',fontsize=fnt)
+plt.xlabel('Ordnung n des Minimum',fontsize=fnt)
 plt.ylabel('$\\sin{\\alpha}$', fontsize=fnt)
 plt.legend(fontsize=fnt, loc='upper left') #Legende printen
-plt.title("Abhänigkeit der Position eines Minimas von seiner Ordnung n", fontsize=fnt)
+plt.title("Abhänigkeit der Position eines Minimum von seiner Ordnung n", fontsize=fnt)
 
 plt.xticks(fontsize=fnt)
 plt.yticks(fontsize=fnt)

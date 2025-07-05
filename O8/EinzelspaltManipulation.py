@@ -22,12 +22,15 @@ RF = pd.read_csv('O8/PlotProfile_Einzelspalt.csv', header=0, sep=',')
 ###############
 
 # so viele Pixel sind 1cm
-oneCm = 635.0504
+oneCm = 634.6180
 # so dick ist ein cm-Strich in Pixeln
 deltaOneCm = 28
 
 # Unsicherheit für 1cm ungefähr ein Viertel des Striches in beide Richtungen (also auf die Hälfte genau getroffen)
 Cm = u.ufloat(1.0, (deltaOneCm/4) / oneCm )
+
+# Unsicherheitsfaktor für Intensität
+uInt = 0.1
 
 # Fehlerbehaftung der Distance einbauen
 position = RF['Distance_(unit)'] * Cm
@@ -40,8 +43,8 @@ RF['position'] = np.array([value.nominal_value for value in position])
 # Maximal Wert ist 255 wegen RGB - kommt aber auch beim Suchen heraus
 maxGray = 255
 
-Intensity = RF["Gray_Value"] / maxGray
-RF['Intensity'] = Intensity
+RF['Intensity'] = RF["Gray_Value"] / maxGray
+RF['dInt'] = uInt * RF['Intensity']
 
 ##################
 # Smooth data
@@ -85,7 +88,7 @@ for k in range(0, int(length/dgs) , 1):
         # Index 2 => Mittelwert über dgs Pixel bzgl Intensity 
         # Index 3 => Unsicherheit Index 2
         # Unsicherheit ist rein Statistisch, da wir nichts über die Genauigkeit 
-        SmoothRF.loc[k] = [means[0], np.sqrt(deltas[0]**2 + (means[0]*Cm.s)**2), means[1], deltas[1]]
+        SmoothRF.loc[k] = [means[0], np.sqrt(deltas[0]**2 + (means[0]*Cm.s)**2), means[1], np.sqrt(deltas[1]**2 + (means[1]*uInt)**2)]
 
 # print(SmoothRF)
 
@@ -98,13 +101,13 @@ fig, ax = plt.subplots()
 
 # Achsen richten
 ax.set_xlim(0, 12.5)
-ax.set_ylim(0, 1.4)
+ax.set_ylim(0, 1.6)
 
 
 #Daten
 x_data = RF['position']
 x_err = np.array([value.s for value in position])
-y_data = Intensity
+y_data = RF['Intensity']
 
 ######################
 
@@ -158,12 +161,11 @@ peaks = peaks.iloc[2:]
 
 peaks = peaks.sort_values('position')
 
-
 # Werte abspeichern
 peaks.to_csv('O8/Einzelspalt.csv', sep=';', index = False)
 
-plt.plot(peaks['position'],  peaks['Intensity'], 
-        label = "Minima der geglätteten Daten", color = 'lightgreen', linestyle='None', marker='o', markersize=8)
+plt.errorbar(peaks['position'],  peaks['Intensity'], xerr= peaks['dPos'], yerr= peaks['dInt'],
+        label = "Minima der geglätteten Daten", color = 'lightgreen', linestyle='None', marker='o', markersize=8, capsize=6)
 # plt.plot(SmoothRF['position'][local_min_smooth],  SmoothRF['Intensity'][local_min_smooth], label = "Maximum der smoothed Data mit find_peaks", color = 'lightgreen', linestyle='None', marker='o', markersize=4)
 
 # Smoothed Data
@@ -172,7 +174,6 @@ ax.errorbar(x = SmoothRF['position'], y = SmoothRF['Intensity'],
          color = 'crimson', linestyle='None', marker='o',  markersize=3)
 
 #,xerr = SmoothRF['dPos'], yerr = SmoothRF['dInt'],  markersize=6, capsize=3, elinewidth = 0.5 
-
 
 #Messwerte plotten
 ax.errorbar(x_data, y_data, label = 'Intensität des Lichtes Einzelspalt', 
@@ -184,7 +185,7 @@ ax.errorbar(x_data, y_data, label = 'Intensität des Lichtes Einzelspalt',
 # cosmetics
 
 plt.xlabel('Position $x$ in cm',fontsize=fnt)
-plt.ylabel('Intensität in % des maximalen Grauwertes', fontsize=fnt)
+plt.ylabel('relative Intensität', fontsize=fnt)
 plt.legend(fontsize=fnt, loc='upper left') #Legende printen
 plt.title("Intensitätsverteilung Einzelspalt", fontsize=fnt)
 plt.grid()
