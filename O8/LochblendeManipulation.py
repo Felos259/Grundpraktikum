@@ -39,7 +39,11 @@ deltaOneCm = 31.0161
 # Unsicherheit für 1cm ungefähr ein Viertel des Striches in beide Richtungen (also auf die Hälfte genau getroffen)
 Cm = u.ufloat(1.0, (deltaOneCm/4) / oneCm )
 
+# Rauschen rausschmeißen
+RF =  RF[(RF['Distance_(unit)']  >= 1.4)& (RF['Distance_(unit)']  <= 6)]
+
 # Fehlerbehaftung der Distance einbauen
+
 position = RF['Distance_(unit)'] * Cm
 RF['position'] = np.array([value.nominal_value for value in position])
 
@@ -52,6 +56,8 @@ maxGray = 255
 
 RF['Intensity'] = RF["Gray_Value"] / maxGray
 RF['dInt'] = uInt * RF['Intensity']
+
+
 
 ##################
 # Smooth data
@@ -87,9 +93,11 @@ for k in range(0, int(length/dgs) , 1):
             deltas[p] = std * np.sqrt(dgs)
             #print('DELTA STD: ', deltas[p])
 
-        if deltas[1]==0:
-            deltas[1] = 1 * 10**.4 # vermeiden, dass Unsicherheit 0.0 beträgt
+        if deltas[1]==0 :
+            deltas[1] = 1.0 * 10**-4 # vermeiden, dass Unsicherheit 0.0 beträgt
         SmoothRF.loc[k] = [means[0], np.sqrt(deltas[0]**2 + (means[0]*Cm.s)**2), means[1], np.sqrt(deltas[1]**2 + (means[1]*uInt)**2)]
+       
+    
 
 #################
 # Peaks bestimmen
@@ -104,8 +112,8 @@ peaks = SmoothRF[SmoothRF.index.isin(indexList)]
 peaks = peaks.sort_values('position')
 
 # PEAKS ENTFERNEN, WEIL SIE CLUTTER SIND
-peaks = peaks.iloc[3:]
-peaks = peaks.iloc[:len(peaks)-2]
+# peaks = peaks.iloc[3:]
+# peaks = peaks.iloc[:len(peaks)-2]
 
 # Werte abspeichern
 peaks.to_csv('O8/Lochblende.csv', sep=';', index = False)
@@ -113,23 +121,22 @@ peaks.to_csv('O8/Lochblende.csv', sep=';', index = False)
 #######################
 # Positionen so verschieben, dass Maximum 0. Ordnung bei 0cm liegt
 
-
-
-# posminus1 = peaks.idxmax().iloc[2]
-# print(posminus1)
- 
-halfpoint = (SmoothRF['position'].iloc[449] + SmoothRF['position'].iloc[607] )  /2
+print(peaks)
+halfpoint = (SmoothRF['position'].iloc[248] + SmoothRF['position'].iloc[406] )  /2
 
 position = position - halfpoint
 peaks['position'] = peaks['position'] - halfpoint
 SmoothRF['position'] = SmoothRF['position'] - halfpoint
+
+
+SmoothRF.to_csv('O8/SmoothCentral.csv', sep=';', index = False)
 
 ###################################################################################################
 # Plot
 fig, ax = plt.subplots()
 
 ax.set_ylim(-0.1, 1.6)
-ax.set_xlim(-3.0, 3.0)
+# ax.set_xlim(-4.0, 4.0)
 
 # Peaks plotten
 ax.errorbar(peaks['position'],  peaks['Intensity'], xerr= peaks['dPos'], yerr=peaks['dInt'],
@@ -138,67 +145,71 @@ ax.errorbar(peaks['position'],  peaks['Intensity'], xerr= peaks['dPos'], yerr=pe
 
 
 #Nullstellen Bessel
-NS = [-19.6159, -16.471, -13.324, -10.173, -7.016, -3.832, 0.0, 3.832, 7.016, 10.173, 13.324, 16.471, 19.6159]
+NS = [ -13.324, -10.173, -7.016, -3.832, 0.0, 3.832, 7.016, 10.173, 13.324] # , 16.471, 19.6159
 
 
-I_0 = 1.5
-b = 0.095
+x_data = SmoothRF['position'].iloc[indexList[3]:indexList[len(indexList)-1]] 
+y_data = SmoothRF['Intensity'].iloc[indexList[3]:indexList[len(indexList)-1]] 
+y_err  = SmoothRF['dInt'].iloc[indexList[3]:indexList[len(indexList)-1]] 
 
-x_data = SmoothRF['position']
-y_data = SmoothRF['Intensity']
-y_err  = SmoothRF['dInt']
 
-def fit_function(x, I, B):
-    return I * (j1( np.pi * B * x / (SS.n*lamb)) / (np.pi * B * x / (2.0*SS.n*lamb)) )**2
+def fit_function(x, I, B, A):
+    return I * ( j1( (np.pi * B * x )/(SS.n*lamb) ) / ( (np.pi * B * x)/(2.0*SS.n*lamb) ) )**2 + A
 
 # ax.errorbar(x = x_ax , y = y_ax,
 #         label = f"theoretische Funktion mit \n $B$={b}cm und $I_0$={I_0}", color = 'plum')
 
-# Curve-Fit mit Unsicherheiten in y
+# Curve-Fit mit Unsicherheiten in y                                                                      
 params, covariance = curve_fit(fit_function, x_data, y_data, sigma=y_err, absolute_sigma=True)
 I_value = params[0]
 B_value = params[1]
+A_value = params[2]
 fit_errors = np.sqrt(np.diag(covariance))  # Fehler der Fit-Parameter
 I_error = fit_errors[0]
 B_error = fit_errors[1]
+A_error = fit_errors[2]
 
 dof = len(RF.index)-len(params)
-chi2 = sum([((fit_function(x,I_value, B_value)-y)**2)/(u**2) for x,y,u in zip(x_data,y_data,y_err)])
+chi2 = sum([((fit_function(x,I_value, B_value, A_value)-y)**2)/(u**2) for x,y,u in zip(x_data,y_data,y_err)])
 
 # Fit-Ergebnisse ausgeben
 #print(f"A = {A_value:.6f} ± {A_error:.6f}")
 #print(f"x0 = {x0_value:.6f} ± {x0_error:.6f}")
 #print(f"Chi-Quadrat/dof: {chi2/dof}")
 
-x_ax = np.linspace(-20, 20, 1000) 
-y_ax = fit_function(x_ax, I_value, B_value)
-
-label = f"theoretische Funktion mit \n $B$={B_value}cm und $I_0$={I_value}"
-
-# Plot zeichnen
-plt.plot(x_ax, y_ax, label = label, linewidth = 2, color = 'plum')
-
 
 #Theoretische Minimapositionen
 posMin = [value * lamb * SS / (np.pi * B_value) for value in NS]
 
+x_ax = np.linspace(posMin[0].n+0.05, posMin[len(posMin)-1].n-0.05, 1000) 
+y_ax = fit_function(x_ax, I_value, B_value, A_value)
+
+label = "Fit nach $y = I_0 \\cdot \\left(  \\frac{  J_1(\\frac{\\pi \\cdot B \\cdot \sin \\alpha}{\\lambda})   }{ \\frac{\\pi \cdot B \\cdot \sin \\alpha }{2 \\lambda}   }  \\right)^2 + A$: "
+label += f"\n $I_0={I_value:.6f}\pm {I_error:.6f}$ \n $B={B_value:.6f}\pm {B_error:.6f}$cm \n $A={A_value:.6f}\pm {A_error:.6f}$"
+
+# Plot zeichnen
+plt.plot(x_ax, y_ax, label = label, linewidth = 2, color = 'plum')
+
+ax.set_xlim(posMin[0].n+0.05, posMin[len(posMin)-1].n-0.05)
 
 
 ##########################
 
-ax.errorbar(x = [value.n for value in posMin] , y = [fit_function(value.n, I_value, B_value) for value in posMin], xerr = [value.s for value in posMin], 
+ax.errorbar(x = [value.n for value in posMin] , y = [fit_function(value.n, I_value, B_value, A_value) for value in posMin], xerr = [value.s for value in posMin], 
         label = "Nullstellen der theoretischen Funktion ", 
         color = 'purple', linestyle='None', marker='o', markersize=5, capsize=6)
 
  
 # Smoothed Data plotten
 ax.errorbar(x = SmoothRF['position'], y = SmoothRF['Intensity'],
-        label = "geglättete Daten - je " + str(dgs) + " Pixel zusammengefasst", 
-        color = 'crimson', linestyle='None', marker='o', markersize=3, capsize=3, elinewidth = 0.5)
-# xerr = SmoothRF['dPos'], yerr = SmoothRF['dInt'],
+        label = "geglättete Daten - $dgs$=" + str(dgs) , 
+        color = 'crimson', linestyle='None', marker='o', markersize=3, capsize=3, elinewidth = 0.5) # yerr  = SmoothRF['dInt'],
+
+print(len(np.array([value.n for value in position])))
+print(len(RF.Intensity))
 
 # Messwerte plotten
-ax.errorbar(np.array([value.n for value in position]), RF['Intensity'], label = 'Intensität des Lichtes Lochblende', 
+ax.errorbar(x= np.array([value.n for value in position]) , y=RF['Intensity'], label = 'Intensität des Lichtes Lochblende', 
             color = 'mediumblue', linestyle='None', marker='o', capsize=3, markersize=1, elinewidth = 0.5)
 
 ################

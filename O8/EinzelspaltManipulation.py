@@ -170,7 +170,7 @@ plt.errorbar(peaks['position'],  peaks['Intensity'], xerr= peaks['dPos'], yerr= 
 
 # Smoothed Data
 ax.errorbar(x = SmoothRF['position'], y = SmoothRF['Intensity'], 
-         label = "geglättete Daten - je " + str(dgs) + " Pixel zusammengefasst", 
+         label = "geglättete Daten - $dgs$=" + str(dgs) , 
          color = 'crimson', linestyle='None', marker='o',  markersize=3)
 
 #,xerr = SmoothRF['dPos'], yerr = SmoothRF['dInt'],  markersize=6, capsize=3, elinewidth = 0.5 

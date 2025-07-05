@@ -49,7 +49,7 @@ y_err = np.array([value.s for value in sinAlph])
 
 #Messwerte plotten
 ax.errorbar(x_data, y_data, yerr=y_err, label = 'Messwerte', 
-            color = 'mediumblue', linestyle='None', marker='o', capsize=6, markersize=6, elinewidth = 0.5 )
+            color = 'mediumblue', linestyle='None', marker='o', capsize=10, markersize=7, elinewidth=2)
 
 # linearer Fit
 # Fitfunktion definieren
