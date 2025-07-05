@@ -160,7 +160,7 @@ def fit_function(x, I, B, A):
 #         label = f"theoretische Funktion mit \n $B$={b}cm und $I_0$={I_0}", color = 'plum')
 
 # Curve-Fit mit Unsicherheiten in y                                                                      
-params, covariance = curve_fit(fit_function, x_data, y_data, sigma=y_err, absolute_sigma=True)
+params, covariance = curve_fit(fit_function, x_data, y_data, sigma=y_err, absolute_sigma=True, bounds = ([ -np.inf , 0.0 , -np.inf ], [ np.inf, 1.0 , np.inf ]), p0 = [1.0, 0.0, 0.0] )
 I_value = params[0]
 B_value = params[1]
 A_value = params[2]
@@ -223,5 +223,5 @@ plt.grid()
 plt.xticks(fontsize=fnt)
 plt.yticks(fontsize=fnt)
 
-plt.savefig("O8/IntensitatLochblende.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
+plt.savefig("O8/IntensitatLochblende.pdf", format='pdf', bbox_inches='tight') 
 plt.show()

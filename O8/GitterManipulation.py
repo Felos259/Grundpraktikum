@@ -154,5 +154,5 @@ plt.grid()
 plt.xticks(fontsize=fnt)
 plt.yticks(fontsize=fnt)
 
-plt.savefig("O8/IntensitatGitter.pdf", format='pdf', bbox_inches='tight', pad_inches=0.5) 
+plt.savefig("O8/IntensitatGitter.pdf", format='pdf', bbox_inches='tight') 
 plt.show()
