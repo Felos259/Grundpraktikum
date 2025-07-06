@@ -117,7 +117,7 @@ fig, ax = plt.subplots()
 
 # Achsen richten
 ax.set_xlim(0, 12.5)
-ax.set_ylim(0, 1.6)
+ax.set_ylim(0, 1.4)
 
 # Peaks plotten
 plt.errorbar(peaks['position'],  peaks['Intensity'], xerr = peaks['dPos'], yerr= peaks['dInt'],

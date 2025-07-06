@@ -101,7 +101,7 @@ fig, ax = plt.subplots()
 
 # Achsen richten
 ax.set_xlim(0, 12.5)
-ax.set_ylim(0, 1.6)
+ax.set_ylim(0, 1.1)
 
 
 #Daten

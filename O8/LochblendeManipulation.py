@@ -22,9 +22,10 @@ plt.rcParams['figure.figsize'] = [19.2,10.8]
 dgs = 4
 lamb = 532 * 10**-6
 SS = u.ufloat(86.5, 0.5) - u.ufloat(2.0, 0.5) 
-# Durchmesser mit Mikroskop
-Blende = 20 * u.ufloat(4.98, 0.02) * 10**-3
-print('Durchmesser Lochblende Mikroskop: B='+ str(Blende) + "cm")
+# Durchmesser mit Mikroskop in Centimeter
+Blende = 20 * u.ufloat(4.98, 0.02) * 10**-4
+
+print('Durchmesser Lochblende Mikroskop: B='+ str(Blende.n) + "cm")
 
 # Unsicherheitsfaktor für Intensität
 uInt = 0.1
@@ -121,13 +122,11 @@ peaks.to_csv('O8/Lochblende.csv', sep=';', index = False)
 #######################
 # Positionen so verschieben, dass Maximum 0. Ordnung bei 0cm liegt
 
-print(peaks)
 halfpoint = (SmoothRF['position'].iloc[248] + SmoothRF['position'].iloc[406] )  /2
 
 position = position - halfpoint
 peaks['position'] = peaks['position'] - halfpoint
 SmoothRF['position'] = SmoothRF['position'] - halfpoint
-
 
 SmoothRF.to_csv('O8/SmoothCentral.csv', sep=';', index = False)
 
@@ -146,7 +145,6 @@ ax.errorbar(peaks['position'],  peaks['Intensity'], xerr= peaks['dPos'], yerr=pe
 
 #Nullstellen Bessel
 NS = [ -13.324, -10.173, -7.016, -3.832, 0.0, 3.832, 7.016, 10.173, 13.324] # , 16.471, 19.6159
-
 
 x_data = SmoothRF['position'].iloc[indexList[3]:indexList[len(indexList)-1]] 
 y_data = SmoothRF['Intensity'].iloc[indexList[3]:indexList[len(indexList)-1]] 
@@ -169,6 +167,14 @@ I_error = fit_errors[0]
 B_error = fit_errors[1]
 A_error = fit_errors[2]
 
+posPeaks = unp.uarray(peaks['position'], peaks['dPos'])
+
+
+#Brennweite
+f = 7.8 # cm
+print(1.22 *2.0 * f * posPeaks / SS)
+# u.ufloat(B_value, B_error)
+
 dof = len(RF.index)-len(params)
 chi2 = sum([((fit_function(x,I_value, B_value, A_value)-y)**2)/(u**2) for x,y,u in zip(x_data,y_data,y_err)])
 
@@ -176,7 +182,6 @@ chi2 = sum([((fit_function(x,I_value, B_value, A_value)-y)**2)/(u**2) for x,y,u 
 #print(f"A = {A_value:.6f} ± {A_error:.6f}")
 #print(f"x0 = {x0_value:.6f} ± {x0_error:.6f}")
 #print(f"Chi-Quadrat/dof: {chi2/dof}")
-
 
 #Theoretische Minimapositionen
 posMin = [value * lamb * SS / (np.pi * B_value) for value in NS]
@@ -205,8 +210,6 @@ ax.errorbar(x = SmoothRF['position'], y = SmoothRF['Intensity'],
         label = "geglättete Daten - $dgs$=" + str(dgs) , 
         color = 'crimson', linestyle='None', marker='o', markersize=3, capsize=3, elinewidth = 0.5) # yerr  = SmoothRF['dInt'],
 
-print(len(np.array([value.n for value in position])))
-print(len(RF.Intensity))
 
 # Messwerte plotten
 ax.errorbar(x= np.array([value.n for value in position]) , y=RF['Intensity'], label = 'Intensität des Lichtes Lochblende', 
