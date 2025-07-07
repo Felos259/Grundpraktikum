@@ -46,12 +46,12 @@ k=[0,0,0,0,0,0]
 for i in range(0,anzahlVersuchsreihen,1):
     ##### Berechnungen Unsicherheiten ####
     RF['dt_sys_MR'+str(i+1)]=0.0005*(RF['t_MR'+str(i+1)])+0.03 #sys. Unsicherheit aus Einführungspraktikum
-    RF['dt_gross_MR'+str(i+1)]=0 #Größtfehlerabschätzung unserer Langsamkeit
+    RF['dt_gross_MR'+str(i+1)]=2 #Wir haben schon so zwei Sekunden zum Ablesen gebraucht, eher mehr
     RF['dt_MR'+str(i+1)]=np.sqrt(RF['dt_sys_MR'+str(i+1)]**2+RF['dt_gross_MR'+str(i+1)]**2)
     RF['ut_MR'+str(i+1)]=unp.uarray(RF['t_MR'+str(i+1)],RF['dt_MR'+str(i+1)])
     
-    RF['dh_sys_MR'+str(i+1)]=1 #systematische Unsicherheit Manometer
-    RF['dh_gross_MR'+str(i+1)]=0 #Größtfehlerabschätzung Manometer
+    RF['dh_sys_MR'+str(i+1)]=0 #systematische Unsicherheit Manometer - existiert nicht
+    RF['dh_gross_MR'+str(i+1)]=np.sqrt(2)*0.05 #Größtfehlerabschätzung Manometer (halbe Skale), Gauß Fehlerforgepflanzt (siehe Protokoll bald)
     RF['dh_MR'+str(i+1)]=np.sqrt(RF['dh_sys_MR'+str(i+1)]**2+RF['dh_gross_MR'+str(i+1)]**2)
     RF['uh_MR'+str(i+1)]=unp.uarray(RF['h_MR'+str(i+1)],RF['dh_MR'+str(i+1)])
 
@@ -64,13 +64,13 @@ for i in range(0,anzahlVersuchsreihen,1):
     ax.errorbar(x_data_i, y_data_i, xerr=x_err_i, yerr=y_err_i, label='Versuchsreihe '+str(i+1), color=colors[i][1], linestyle='None', marker='o', capsize=8, markersize=9, elinewidth=2)
     
     #### Daten zum Berechnen zweier Geraden laden ####
-    x_data[i][0] = RF['t_MR'+str(i+1)][1:5]
-    y_data[i][0] = RF['h_MR'+str(i+1)][1:5]
-    y_err[i][0] = RF['dh_MR'+str(i+1)][1:5]
+    x_data[i][0] = RF['t_MR'+str(i+1)][2:6]
+    y_data[i][0] = RF['h_MR'+str(i+1)][2:6]
+    y_err[i][0] = RF['dh_MR'+str(i+1)][2:6]
 
-    x_data[i][1] = RF['t_MR'+str(i+1)][7:11]
-    y_data[i][1] = RF['h_MR'+str(i+1)][7:11]
-    y_err[i][1] = RF['dh_MR'+str(i+1)][7:11]
+    x_data[i][1] = RF['t_MR'+str(i+1)][9:13]
+    y_data[i][1] = RF['h_MR'+str(i+1)][9:13]
+    y_err[i][1] = RF['dh_MR'+str(i+1)][9:13]
 
     for j in range(0,2,1):
         params[i][j], covariance[i][j] = curve_fit(fit_function, x_data[i][j], y_data[i][j], sigma=y_err[i][j], absolute_sigma=True)
@@ -86,7 +86,7 @@ for i in range(0,anzahlVersuchsreihen,1):
         print("i =",i+1, " and j = ", j, " and Chi-Quadrat/dof:", chi2dof[i][j])
 
     h_1[i] = RF['uh_MR'+str(i+1)][5]
-    h_2[i] = fit_function(RF['t_MR'+str(i+1)][6],A_value[i][1],x0_value[i][1])
+    h_2[i] = u.ufloat(fit_function(RF['t_MR'+str(i+1)][6],A_value[i][1],x0_value[i][1]), np.sqrt((RF['t_MR'+str(i+1)][6]*A_error[i][1])**2+(A_value[i][1]*RF['dt_MR'+str(i+1)][6])**2+(x0_error[i][1])**2))
     #TO-DO: Unsicherheit h_2_i
     print("h_1_",str(i+1),"=", h_1[i])
     print("h_2_",str(i+1),"=", h_2[i])
@@ -100,8 +100,8 @@ dmean = u.ufloat(mean,standab)
 print("Mittelwert Kappa:", dmean)
 
 #### Plot zeichnen ####
-ax.set_xlim(-10,610)
-ax.set_ylim(-0.5,30)
+ax.set_xlim(-10,700)
+ax.set_ylim(-1,12)
 plt.xlabel("Zeit t in s",fontsize=20)
 plt.ylabel("Höhe h in mm",fontsize=20)
 plt.legend(fontsize=20)
