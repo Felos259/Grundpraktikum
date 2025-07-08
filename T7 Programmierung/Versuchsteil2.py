@@ -40,9 +40,12 @@ summeZaehler_Argon = 0
 summeNenner_Argon = 0
 summeNenner_Luft = 0
 
+# DICHTE HINZUFÜGEN
+wMasseSaeule = [1.189*(np.pi*(wRadius[0])**2)*(u.ufloat(0.17,0.01)-u.ufloat(0.04,0.005))/2, 1.78*(np.pi*(wRadius[1])**2)*(u.ufloat(0.19,0.01)-u.ufloat(0.04,0.005))/2]
+
 ## To-Do: Schwingende Gasmasse ausdenken
-wMasse = wMasseSchwing
-uMasse = uMasseSchwing
+wMasse = wMasseSchwing+wMasseSaeule
+uMasse = uMasseSchwing+np.array([value.s for value in wMasseSaeule])
 
 for i in range (0,6,1):
     RF['dT_sys_Luft'+str(i+1)]=0.0005*(RF['Luft'+str(i+1)])+0.03 #sys. Unsicherheit aus Einführungspraktikum
