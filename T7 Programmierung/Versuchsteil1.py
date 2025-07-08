@@ -42,8 +42,12 @@ h_1=[0,0,0,0,0,0]
 h_2=[0,0,0,0,0,0]
 kappa=[0,0,0,0,0,0]
 k=[0,0,0,0,0,0]
+wKappa=[0,0,0,0,0,0]
+pKappa=[0,0,0,0,0,0]
+summeZaehler=0
+summeNenner=0
 
-for i in range(0,anzahlVersuchsreihen,1):
+for i in range(0,6,1):
     ##### Berechnungen Unsicherheiten ####
     RF['dt_sys_MR'+str(i+1)]=0.0005*(RF['t_MR'+str(i+1)])+0.03 #sys. Unsicherheit aus Einführungspraktikum
     RF['dt_gross_MR'+str(i+1)]=2 #Wir haben schon so zwei Sekunden zum Ablesen gebraucht, eher mehr
@@ -68,9 +72,9 @@ for i in range(0,anzahlVersuchsreihen,1):
     y_data[i][0] = RF['h_MR'+str(i+1)][2:6]
     y_err[i][0] = RF['dh_MR'+str(i+1)][2:6]
 
-    x_data[i][1] = RF['t_MR'+str(i+1)][9:13]
-    y_data[i][1] = RF['h_MR'+str(i+1)][9:13]
-    y_err[i][1] = RF['dh_MR'+str(i+1)][9:13]
+    x_data[i][1] = RF['t_MR'+str(i+1)][9:12]
+    y_data[i][1] = RF['h_MR'+str(i+1)][9:12]
+    y_err[i][1] = RF['dh_MR'+str(i+1)][9:12]
 
     for j in range(0,2,1):
         params[i][j], covariance[i][j] = curve_fit(fit_function, x_data[i][j], y_data[i][j], sigma=y_err[i][j], absolute_sigma=True)
@@ -82,30 +86,31 @@ for i in range(0,anzahlVersuchsreihen,1):
         dof[i][j] = len(RF.index)-len(params[i][j])
         chi2[i][j] = sum([((fit_function(x,A_value[i][j],x0_value[i][j])-y)**2)/(u**2) for x,y,u in zip(x_data[i][j],y_data[i][j],y_err[i][j])])
         chi2dof[i][j]=chi2[i][j]/dof[i][j]
-        print("i =",i+1, " and j = ", j, " and A =", A_value[i][j], "+/-", A_error[i][j], "and x0 =", x0_value[i][j], "+/-", x0_error[i][j])
-        print("i =",i+1, " and j = ", j, " and Chi-Quadrat/dof:", chi2dof[i][j])
+    print("i =",i+1, " and A =", A_value[i][1], "+/-", A_error[i][1], "and x0 =", x0_value[i][1], "+/-", x0_error[i][1])
+    #print("i =",i+1, " and Chi-Quadrat/dof:", chi2dof[i][1])
 
     h_1[i] = RF['uh_MR'+str(i+1)][5]
     h_2[i] = u.ufloat(fit_function(RF['t_MR'+str(i+1)][6],A_value[i][1],x0_value[i][1]), np.sqrt((RF['t_MR'+str(i+1)][6]*A_error[i][1])**2+(A_value[i][1]*RF['dt_MR'+str(i+1)][6])**2+(x0_error[i][1])**2))
-    #TO-DO: Unsicherheit h_2_i
-    print("h_1_",str(i+1),"=", h_1[i])
-    print("h_2_",str(i+1),"=", h_2[i])
     kappa[i]=h_1[i]/(h_1[i]-h_2[i])
+    wKappa[i]=kappa[i].nominal_value
+    pKappa[i]=1/(kappa[i].s)**2
+    summeZaehler+=wKappa[i]*pKappa[i]
+    summeNenner+=pKappa[i]
     print("Kappa_",str(i+1),"=",kappa[i])
     
 #### Mittelwert berechnen ####
-mean = np.mean([value.nominal_value for value in kappa])
-standab = np.std([value.nominal_value for value in kappa],ddof=1)
-dmean = u.ufloat(mean,standab)
+mean = summeZaehler/summeNenner
+unsicher = 1/np.sqrt(summeNenner)
+dmean = u.ufloat(mean,unsicher)
 print("Mittelwert Kappa:", dmean)
 
 #### Plot zeichnen ####
 ax.set_xlim(-10,700)
 ax.set_ylim(-1,12)
 plt.xlabel("Zeit t in s",fontsize=20)
-plt.ylabel("Höhe h in mm",fontsize=20)
+plt.ylabel("Höhendifferenz $h_{re}-h_{li}$ in cm",fontsize=20)
 plt.legend(fontsize=20)
-plt.title("Höhe der Manometerflüssigkeit in mm in Abhängigkeit der Zeit",fontsize=20)
+plt.title("Höhendifferenz der Manometerflüssigkeit in Abhängigkeit der Zeit",fontsize=20)
 
 plt.xticks(fontsize=20)
 plt.yticks(fontsize=20)
