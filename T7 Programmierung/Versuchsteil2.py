@@ -32,7 +32,7 @@ wRadius = [13.93/2000,13.95/2000] #in m
 dRadius = [0.01/2000,0.01/2000]
 uRadius = unp.uarray(wRadius,dRadius) #in m
 wDruck = 997.046*100 #Pa, von Frowine
-dDruck = 0
+dDruck = 1*100
 uDruck = u.ufloat(wDruck,dDruck) #Unsicherheit????
 
 summeZaehler_Luft = 0
@@ -40,12 +40,10 @@ summeZaehler_Argon = 0
 summeNenner_Argon = 0
 summeNenner_Luft = 0
 
-# DICHTE HINZUFÜGEN
-wMasseSaeule = [1.189*(np.pi*(wRadius[0])**2)*(u.ufloat(0.17,0.01)-u.ufloat(0.04,0.005))/2, 1.78*(np.pi*(wRadius[1])**2)*(u.ufloat(0.19,0.01)-u.ufloat(0.04,0.005))/2]
-
-## To-Do: Schwingende Gasmasse ausdenken
-wMasse = wMasseSchwing+wMasseSaeule
-uMasse = uMasseSchwing+np.array([value.s for value in wMasseSaeule])
+# Masse
+uMasseSaeule = [1.189*(np.pi*(wRadius[0])**2)*(u.ufloat(0.17,0.01)-u.ufloat(0.04,0.005))/2, 1.78*(np.pi*(wRadius[1])**2)*(u.ufloat(0.19,0.01)-u.ufloat(0.04,0.005))/2]
+wMasse = wMasseSchwing+np.array([value.nominal_value for value in uMasseSaeule])
+uMasse = uMasseSchwing+uMasseSaeule
 
 for i in range (0,6,1):
     RF['dT_sys_Luft'+str(i+1)]=0.0005*(RF['Luft'+str(i+1)])+0.03 #sys. Unsicherheit aus Einführungspraktikum
@@ -74,6 +72,7 @@ for i in range (0,6,1):
     summeZaehler_Argon+=wKappa_Argon[i]*pKappa_Argon[i]
     summeNenner_Argon+=pKappa_Argon[i]
 
+print(uMasseSaeule)
 meanLuft = summeZaehler_Luft/summeNenner_Luft
 unsicherLuft = 1/np.sqrt(summeNenner_Luft)
 dmeanLuft = u.ufloat(meanLuft,unsicherLuft)

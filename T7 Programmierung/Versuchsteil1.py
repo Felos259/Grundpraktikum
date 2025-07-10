@@ -55,7 +55,7 @@ for i in range(0,6,1):
     RF['ut_MR'+str(i+1)]=unp.uarray(RF['t_MR'+str(i+1)],RF['dt_MR'+str(i+1)])
     
     RF['dh_sys_MR'+str(i+1)]=0 #systematische Unsicherheit Manometer - existiert nicht
-    RF['dh_gross_MR'+str(i+1)]=np.sqrt(2)*0.05 #Größtfehlerabschätzung Manometer (halbe Skale), Gauß Fehlerforgepflanzt (siehe Protokoll bald)
+    RF['dh_gross_MR'+str(i+1)]=np.sqrt(2)*0.2 #Größtfehlerabschätzung Manometer (halbe Skale), Gauß Fehlerforgepflanzt (siehe Protokoll bald)
     RF['dh_MR'+str(i+1)]=np.sqrt(RF['dh_sys_MR'+str(i+1)]**2+RF['dh_gross_MR'+str(i+1)]**2)
     RF['uh_MR'+str(i+1)]=unp.uarray(RF['h_MR'+str(i+1)],RF['dh_MR'+str(i+1)])
 
@@ -97,11 +97,15 @@ for i in range(0,6,1):
     summeZaehler+=wKappa[i]*pKappa[i]
     summeNenner+=pKappa[i]
     print("Kappa_",str(i+1),"=",kappa[i])
+
+
     
 #### Mittelwert berechnen ####
 mean = summeZaehler/summeNenner
 unsicher = 1/np.sqrt(summeNenner)
 dmean = u.ufloat(mean,unsicher)
+print(h_1)
+print(h_2)
 print("Mittelwert Kappa:", dmean)
 
 #### Plot zeichnen ####
