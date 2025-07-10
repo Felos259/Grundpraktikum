@@ -90,7 +90,7 @@ for i in range(0,6,1):
     #print("i =",i+1, " and Chi-Quadrat/dof:", chi2dof[i][1])
 
     h_1[i] = RF['uh_MR'+str(i+1)][5]
-    h_2[i] = u.ufloat(fit_function(RF['t_MR'+str(i+1)][6],A_value[i][1],x0_value[i][1]), np.sqrt((RF['t_MR'+str(i+1)][6]*A_error[i][1])**2+(A_value[i][1]*RF['dt_MR'+str(i+1)][6])**2+(x0_error[i][1])**2))
+    h_2[i] = u.ufloat(fit_function(330,A_value[i][1],x0_value[i][1]), np.sqrt((330*A_error[i][1])**2+(A_value[i][1]*2)**2+(x0_error[i][1])**2))
     kappa[i]=h_1[i]/(h_1[i]-h_2[i])
     wKappa[i]=kappa[i].nominal_value
     pKappa[i]=1/(kappa[i].s)**2
@@ -104,7 +104,6 @@ for i in range(0,6,1):
 mean = summeZaehler/summeNenner
 unsicher = 1/np.sqrt(summeNenner)
 dmean = u.ufloat(mean,unsicher)
-print(h_1)
 print(h_2)
 print("Mittelwert Kappa:", dmean)
 
